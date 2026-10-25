@@ -1,0 +1,17 @@
+@import "./tokens/tokens.css";
+@import "./components/Button/Button.css";
+@import "./components/Card/Card.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background: var(--color-bg);
+}

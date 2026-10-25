@@ -1,0 +1,30 @@
+.sg-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.sg-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sg-button--sm { padding: var(--space-1) var(--space-3); font-size: var(--font-size-sm); }
+.sg-button--md { padding: var(--space-2) var(--space-4); font-size: var(--font-size-md); }
+.sg-button--lg { padding: var(--space-3) var(--space-6); font-size: var(--font-size-lg); }
+
+.sg-button--primary { background: var(--color-primary); color: var(--color-on-primary); }
+.sg-button--primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+
+.sg-button--secondary { background: var(--color-bg); color: var(--color-text); border-color: var(--color-border); }
+.sg-button--secondary:hover:not(:disabled) { background: var(--color-surface); }
+
+.sg-button--ghost { background: transparent; color: var(--color-primary); }
+.sg-button--ghost:hover:not(:disabled) { background: var(--color-surface); }
