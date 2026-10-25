@@ -40,6 +40,7 @@ Clone o `style-guide` ao lado deste repo e rode `pnpm link ../style-guide` para 
 | [`Grupo-PI-6/frontend`](https://github.com/Grupo-PI-6/frontend) | Telas — React 19 + Vite + TS | 5173 |
 | [`Grupo-PI-6/backend`](https://github.com/Grupo-PI-6/backend) | API — Node + Fastify 5 + TS (ESM) | 3333 |
 | [`Grupo-PI-6/style-guide`](https://github.com/Grupo-PI-6/style-guide) | Design system — tokens CSS + componentes React + Storybook | 6006 |
+| [`Grupo-PI-6/infra`](https://github.com/Grupo-PI-6/infra) | Docker Compose (dev e produção) e scripts de deploy | — |
 
 Ordem para features que atravessam repos: **style-guide → backend → frontend**.
 O frontend consome o style-guide como dependência git (`@fatec-pi/style-guide`) e chama o backend por `/api/...` (proxy do Vite para `localhost:3333`).
