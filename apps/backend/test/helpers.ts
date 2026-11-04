@@ -3,7 +3,16 @@ import { afterAll } from "vitest";
 import { createDb, type Db } from "../src/db/client.js";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "../src/app.js";
-import { medications, pharmacies } from "../src/db/schema.js";
+import {
+    medicationRequests,
+    medications,
+    pharmacies,
+    stockBatches,
+    stockItems,
+    suppliers,
+} from "../src/db/schema.js";
+import { createAccount, registerPatient } from "../src/services/accounts.js";
+import type { RegisterPatientInput } from "../src/contracts.js";
 import { normalizeSearch } from "../src/domain/text.js";
 
 const { db, pool } = createDb(process.env.DATABASE_URL ?? "");
@@ -120,4 +129,85 @@ export function patientPayload(
         mobilityLimited: true,
         ...overrides,
     };
+}
+
+// ---------- factories de pessoas e pedidos ----------
+
+let patientSeq = 0;
+
+/** Cria paciente direto pelo serviço. Devolve o id do usuário (= id do paciente). */
+export async function createPatient(
+    referencePharmacyId: string,
+    overrides: Record<string, unknown> = {},
+): Promise<{ id: string; email: string }> {
+    patientSeq += 1;
+    const email = (overrides.email as string | undefined) ?? `paciente${patientSeq}@example.com`;
+    const payload = patientPayload(referencePharmacyId, {
+        email,
+        cns: String(898000000000000 + patientSeq),
+        ...overrides,
+    });
+    const { userId } = await registerPatient(testDb, payload as unknown as RegisterPatientInput);
+    return { id: userId, email };
+}
+
+export async function createStaff(
+    pharmacyId: string,
+    occupation: "pharmacist" | "pharmacy_assistant" = "pharmacist",
+    email = `staff-${pharmacyId.slice(0, 6)}-${occupation}@example.com`,
+): Promise<{ id: string; email: string }> {
+    const { userId } = await createAccount(testDb, {
+        role: "pharmacy_staff",
+        email,
+        password: "senha-forte-1",
+        fullName: occupation === "pharmacist" ? "Farmacêutica Ana" : "Auxiliar Bruno",
+        pharmacyId,
+        occupation,
+        ...(occupation === "pharmacist" ? { crfNumber: "12345", crfState: "SP" } : {}),
+    });
+    return { id: userId, email };
+}
+
+export async function createSupplier(name = "Distribuidora Saúde Ltda") {
+    const [row] = await testDb
+        .insert(suppliers)
+        .values({ name, cnpj: "12345678000190" })
+        .returning();
+    return row!;
+}
+
+export async function createRequestRow(values: {
+    patientId: string;
+    medicationId: string;
+    pharmacyId: string;
+    quantity?: number;
+    fulfillment?: "pickup" | "delivery";
+    status?: (typeof medicationRequests.$inferInsert)["status"];
+}) {
+    const [row] = await testDb
+        .insert(medicationRequests)
+        .values({ quantity: 1, fulfillment: "pickup", ...values })
+        .returning();
+    return row!;
+}
+
+export async function createBatch(values: {
+    pharmacyId: string;
+    medicationId: string;
+    batchNumber: string;
+    expiryDate: string;
+    quantity: number;
+    minQuantity?: number;
+}) {
+    const { minQuantity, ...batch } = values;
+    await testDb
+        .insert(stockItems)
+        .values({
+            pharmacyId: batch.pharmacyId,
+            medicationId: batch.medicationId,
+            minQuantity: minQuantity ?? 0,
+        })
+        .onConflictDoNothing();
+    const [row] = await testDb.insert(stockBatches).values(batch).returning();
+    return row!;
 }

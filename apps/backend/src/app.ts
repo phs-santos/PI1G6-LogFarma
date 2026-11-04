@@ -6,6 +6,7 @@ import { AppError } from "./domain/errors.js";
 import { sessionPlugin } from "./auth/session.js";
 import { healthRoutes } from "./routes/health.js";
 import { authRoutes } from "./routes/auth.js";
+import { notificationRoutes } from "./routes/notifications.js";
 
 export interface AppDeps {
     db: Db;
@@ -48,6 +49,7 @@ export function buildApp(deps: AppDeps) {
     app.register(sessionPlugin);
     app.register(healthRoutes, { prefix: "/api" });
     app.register(authRoutes, { prefix: "/api" });
+    app.register(notificationRoutes, { prefix: "/api" });
 
     return app;
 }
