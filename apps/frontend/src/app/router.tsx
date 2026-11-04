@@ -4,7 +4,9 @@ import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
 import { Avisos } from "../pages/paciente/Avisos";
 import { ConfirmarPedido } from "../pages/paciente/ConfirmarPedido";
+import { CriarConta } from "../pages/paciente/CriarConta";
 import { Inicio } from "../pages/paciente/Inicio";
+import { MeusDados } from "../pages/paciente/MeusDados";
 import { MeusPedidos } from "../pages/paciente/MeusPedidos";
 import { SeuPedido } from "../pages/paciente/SeuPedido";
 import { OndeTem } from "../pages/paciente/OndeTem";
@@ -28,10 +30,7 @@ export const appRoutes: RouteObject[] = [
         element: <SessionRoot />,
         children: [
             { path: "/entrar", element: <Entrar /> },
-            {
-                element: <PatientLayout />,
-                children: [page("/cadastro", "Criar conta")],
-            },
+            { path: "/cadastro", element: <CriarConta /> },
             {
                 element: (
                     <RequireRole roles={["patient"]}>
@@ -48,7 +47,7 @@ export const appRoutes: RouteObject[] = [
                     { path: "/pedidos", element: <MeusPedidos /> },
                     { path: "/pedidos/:id", element: <SeuPedido /> },
                     { path: "/avisos", element: <Avisos /> },
-                    page("/meus-dados", "Meus dados"),
+                    { path: "/meus-dados", element: <MeusDados /> },
                 ],
             },
             {

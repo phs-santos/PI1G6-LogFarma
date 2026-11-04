@@ -175,3 +175,13 @@
 .app-mobile__main .sg-tarja {
     margin-bottom: var(--space-6);
 }
+
+.app-steps {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+h2[tabindex="-1"]:focus {
+    outline: none;
+}

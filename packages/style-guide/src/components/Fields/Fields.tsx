@@ -126,14 +126,15 @@ export function Checkbox({ label, hint, id, className = "", ...props }: Checkbox
                 aria-describedby={hint ? hintId : undefined}
                 {...props}
             />
-            <label htmlFor={fieldId}>
-                {label}
+            {/* A dica fica fora do rótulo: entra como descrição, não no nome do campo. */}
+            <div>
+                <label htmlFor={fieldId}>{label}</label>
                 {hint && (
                     <span className="sg-field__hint" id={hintId}>
                         {hint}
                     </span>
                 )}
-            </label>
+            </div>
         </div>
     );
 }

@@ -26,3 +26,7 @@ export function formatPhone(phone: string): string {
     if (d.length === 11) return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
     return phone;
 }
+
+export function onlyDigits(value: string): string {
+    return value.replace(/\D/g, "");
+}

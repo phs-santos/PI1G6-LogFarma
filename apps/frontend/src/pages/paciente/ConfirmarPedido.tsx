@@ -1,4 +1,4 @@
-import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Checkbox, EmptyState, Tarja, TextField } from "@fatec-pi/style-guide";
@@ -8,34 +8,11 @@ import type { CreateRequestInput, Fulfillment, PrescriptionInput } from "../../a
 import { qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
+import { Choice, Choices } from "../../ui/Choices";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import { useAvailability } from "./queries";
 import "./paciente.css";
-
-function Choices({ legend, children }: { legend: string; children: ReactNode }) {
-    const id = useId();
-    return (
-        <fieldset className="app-choices" role="radiogroup" aria-labelledby={id}>
-            <legend id={id}>{legend}</legend>
-            {children}
-        </fieldset>
-    );
-}
-
-function Choice(props: { name: string; label: string; checked: boolean; onChange: () => void }) {
-    return (
-        <label className="app-choice">
-            <input
-                type="radio"
-                name={props.name}
-                checked={props.checked}
-                onChange={props.onChange}
-            />
-            <span>{props.label}</span>
-        </label>
-    );
-}
 
 const EMPTY_RX: PrescriptionInput = {
     issuedAt: "",
