@@ -1,0 +1,45 @@
+name: Imagem
+
+# Publica ghcr.io/grupo-pi-6/frontend a cada push na main.
+# Não faz deploy: o deploy é manual, pelo repo infra.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Chave somente leitura do style-guide (privado), usada no `pnpm install` do build.
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.STYLE_GUIDE_DEPLOY_KEY }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/grupo-pi-6/frontend
+          tags: |
+            type=sha,prefix=,format=short
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: prod
+          push: true
+          ssh: default
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
