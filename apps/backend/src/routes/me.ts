@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import { requireAuth, requireRole } from "../auth/guards.js";
+import { listPatientPrescriptions } from "../services/requests.js";
 import {
     addCaregiver,
     getProfile,
@@ -67,6 +68,26 @@ export const meRoutes: FastifyPluginAsync = async (app) => {
         { schema: { body: patchSchema } },
         async (request) => ({
             profile: await updateProfile(app.db, request.user.id, request.body),
+        }),
+    );
+
+    app.get<{ Querystring: { medicationId?: string } }>(
+        "/me/prescriptions",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: { medicationId: { type: "string", format: "uuid" } },
+                },
+            },
+        },
+        async (request) => ({
+            items: await listPatientPrescriptions(
+                app.db,
+                request.user.id,
+                request.query.medicationId,
+            ),
         }),
     );
 

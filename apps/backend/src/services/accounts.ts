@@ -162,6 +162,69 @@ export async function createAccount(
     });
 }
 
+// ---------- perfil de quem entrou (para o topo das telas) ----------
+
+export type MeProfile =
+    | { kind: "patient"; displayName: string; referencePharmacy: { id: string; name: string } }
+    | {
+          kind: "pharmacy_staff";
+          fullName: string;
+          occupation: "pharmacist" | "pharmacy_assistant";
+          pharmacy: { id: string; name: string };
+      }
+    | { kind: "supplier_staff"; fullName: string; supplier: { id: string; name: string } }
+    | { kind: "courier"; fullName: string }
+    | { kind: "manager"; fullName: string };
+
+export async function getSessionProfile(
+    db: DbOrTx,
+    user: { id: string; role: UserRole },
+): Promise<MeProfile> {
+    const unitName = async (id: string) =>
+        (
+            await db.select({ name: pharmacies.name }).from(pharmacies).where(eq(pharmacies.id, id))
+        )[0]?.name ?? "";
+    switch (user.role) {
+        case "patient": {
+            const p = await getPatientByUser(db, user.id);
+            return {
+                kind: "patient",
+                displayName: p.socialName ?? p.fullName,
+                referencePharmacy: {
+                    id: p.referencePharmacyId,
+                    name: await unitName(p.referencePharmacyId),
+                },
+            };
+        }
+        case "pharmacy_staff": {
+            const s = await getStaffByUser(db, user.id);
+            return {
+                kind: "pharmacy_staff",
+                fullName: s.fullName,
+                occupation: s.occupation,
+                pharmacy: { id: s.pharmacyId, name: await unitName(s.pharmacyId) },
+            };
+        }
+        case "supplier_staff": {
+            const s = await getSupplierStaffByUser(db, user.id);
+            const [sup] = await db
+                .select({ name: suppliers.name })
+                .from(suppliers)
+                .where(eq(suppliers.id, s.supplierId));
+            return {
+                kind: "supplier_staff",
+                fullName: s.fullName,
+                supplier: { id: s.supplierId, name: sup?.name ?? "" },
+            };
+        }
+        case "courier":
+            return { kind: "courier", fullName: (await getCourierByUser(db, user.id)).fullName };
+        default:
+            // O gestor não tem cadastro de nome próprio; o topo mostra só o papel.
+            return { kind: "manager", fullName: "Gestão da rede" };
+    }
+}
+
 // ---------- perfis carregados a partir da sessão ----------
 
 export async function getPatientByUser(db: DbOrTx, userId: string) {

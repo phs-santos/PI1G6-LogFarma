@@ -187,7 +187,6 @@ export const DEMO_BATCHES: [
     ["jardim", "losartana", "LOS-2611A", 45, 40],
     ["jardim", "losartana", "LOS-2702B", 400, 120],
     ["vilaNegri", "losartana", "LOS-2612C", 90, 25],
-    ["municipal", "losartana", "LOS-2701D", 200, 300],
     ["centro", "metformina", "MET-2701A", 180, 200],
     ["centro", "dipirona", "DIP-2612A", 30, 80],
     ["centro", "amoxicilina", "AMO-2705A", 220, 60],

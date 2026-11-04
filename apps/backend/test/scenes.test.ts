@@ -77,6 +77,12 @@ describe("demonstração Dona Maria", () => {
         expect(jardim.distanceKm).toBeLessThanOrEqual(1.4);
         expect(jardim.routeUrl).toContain("google.com/maps");
         expect(items.some((i) => i.consultationOnly)).toBe(true);
+        // A mais próxima com o remédio (depois da referência) é a UBS Jardim.
+        const best = items.find(
+            (i) =>
+                i.pharmacyId !== ids.pharmacies.centro && !i.consultationOnly && i.status !== "out",
+        );
+        expect(best?.pharmacyId).toBe(ids.pharmacies.jardim);
     });
 
     it("cena 2: não consigo ir até lá — transferência e entrega em casa", async () => {

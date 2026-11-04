@@ -113,3 +113,31 @@ export async function medicationAvailability(
         return { medication: toMedicationSummary(medication), foundInNetwork, items: result };
     });
 }
+
+export interface NetworkItem {
+    pharmacyId: string;
+    pharmacyName: string;
+    available: number;
+}
+
+/** Onde tem na rede pública (para a dica do balcão): sem a própria unidade, sem zeradas, maior primeiro. */
+export async function networkAvailability(
+    db: Db,
+    excludePharmacyId: string,
+    medicationId: string,
+): Promise<NetworkItem[]> {
+    const units = await db
+        .select()
+        .from(pharmacies)
+        .where(inArray(pharmacies.kind, ["ubs", "municipal_pharmacy", "specialized_pharmacy"]));
+    const today = isoDay();
+    const items: NetworkItem[] = [];
+    for (const unit of units) {
+        if (unit.id === excludePharmacyId) continue;
+        const available = await availableQuantity(db, unit.id, medicationId, today, {
+            lock: false,
+        });
+        if (available > 0) items.push({ pharmacyId: unit.id, pharmacyName: unit.name, available });
+    }
+    return items.sort((a, b) => b.available - a.available);
+}

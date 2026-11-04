@@ -1,7 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import { requireAuth, requireRole } from "../auth/guards.js";
 import { createAccount } from "../services/accounts.js";
-import { expiringStock, unmetDemand } from "../services/reports.js";
+import { expiringStock, managerSummary, unmetDemand } from "../services/reports.js";
 import type { CreateAccountInput } from "../contracts.js";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -43,6 +43,8 @@ export const managerRoutes: FastifyPluginAsync = async (app) => {
             return reply.code(201).send({ user: { id: userId, role: request.body.role } });
         },
     );
+
+    app.get("/manager/summary", async () => managerSummary(app.db));
 
     app.get<{ Querystring: { from?: string; to?: string } }>(
         "/manager/unmet-demand",

@@ -12,6 +12,7 @@ import { eq } from "drizzle-orm";
 import { purchaseOrders, stockBatches } from "../db/schema.js";
 import { purchaseOrderViews, receivePurchaseOrder, waitlistView } from "../services/purchasing.js";
 import { pharmacyDeliveries } from "../services/deliveries.js";
+import { networkAvailability } from "../services/availability.js";
 import { setMinQuantity, unitStock } from "../services/reports.js";
 import { addBatch, adjustBatch } from "../services/stock.js";
 import { NotFoundError } from "../domain/errors.js";
@@ -88,6 +89,30 @@ export const pharmacyRoutes: FastifyPluginAsync = async (app) => {
             const staff = await getStaffByUser(app.db, request.user.id);
             return {
                 transfer: await runTransferAction(app.db, staff, request.params.id, request.body),
+            };
+        },
+    );
+
+    app.get<{ Querystring: { medicationId: string } }>(
+        "/pharmacy/network-availability",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["medicationId"],
+                    properties: { medicationId: { type: "string", format: "uuid" } },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            return {
+                items: await networkAvailability(
+                    app.db,
+                    staff.pharmacyId,
+                    request.query.medicationId,
+                ),
             };
         },
     );

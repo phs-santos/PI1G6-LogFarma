@@ -217,6 +217,60 @@ async function insertPrescription(
     return row!.id;
 }
 
+/**
+ * Receita pode ir para um novo pedido? Precisa estar válida em `today` e, se não for simples de
+ * uso contínuo (antimicrobiano, controle especial, simples comum), não pode já estar em outro pedido.
+ */
+export async function isPrescriptionReusable(
+    tx: DbOrTx,
+    p: typeof prescriptions.$inferSelect,
+    today: string,
+): Promise<boolean> {
+    if (p.validUntil < today) return false;
+    if (p.type === "simple" && p.continuousUse) return true;
+    const used = await tx
+        .select({ id: medicationRequests.id })
+        .from(medicationRequests)
+        .where(
+            and(
+                eq(medicationRequests.prescriptionId, p.id),
+                ne(medicationRequests.status, "cancelled"),
+            ),
+        )
+        .limit(1);
+    return used.length === 0;
+}
+
+export type MyPrescription = PrescriptionView & { medicationId: string; usable: boolean };
+
+/** Receitas da paciente (opcionalmente de um remédio), mais novas primeiro. */
+export async function listPatientPrescriptions(
+    db: DbOrTx,
+    patientId: string,
+    medicationId?: string,
+): Promise<MyPrescription[]> {
+    const rows = await db
+        .select()
+        .from(prescriptions)
+        .where(
+            medicationId
+                ? and(
+                      eq(prescriptions.patientId, patientId),
+                      eq(prescriptions.medicationId, medicationId),
+                  )
+                : eq(prescriptions.patientId, patientId),
+        )
+        .orderBy(desc(prescriptions.issuedAt));
+    const today = isoDay();
+    return Promise.all(
+        rows.map(async (p) => ({
+            ...toPrescriptionView(p),
+            medicationId: p.medicationId,
+            usable: await isPrescriptionReusable(db, p, today),
+        })),
+    );
+}
+
 /** Unidade responsável: farmácia de especializados para alto custo, senão a de referência. */
 async function responsibleUnit(
     tx: DbOrTx,
@@ -257,22 +311,8 @@ export async function createRequest(
             if (!own || own.patientId !== patientId || own.medicationId !== medication.id) {
                 throw new NotFoundError("Receita não encontrada.");
             }
-            // Só receita simples de uso contínuo serve para vários pedidos; as demais (antimicrobiano,
-            // controle especial, simples sem uso contínuo) são retidas e valem para um pedido.
-            if (!(own.type === "simple" && own.continuousUse)) {
-                const used = await tx
-                    .select({ id: medicationRequests.id })
-                    .from(medicationRequests)
-                    .where(
-                        and(
-                            eq(medicationRequests.prescriptionId, own.id),
-                            ne(medicationRequests.status, "cancelled"),
-                        ),
-                    )
-                    .limit(1);
-                if (used.length > 0) {
-                    throw new ConflictError("Esta receita vale para um pedido só e já foi usada.");
-                }
+            if (!(await isPrescriptionReusable(tx, own, isoDay()))) {
+                throw new ConflictError("Esta receita vale para um pedido só e já foi usada.");
             }
             prescriptionId = own.id;
         } else if (input.prescription) {

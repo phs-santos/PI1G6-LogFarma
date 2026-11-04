@@ -8,6 +8,7 @@ import {
     stockBatches,
     stockItems,
     stockReservations,
+    waitlistEntries,
 } from "../db/schema.js";
 import { addDays, isoDay } from "../domain/dates.js";
 import { medicationDisplayName } from "../domain/medication-name.js";
@@ -183,4 +184,33 @@ export async function setMinQuantity(
             target: [stockItems.pharmacyId, stockItems.medicationId],
             set: { minQuantity },
         });
+}
+
+export interface ManagerSummary {
+    unmetSearches7d: number;
+    expiringBatches60d: number;
+    waitingPatients: number;
+}
+
+/** Os três números do painel do gestor. */
+export async function managerSummary(db: DbOrTx, now: Date = new Date()): Promise<ManagerSummary> {
+    const today = isoDay(now);
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const [unmet] = await db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(searchEvents)
+        .where(and(eq(searchEvents.foundInNetwork, false), gte(searchEvents.createdAt, weekAgo)));
+    const [expiring] = await db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(stockBatches)
+        .where(and(gt(stockBatches.quantity, 0), lte(stockBatches.expiryDate, addDays(today, 60))));
+    const [waiting] = await db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(waitlistEntries)
+        .where(eq(waitlistEntries.status, "waiting"));
+    return {
+        unmetSearches7d: unmet?.n ?? 0,
+        expiringBatches60d: expiring?.n ?? 0,
+        waitingPatients: waiting?.n ?? 0,
+    };
 }

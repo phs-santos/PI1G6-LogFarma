@@ -5,7 +5,7 @@ import { requireAuth } from "../auth/guards.js";
 import { verifyPassword } from "../auth/password.js";
 import { clearSessionCookie, setSessionCookie } from "../auth/session.js";
 import { UnauthorizedError } from "../domain/errors.js";
-import { registerPatient } from "../services/accounts.js";
+import { getSessionProfile, registerPatient } from "../services/accounts.js";
 import type { RegisterPatientInput, SessionUser } from "../contracts.js";
 
 const addressSchema = {
@@ -103,7 +103,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
             }
             const user: SessionUser = { id: row.id, role: row.role };
             await setSessionCookie(reply, user);
-            return { user };
+            return { user, profile: await getSessionProfile(app.db, user) };
         },
     );
 
@@ -112,5 +112,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         return { ok: true };
     });
 
-    app.get("/auth/me", { preHandler: requireAuth }, async (request) => ({ user: request.user }));
+    app.get("/auth/me", { preHandler: requireAuth }, async (request) => ({
+        user: request.user,
+        profile: await getSessionProfile(app.db, request.user),
+    }));
 };
