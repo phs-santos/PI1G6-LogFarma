@@ -1,9 +1,9 @@
 /*
- * Entrar: a folha de receituário sobre a mesa azul.
+ * Portas de entrada (Entrar e Criar conta): a folha de receituário sobre a mesa azul.
  * Celular: faixa azul em cima e a folha subindo sobre ela. Computador: a promessa à esquerda,
  * a folha à direita. A pauta da receita aparece bem leve no fundo azul.
  */
-.entrar {
+.porta {
     min-height: 100vh;
     display: grid;
     align-content: start;
@@ -16,28 +16,28 @@
     color: var(--color-on-ink);
 }
 
-.entrar__intro {
+.porta__intro {
     padding: var(--space-8) var(--space-6) var(--space-12);
 }
 
-.entrar__brand {
+.porta__brand {
     margin: 0 0 var(--space-3);
     font-size: var(--font-size-md);
 }
 
-.entrar__tagline {
+.porta__tagline {
     margin: 0;
     opacity: 0.9;
 }
 
 /* No celular a promessa longa e o exemplo ficam só no computador: menos rolagem. */
-.entrar__promise,
-.entrar__lead,
-.entrar__sample {
+.porta__promise,
+.porta__lead,
+.porta__sample {
     display: none;
 }
 
-.entrar__sheet {
+.porta__sheet {
     position: relative;
     margin: calc(-1 * var(--space-8)) var(--space-3) var(--space-6);
     padding: var(--space-6) var(--space-6) var(--space-8);
@@ -49,7 +49,7 @@
 }
 
 /* A tarja da caixa do remédio, na base da folha. */
-.entrar__sheet::after {
+.porta__sheet::after {
     content: "";
     position: absolute;
     inset: auto 0 0;
@@ -58,7 +58,7 @@
 }
 
 /* No celular a faixa azul já tem o nome; o timbre da folha aparece só no computador. */
-.entrar__letterhead {
+.porta__letterhead {
     display: none;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -69,52 +69,52 @@
     font-size: var(--font-size-md);
 }
 
-.entrar__letterhead-logo {
+.porta__letterhead-logo {
     font-size: 0.75rem;
 }
 
-.entrar__letterhead-note {
+.porta__letterhead-note {
     color: var(--color-text-muted);
 }
 
-.entrar__title {
+.porta__title {
     margin: 0 0 var(--space-1);
     font-size: 2rem;
     letter-spacing: -0.01em;
 }
 
-.entrar__hint {
+.porta__hint {
     margin: 0 0 var(--space-6);
     color: var(--color-text-muted);
 }
 
-.entrar__form {
+.porta__form {
     display: grid;
 }
 
-.entrar__reveal {
+.porta__reveal {
     justify-self: start;
     margin: calc(-1 * var(--space-3)) 0 var(--space-4);
     padding-left: 0;
 }
 
-.entrar__footer {
+.porta__footer {
     margin-top: var(--space-6);
     padding-top: var(--space-4);
     border-top: var(--border-thin) solid var(--color-rule);
 }
 
-.entrar__footer p {
+.porta__footer p {
     margin: 0 0 var(--space-2);
 }
 
-.entrar__help {
+.porta__help {
     color: var(--color-text-muted);
     font-size: var(--font-size-md);
 }
 
 @media (min-width: 60rem) {
-    .entrar {
+    .porta {
         grid-template-columns: minmax(0, 1.1fr) minmax(24rem, 30rem);
         align-content: center;
         align-items: center;
@@ -123,15 +123,15 @@
         font-size: var(--font-size-md);
     }
 
-    .entrar__intro {
+    .porta__intro {
         padding: 0;
     }
 
-    .entrar__brand {
+    .porta__brand {
         font-size: var(--font-size-lg);
     }
 
-    .entrar__promise {
+    .porta__promise {
         display: block;
         max-width: 15ch;
         margin: var(--space-12) 0 var(--space-4);
@@ -141,7 +141,7 @@
         color: var(--color-on-ink);
     }
 
-    .entrar__lead {
+    .porta__lead {
         display: block;
         max-width: 34rem;
         margin: 0 0 var(--space-8);
@@ -150,7 +150,7 @@
     }
 
     /* O exemplo: um pedaço da resposta que o app dá, como um recorte de papel. */
-    .entrar__sample {
+    .porta__sample {
         display: grid;
         gap: var(--space-1);
         max-width: 22rem;
@@ -162,27 +162,104 @@
         transform: rotate(-1.5deg);
     }
 
-    .entrar__sample p {
+    .porta__sample p {
         margin: 0;
     }
 
-    .entrar__sample-med {
+    .porta__sample-med {
         font-weight: var(--font-weight-bold);
         color: var(--color-ink);
     }
 
-    .entrar__sample-facts {
+    .porta__sample-facts {
         display: flex;
         align-items: center;
         gap: var(--space-3);
     }
 
-    .entrar__letterhead {
+    .porta__letterhead {
         display: flex;
     }
 
-    .entrar__sheet {
+    .porta__sheet {
         margin: 0;
         padding: var(--space-8) var(--space-8) var(--space-12);
+    }
+}
+
+/* Passos do cadastro (só no computador). */
+.porta__steps {
+    display: none;
+}
+
+@media (min-width: 60rem) {
+    .porta__promise {
+        max-width: 18ch;
+    }
+
+    .porta__steps {
+        display: grid;
+        gap: var(--space-3);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .porta__step {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        opacity: 0.75;
+    }
+
+    .porta__step--current {
+        opacity: 1;
+        font-weight: var(--font-weight-bold);
+    }
+
+    .porta__step--done {
+        opacity: 0.9;
+    }
+
+    .porta__step-n {
+        display: inline-grid;
+        place-items: center;
+        flex: none;
+        width: 2em;
+        height: 2em;
+        border: var(--border-thin) solid var(--color-on-ink);
+        border-radius: 50%;
+        font-weight: var(--font-weight-bold);
+    }
+
+    .porta__step--current .porta__step-n {
+        background: var(--color-paper);
+        color: var(--color-ink);
+    }
+
+    .porta__step--done .porta__step-n {
+        background: var(--color-on-ink);
+        color: var(--color-ink);
+    }
+}
+
+/* Paciente ou equipe, logo abaixo do timbre. */
+.porta__audience {
+    margin-bottom: var(--space-6);
+}
+
+.porta__sample-action {
+    display: inline-block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    font-weight: var(--font-weight-bold);
+}
+
+/* No celular a explicação da equipe aperta os dois botões; ela aparece só no computador. */
+@media (max-width: 59.99rem) {
+    .porta .sg-segmented__hint {
+        display: none;
     }
 }

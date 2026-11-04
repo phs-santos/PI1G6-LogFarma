@@ -108,3 +108,119 @@
 .app-cep-status:empty {
     margin: 0;
 }
+
+/* Títulos recebem foco só para o leitor de tela anunciar a tela ou o passo: sem moldura. */
+h1[tabindex="-1"]:focus,
+h2[tabindex="-1"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ---------- Paciente no computador: topo com menu e a tela numa folha ---------- */
+.app-top {
+    display: none;
+}
+
+@media (min-width: 60rem) {
+    .app-mobile-only {
+        display: none;
+    }
+
+    .app-patient {
+        background: var(--color-ink-soft);
+    }
+
+    .app-top {
+        display: block;
+        background-color: var(--color-ink);
+        background-image: repeating-linear-gradient(
+            to bottom,
+            transparent 0 calc(var(--space-8) - 1px),
+            var(--color-rule-on-ink) calc(var(--space-8) - 1px) var(--space-8)
+        );
+        color: var(--color-on-ink);
+        font-size: var(--font-size-md);
+    }
+
+    .app-top__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-6);
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: var(--space-4) var(--space-6);
+    }
+
+    .app-top__brand {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .app-top__nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+    }
+
+    .app-top__link {
+        display: inline-flex;
+        align-items: center;
+        min-height: var(--tap-min-desktop);
+        padding: 0 var(--space-4);
+        border-radius: var(--radius-md);
+        color: var(--color-on-ink);
+        font-weight: var(--font-weight-bold);
+        text-decoration: none;
+    }
+
+    .app-top__link:hover {
+        text-decoration: underline;
+        text-underline-offset: 0.25em;
+    }
+
+    .app-top__link[aria-current="page"] {
+        background: var(--color-paper);
+        color: var(--color-ink);
+    }
+
+    /* A tela é uma folha branca sobre o fundo azul-claro. */
+    .app-patient .app-mobile__main {
+        max-width: 56rem;
+        margin: var(--space-8) auto var(--space-12);
+        padding: var(--space-8) var(--space-12) var(--space-12);
+        border-radius: var(--radius-md);
+        background: var(--color-paper);
+        box-shadow: var(--shadow-sheet);
+        overflow: hidden;
+    }
+
+    /* A saudação vira o cabeçalho da folha. */
+    .app-patient .app-band {
+        margin: calc(-1 * var(--space-8)) calc(-1 * var(--space-12)) var(--space-8);
+        padding: var(--space-8) var(--space-12);
+    }
+
+    /* Os caminhos do início, dois por linha. */
+    .app-patient .sg-action-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .app-patient .sg-action-list > * {
+        min-height: 5rem;
+    }
+}
+
+/*
+ * Ritmo vertical das telas: cada bloco (quadro, aviso, botões, lista, link) respira o mesmo
+ * tanto do anterior. Só o subtítulo fica perto do título, porque faz parte dele.
+ */
+.app-mobile__main > * + *,
+.app-desktop__main > * + * {
+    margin-top: var(--space-6);
+}
+
+.app-mobile__main > h1 + p,
+.app-desktop__main > h1 + p {
+    margin-top: calc(-1 * var(--space-2));
+}

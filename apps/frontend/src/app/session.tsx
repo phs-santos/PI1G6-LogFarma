@@ -134,7 +134,8 @@ export function SessionRoot() {
             // Primeiro Entrar aparece de fato (flushSync: sem transição adiada); só então a
             // sessão é esquecida. Na ordem inversa a guarda de perfil redirecionaria sozinha,
             // sem o "Sua sessão terminou".
-            const params = new URLSearchParams({ expirou: "1", voltar: here.current });
+            const params = new URLSearchParams({ expirou: "1" });
+            if (here.current !== "/") params.set("voltar", here.current);
             void client.cancelQueries();
             void navigate(`/entrar?${params.toString()}`, { replace: true, flushSync: true });
             client.removeQueries({ predicate: (q) => q.queryKey[0] !== qk.me[0] });

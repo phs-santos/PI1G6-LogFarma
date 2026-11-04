@@ -6,6 +6,7 @@ import type {
     MyPrescription,
     PatientProfile,
     ProfilePatch,
+    RecentMedication,
 } from "./types";
 
 export async function getProfile(): Promise<PatientProfile> {
@@ -37,4 +38,13 @@ export async function addCaregiver(input: CaregiverInput): Promise<CaregiverView
 
 export async function removeCaregiver(id: string): Promise<void> {
     await apiFetch<{ ok: true }>(`/me/caregivers/${id}`, { method: "DELETE" });
+}
+
+/** Últimos remédios que a paciente consultou (só ela vê). */
+export async function listRecentMedications(): Promise<RecentMedication[]> {
+    return (await apiFetch<Items<RecentMedication>>("/me/recent-medications")).items;
+}
+
+export async function clearRecentMedications(): Promise<void> {
+    await apiFetch<{ ok: true }>("/me/recent-medications", { method: "DELETE" });
 }

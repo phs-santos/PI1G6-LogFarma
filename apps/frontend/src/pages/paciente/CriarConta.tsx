@@ -26,6 +26,7 @@ import {
 } from "./AddressFields";
 import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
 import "./paciente.css";
+import "../../app/porta.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
 const TOTAL = 6;
@@ -198,11 +199,41 @@ export function CriarConta() {
     };
 
     return (
-        <div className="sg-mobile app-mobile">
-            <main className="app-mobile__main">
-                <p className="app-logo-top">
-                    <Logo />
+        <div className="sg-mobile porta">
+            <section className="porta__intro" aria-labelledby="cadastro-promessa">
+                <p className="porta__brand">
+                    <Logo tone="white" />
                 </p>
+                <p className="porta__tagline">
+                    Remédios do SUS em Taquaritinga, Matão e Monte Alto
+                </p>
+                <h2 id="cadastro-promessa" className="porta__promise">
+                    Crie sua conta em poucos passos.
+                </h2>
+                <p className="porta__lead">
+                    Leva uns 3 minutos. Tenha em mãos o Cartão SUS e o CEP da sua casa.
+                </p>
+                <ol className="porta__steps" aria-label="Passos do cadastro">
+                    {TITLES.map((title, i) => {
+                        const n = i + 1;
+                        const state = n < step ? "feito" : n === step ? "agora" : "a seguir";
+                        return (
+                            <li
+                                key={title}
+                                className={`porta__step porta__step--${n < step ? "done" : n === step ? "current" : "todo"}`}
+                                aria-current={n === step ? "step" : undefined}
+                            >
+                                <span className="porta__step-n" aria-hidden="true">
+                                    {n}
+                                </span>
+                                {title}
+                                <span className="sg-visually-hidden"> ({state})</span>
+                            </li>
+                        );
+                    })}
+                </ol>
+            </section>
+            <main className="porta__sheet">
                 <h1>Criar conta</h1>
                 <p className="app-lead">
                     Passo {step} de {TOTAL}
@@ -260,7 +291,7 @@ export function CriarConta() {
                     {step === 4 && (
                         <>
                             <SelectField
-                                label="Sua unidade de saúde"
+                                label="Unidade"
                                 hint="A UBS ou farmácia municipal onde você costuma pegar remédio."
                                 value={f.referencePharmacyId}
                                 error={errors.referencePharmacyId}

@@ -196,7 +196,7 @@ describe("revisão 6: conta criada mesmo se a leitura da sessão falha", () => {
         await user.type(screen.getByLabelText("Bairro"), "Centro");
         await user.type(screen.getByLabelText("CEP"), "15900000");
         await user.click(screen.getByRole("button", { name: "Continuar" }));
-        await user.selectOptions(await screen.findByLabelText("Sua unidade de saúde"), "ph-centro");
+        await user.selectOptions(await screen.findByLabelText("Unidade"), "ph-centro");
         await user.click(screen.getByRole("button", { name: "Continuar" }));
         await user.click(screen.getByRole("button", { name: "Continuar" }));
         await user.type(screen.getByLabelText("E-mail"), "maria@exemplo.test");

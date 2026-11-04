@@ -15,8 +15,13 @@ export function RequireRole({ roles, children }: RequireRoleProps) {
     const location = useLocation();
     if (loading) return <Spinner label="Carregando" />;
     if (!user) {
-        const params = new URLSearchParams({ voltar: location.pathname + location.search });
-        return <Navigate to={`/entrar?${params.toString()}`} replace />;
+        // Do início não precisa "voltar": depois de entrar a pessoa já cai lá.
+        const here = location.pathname + location.search;
+        const to =
+            here === "/"
+                ? "/entrar"
+                : `/entrar?${new URLSearchParams({ voltar: here }).toString()}`;
+        return <Navigate to={to} replace />;
     }
     if (!roles.includes(user.role)) return <Navigate to={homeFor(user.role)} replace />;
     return <>{children}</>;

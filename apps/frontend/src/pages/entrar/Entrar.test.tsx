@@ -46,3 +46,34 @@ describe("Entrar", () => {
         await expectNoAxeViolations(container);
     });
 });
+
+describe("Entrar — paciente ou equipe", () => {
+    it("começa em paciente, com Criar conta", async () => {
+        mockApi();
+        renderApp({ route: "/entrar" });
+        expect(await screen.findByRole("radio", { name: "Sou paciente" })).toBeChecked();
+        expect(screen.getByRole("heading", { level: 1, name: "Entrar" })).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Criar conta" })).toBeInTheDocument();
+    });
+
+    it("Sou da equipe muda o texto, esconde Criar conta e guarda no endereço", async () => {
+        mockApi();
+        const { router, container } = renderApp({ route: "/entrar?voltar=%2Fpedidos%2F123" });
+        await userEvent.setup().click(await screen.findByRole("radio", { name: /Sou da equipe/ }));
+        expect(
+            screen.getByRole("heading", { level: 1, name: "Entrar na área da equipe" }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText("Use o e-mail e a senha que o gestor da rede criou para você."),
+        ).toBeInTheDocument();
+        expect(screen.queryByRole("link", { name: "Criar conta" })).not.toBeInTheDocument();
+        expect(router.state.location.search).toBe("?voltar=%2Fpedidos%2F123&perfil=equipe");
+        await expectNoAxeViolations(container);
+    });
+
+    it("o link ?perfil=equipe já abre na área da equipe", async () => {
+        mockApi();
+        renderApp({ route: "/entrar?perfil=equipe" });
+        expect(await screen.findByRole("radio", { name: /Sou da equipe/ })).toBeChecked();
+    });
+});

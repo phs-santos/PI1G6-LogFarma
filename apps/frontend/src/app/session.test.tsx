@@ -44,6 +44,13 @@ describe("sessão", () => {
         await waitFor(() => expect(router.state.location.pathname).toBe("/entregas"));
     });
 
+    it("quem não entrou e abre o início vai para Entrar sem ?voltar", async () => {
+        mockApi();
+        const { router } = renderApp({ route: "/" });
+        await waitFor(() => expect(router.state.location.pathname).toBe("/entrar"));
+        expect(router.state.location.search).toBe("");
+    });
+
     it("quem não entrou e abre uma tela vai para Entrar com o caminho de volta", async () => {
         mockApi();
         const { router } = renderApp({ route: "/avisos" });

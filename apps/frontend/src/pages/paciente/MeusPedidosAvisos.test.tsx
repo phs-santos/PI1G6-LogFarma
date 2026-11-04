@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderApp, sessions } from "../../../test/render";
 import { mockApi } from "../../../test/mockApi";
@@ -27,7 +27,9 @@ describe("Meus pedidos", () => {
         mockApi({ "GET /api/requests": { body: { items: [] } } });
         renderApp({ route: "/pedidos", session: sessions.maria });
         expect(await screen.findByText("Você ainda não fez nenhum pedido.")).toBeInTheDocument();
-        expect(screen.getByRole("link", { name: "Procurar remédio" })).toBeInTheDocument();
+        expect(
+            within(screen.getByRole("main")).getByRole("link", { name: "Procurar remédio" }),
+        ).toBeInTheDocument();
     });
 });
 

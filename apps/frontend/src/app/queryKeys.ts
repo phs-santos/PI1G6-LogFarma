@@ -10,6 +10,7 @@ export const qk = {
     me: ["me"] as const,
     profile: ["profile"] as const,
     caregivers: ["caregivers"] as const,
+    recentMedications: ["recent-medications"] as const,
     prescriptions: (medicationId?: string) => ["prescriptions", medicationId ?? "all"] as const,
     notifications: (unread?: boolean) => ["notifications", unread ? "unread" : "all"] as const,
     requests: ["requests"] as const,

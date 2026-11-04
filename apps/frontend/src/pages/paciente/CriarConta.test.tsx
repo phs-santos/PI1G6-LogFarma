@@ -35,7 +35,7 @@ async function fillUntilLocation(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole("button", { name: "Continuar" }));
 
     expect(screen.getByText("Passo 4 de 6")).toBeInTheDocument();
-    await user.selectOptions(await screen.findByLabelText("Sua unidade de saúde"), "ph-centro");
+    await user.selectOptions(await screen.findByLabelText("Unidade"), "ph-centro");
 }
 
 async function finish(user: ReturnType<typeof userEvent.setup>) {

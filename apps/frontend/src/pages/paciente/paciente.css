@@ -6,7 +6,7 @@
 .app-unit {
     position: relative;
     display: grid;
-    gap: var(--space-1);
+    gap: var(--space-3);
     margin: var(--space-4) 0;
     padding: var(--space-4);
     border: var(--border-thin) solid var(--color-text);
@@ -143,6 +143,118 @@
     margin-top: var(--space-6);
 }
 
-h2[tabindex="-1"]:focus {
-    outline: none;
+.app-search__status {
+    margin: var(--space-3) 0 0;
+    color: var(--color-text-muted);
+}
+
+.app-search__status:empty {
+    margin: 0;
+}
+
+.app-quick__title {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-lg);
+}
+
+.app-quick__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+/* ---------- Início ---------- */
+.app-home-search__label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-weight: var(--font-weight-bold);
+    font-size: 1.1em;
+    color: var(--color-ink);
+}
+
+.app-home-search__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.app-home-search__input {
+    flex: 1 1 14rem;
+    border-width: var(--border-thick);
+    border-color: var(--color-ink);
+}
+
+.app-home-grid {
+    display: grid;
+    gap: var(--space-6);
+}
+
+.app-home-card {
+    padding: var(--space-6);
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+}
+
+.app-home-card h2 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-size-lg);
+}
+
+.app-home-card--tips {
+    border-left: var(--space-2) solid var(--color-ok);
+    background: var(--color-ok-soft);
+}
+
+.app-home-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.app-home-list > li {
+    display: grid;
+    gap: var(--space-1);
+}
+
+.app-home-more {
+    display: inline-block;
+    margin-top: var(--space-4);
+}
+
+.app-chips {
+    list-style: none;
+    margin: 0 0 var(--space-3);
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.app-chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min-desktop);
+    padding: var(--space-2) var(--space-4);
+    border: var(--border-thin) solid var(--color-ink);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+}
+
+.app-chip:hover {
+    background: var(--color-ink-soft);
+}
+
+@media (min-width: 60rem) {
+    .app-home-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Nas dicas o item é uma frase corrida (o link fica dentro dela). */
+.app-home-card--tips .app-home-list > li {
+    display: block;
 }

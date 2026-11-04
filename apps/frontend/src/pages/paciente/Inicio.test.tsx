@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { renderApp, sessions } from "../../../test/render";
 import { mockApi } from "../../../test/mockApi";
 import { notification } from "../../../test/fixtures";
@@ -31,12 +31,9 @@ describe("Início", () => {
         expect(await screen.findByText("Seu remédio chegou")).toBeInTheDocument();
         expect(screen.getByText("A losartana já está na UBS Centro.")).toBeInTheDocument();
         expect(screen.queryByText("Pedido recebido")).not.toBeInTheDocument();
-        expect(screen.getByRole("link", { name: "Avisos (2)" })).toHaveAttribute("href", "/avisos");
-        expect(screen.getByRole("link", { name: "Procurar remédio" })).toHaveAttribute(
-            "href",
-            "/buscar",
-        );
-        expect(screen.getByRole("link", { name: "Meus pedidos" })).toHaveAttribute(
+        const acoes = within(screen.getByRole("navigation", { name: "O que você quer fazer" }));
+        expect(acoes.getByRole("link", { name: "Avisos (2)" })).toHaveAttribute("href", "/avisos");
+        expect(acoes.getByRole("link", { name: "Meus pedidos" })).toHaveAttribute(
             "href",
             "/pedidos",
         );
@@ -46,7 +43,10 @@ describe("Início", () => {
     it("sem aviso novo: nada em destaque e só “Avisos”", async () => {
         const api = mockApi({ "GET /api/notifications": { body: { items: [] } } });
         renderApp({ route: "/", session: sessions.maria });
-        await screen.findByRole("link", { name: "Avisos" });
+        await within(screen.getByRole("navigation", { name: "O que você quer fazer" })).findByRole(
+            "link",
+            { name: "Avisos" },
+        );
         expect(api.calls.some((c) => c.path === "/api/notifications")).toBe(true);
         expect(screen.getByRole("status")).toBeEmptyDOMElement();
     });

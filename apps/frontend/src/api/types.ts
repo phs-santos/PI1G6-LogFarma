@@ -414,3 +414,8 @@ export interface ManagerSummary {
 export interface Items<T> {
     items: T[];
 }
+
+export interface RecentMedication {
+    medication: MedicationSummary;
+    viewedAt: string;
+}

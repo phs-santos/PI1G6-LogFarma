@@ -29,8 +29,10 @@ test("Cena 1: Dona Maria descobre onde tem losartana", async ({ browser }) => {
     const maria = await loginAs(browser, "maria@demo.logfarma", { mobile: true });
     await expect(maria.getByRole("heading", { level: 1, name: "Olá, Maria" })).toBeVisible();
     await expectNoAxe(maria);
-    await maria.getByRole("link", { name: "Procurar remédio" }).click();
-    await searchAndOpen(maria, "losartana", /Losartana/);
+    // A busca fica no próprio Início.
+    await maria.getByRole("searchbox", { name: "Qual remédio você precisa?" }).fill("losartana");
+    await maria.getByRole("button", { name: "Procurar" }).click();
+    await maria.getByRole("option", { name: /Losartana/ }).click();
     await expect(maria.getByText("A UBS Centro está sem")).toBeVisible();
     await expect(maria.getByText("Tem na UBS Jardim São Sebastião")).toBeVisible();
     await expect(maria.getByText(/A [\d,]+ km de você/).first()).toBeVisible();
