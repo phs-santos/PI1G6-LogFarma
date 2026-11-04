@@ -14,6 +14,7 @@ import { pharmacyRoutes } from "./routes/pharmacy.js";
 import { supplierRoutes } from "./routes/supplier.js";
 import { courierRoutes } from "./routes/courier.js";
 import { meRoutes } from "./routes/me.js";
+import { managerRoutes } from "./routes/manager.js";
 
 export interface AppDeps {
     db: Db;
@@ -64,6 +65,7 @@ export function buildApp(deps: AppDeps) {
     app.register(supplierRoutes, { prefix: "/api" });
     app.register(courierRoutes, { prefix: "/api" });
     app.register(meRoutes, { prefix: "/api" });
+    app.register(managerRoutes, { prefix: "/api" });
 
     return app;
 }

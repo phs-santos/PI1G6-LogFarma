@@ -268,3 +268,13 @@ export async function createSupplierStaff(supplierId: string, email = "fornecedo
     });
     return { id: userId, email };
 }
+
+export async function createManager(email = "gestor@example.com") {
+    const { userId } = await createAccount(testDb, {
+        role: "manager",
+        email,
+        password: "senha-forte-1",
+        fullName: "Gestora Lúcia",
+    });
+    return { id: userId, email };
+}

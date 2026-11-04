@@ -9,9 +9,12 @@ import type { RequestStatus } from "../domain/request-status.js";
 import "../services/transfers.js";
 import "../services/purchasing-actions.js";
 import { eq } from "drizzle-orm";
-import { purchaseOrders } from "../db/schema.js";
+import { purchaseOrders, stockBatches } from "../db/schema.js";
 import { purchaseOrderViews, receivePurchaseOrder, waitlistView } from "../services/purchasing.js";
 import { pharmacyDeliveries } from "../services/deliveries.js";
+import { setMinQuantity, unitStock } from "../services/reports.js";
+import { addBatch, adjustBatch } from "../services/stock.js";
+import { NotFoundError } from "../domain/errors.js";
 import { listTransfers, runTransferAction, type TransferAction } from "../services/transfers.js";
 
 export const idParams = {
@@ -86,6 +89,126 @@ export const pharmacyRoutes: FastifyPluginAsync = async (app) => {
             return {
                 transfer: await runTransferAction(app.db, staff, request.params.id, request.body),
             };
+        },
+    );
+
+    app.get("/pharmacy/stock", async (request) => {
+        const staff = await getStaffByUser(app.db, request.user.id);
+        return { items: await unitStock(app.db, staff.pharmacyId) };
+    });
+
+    app.patch<{ Params: { medicationId: string }; Body: { minQuantity: number } }>(
+        "/pharmacy/stock/:medicationId",
+        {
+            schema: {
+                params: {
+                    type: "object",
+                    required: ["medicationId"],
+                    properties: { medicationId: { type: "string", format: "uuid" } },
+                },
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["minQuantity"],
+                    properties: { minQuantity: { type: "integer", minimum: 0, maximum: 100000 } },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            await setMinQuantity(
+                app.db,
+                staff.pharmacyId,
+                request.params.medicationId,
+                request.body.minQuantity,
+            );
+            return { ok: true };
+        },
+    );
+
+    app.post<{
+        Body: {
+            medicationId: string;
+            batchNumber: string;
+            expiryDate: string;
+            quantity: number;
+            manufacturerCnpj?: string;
+            anvisaRegistration?: string;
+        };
+    }>(
+        "/pharmacy/stock/batches",
+        {
+            schema: {
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["medicationId", "batchNumber", "expiryDate", "quantity"],
+                    properties: {
+                        medicationId: { type: "string", format: "uuid" },
+                        batchNumber: { type: "string", minLength: 1, maxLength: 40 },
+                        expiryDate: { type: "string", format: "date" },
+                        quantity: { type: "integer", minimum: 1, maximum: 100000 },
+                        manufacturerCnpj: { type: "string", pattern: "^\\d{14}$" },
+                        anvisaRegistration: { type: "string", minLength: 1, maxLength: 20 },
+                    },
+                },
+            },
+        },
+        async (request, reply) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            const batchId = await app.db.transaction((tx) =>
+                addBatch(tx, {
+                    ...request.body,
+                    pharmacyId: staff.pharmacyId,
+                    movementType: "adjustment",
+                    staffUserId: staff.userId,
+                }),
+            );
+            return reply.code(201).send({ batchId });
+        },
+    );
+
+    app.post<{
+        Params: { id: string };
+        Body: { delta: number; reason: "exit_loss" | "adjustment" };
+    }>(
+        "/pharmacy/stock/batches/:id/adjust",
+        {
+            schema: {
+                params: idParams,
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["delta", "reason"],
+                    properties: {
+                        delta: {
+                            type: "integer",
+                            minimum: -100000,
+                            maximum: 100000,
+                            not: { const: 0 },
+                        },
+                        reason: { type: "string", enum: ["exit_loss", "adjustment"] },
+                    },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            await app.db.transaction(async (tx) => {
+                const [batch] = await tx
+                    .select()
+                    .from(stockBatches)
+                    .where(eq(stockBatches.id, request.params.id));
+                if (!batch || batch.pharmacyId !== staff.pharmacyId)
+                    throw new NotFoundError("Lote não encontrado.");
+                await adjustBatch(tx, {
+                    batchId: batch.id,
+                    delta: request.body.delta,
+                    reason: request.body.reason,
+                    staffUserId: staff.userId,
+                });
+            });
+            return { ok: true };
         },
     );
 
