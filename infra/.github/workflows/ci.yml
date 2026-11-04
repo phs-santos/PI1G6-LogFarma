@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Valida os composes
+        run: |
+          docker compose -f compose.prod.yaml --env-file .env.prod.example config -q
+          mkdir -p ../backend ../frontend
+          docker compose config -q
+      - name: Verifica os scripts
+        run: shellcheck scripts/*.sh
