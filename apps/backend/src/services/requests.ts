@@ -36,6 +36,8 @@ export interface CreateRequestInput {
     quantity: number;
     fulfillment: "pickup" | "delivery";
     prescription?: PrescriptionInput;
+    /** Receita já cadastrada da própria paciente, para o mesmo medicamento. */
+    prescriptionId?: string;
 }
 
 export interface PrescriptionView {
@@ -246,9 +248,24 @@ export async function createRequest(
             .where(eq(medications.id, input.medicationId));
         if (!medication) throw new NotFoundError("Medicamento não encontrado.");
         const pharmacyId = await responsibleUnit(tx, medication, patient);
-        const prescriptionId = input.prescription
-            ? await insertPrescription(tx, patientId, medication, input.prescription)
-            : null;
+        let prescriptionId: string | null = null;
+        if (input.prescriptionId) {
+            const [own] = await tx
+                .select()
+                .from(prescriptions)
+                .where(eq(prescriptions.id, input.prescriptionId));
+            if (!own || own.patientId !== patientId || own.medicationId !== medication.id) {
+                throw new NotFoundError("Receita não encontrada.");
+            }
+            prescriptionId = own.id;
+        } else if (input.prescription) {
+            prescriptionId = await insertPrescription(
+                tx,
+                patientId,
+                medication,
+                input.prescription,
+            );
+        }
         const [row] = await tx
             .insert(medicationRequests)
             .values({

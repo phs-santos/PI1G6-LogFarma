@@ -227,6 +227,52 @@ describe("pedido do paciente", () => {
         expect(res.statusCode).toBe(409);
     });
 
+    it("pedido pode usar receita já cadastrada da paciente; receita de outra pessoa responde 404", async () => {
+        const app = buildTestApp();
+        const { centro, losartana } = await base();
+        const cookie = await loginAs(app, "maria@example.com");
+        const first = await app.inject({
+            method: "POST",
+            url: "/api/requests",
+            headers: { cookie },
+            payload: {
+                medicationId: losartana.id,
+                quantity: 30,
+                fulfillment: "pickup",
+                prescription: prescriptionPayload,
+            },
+        });
+        const prescriptionId = first.json().request.prescription.id as string;
+        const reuse = await app.inject({
+            method: "POST",
+            url: "/api/requests",
+            headers: { cookie },
+            payload: {
+                medicationId: losartana.id,
+                quantity: 30,
+                fulfillment: "pickup",
+                prescriptionId,
+            },
+        });
+        expect(reuse.statusCode).toBe(201);
+        expect(reuse.json().request.prescription.id).toBe(prescriptionId);
+
+        await createPatient(centro.id, { email: "joao@example.com" });
+        const joao = await loginAs(app, "joao@example.com");
+        const steal = await app.inject({
+            method: "POST",
+            url: "/api/requests",
+            headers: { cookie: joao },
+            payload: {
+                medicationId: losartana.id,
+                quantity: 30,
+                fulfillment: "pickup",
+                prescriptionId,
+            },
+        });
+        expect(steal.statusCode).toBe(404);
+    });
+
     it("paciente pode informar a receita depois de criar o pedido", async () => {
         const app = buildTestApp();
         const { losartana } = await base();

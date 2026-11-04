@@ -113,15 +113,13 @@ describe("gestor e estoque da unidade", () => {
             expiryDate: addDays(today, 300),
             quantity: 15,
         });
-        await testDb
-            .insert(stockBatches)
-            .values({
-                pharmacyId: ubs.id,
-                medicationId: med.id,
-                batchNumber: "ZERADO",
-                expiryDate: addDays(today, 10),
-                quantity: 0,
-            });
+        await testDb.insert(stockBatches).values({
+            pharmacyId: ubs.id,
+            medicationId: med.id,
+            batchNumber: "ZERADO",
+            expiryDate: addDays(today, 10),
+            quantity: 0,
+        });
         const gestor = await createManager();
         const cookie = await loginAs(app, gestor.email);
         const res = await app.inject({

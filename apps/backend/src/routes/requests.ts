@@ -50,11 +50,13 @@ export const requestRoutes: FastifyPluginAsync = async (app) => {
                     type: "object",
                     additionalProperties: false,
                     required: ["medicationId", "quantity", "fulfillment"],
+                    not: { required: ["prescription", "prescriptionId"] },
                     properties: {
                         medicationId: { type: "string", format: "uuid" },
                         quantity: { type: "integer", minimum: 1, maximum: 100 },
                         fulfillment: { type: "string", enum: ["pickup", "delivery"] },
                         prescription: prescriptionSchema,
+                        prescriptionId: { type: "string", format: "uuid" },
                     },
                 },
             },
