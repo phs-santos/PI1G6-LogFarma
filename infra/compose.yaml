@@ -1,6 +1,7 @@
 # Ambiente de desenvolvimento: banco + backend + frontend com hot reload.
 # Tudo vem deste monorepo (apps/backend, apps/frontend, packages/style-guide).
-# Uso (na raiz):  pnpm docker:dev   ou   docker compose -f infra/compose.yaml up --build
+# Uso (na raiz):  pnpm docker:dev   ou   docker compose --env-file .env -f infra/compose.yaml up --build
+# As variáveis ${...} vêm do .env da raiz (opcional: sem ele valem os padrões abaixo).
 
 name: pi-dev
 

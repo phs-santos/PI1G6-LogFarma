@@ -63,3 +63,4 @@ Aqui fica registrado **tudo que foi feito** no monorepo: o que mudou, por que, o
 | 2026-11-04 | [Telas implementadas](2026-11-04-frontend.md)                                                  |
 | 2026-11-04 | [Logo do LogFarma](2026-11-04-logo.md)                                                         |
 | 2026-11-04 | [Publicação na VPS, catálogo, logo e cadastro mais fácil](2026-11-04-publicacao-e-catalogo.md) |
+| 2026-11-04 | [Um `.env` só para o desenvolvimento](2026-11-04-env-unico.md)                                 |

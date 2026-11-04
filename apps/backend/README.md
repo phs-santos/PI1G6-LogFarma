@@ -10,7 +10,7 @@ Requisitos: Node 24, pnpm 10 (`corepack enable`) e Docker (para o PostgreSQL). R
 
 ```bash
 docker compose -f ../../infra/compose.yaml up -d db   # PostgreSQL local
-cp .env.example .env
+../../infra/scripts/setup-dev.sh   # cria o .env único na raiz do monorepo
 pnpm db:seed      # cria as tabelas e carrega a demonstração (apaga o banco de dev)
 pnpm dev          # http://localhost:3333 — as migrações rodam ao iniciar
 curl localhost:3333/api/health   # {"status":"ok"}
@@ -20,7 +20,7 @@ curl localhost:3333/api/health   # {"status":"ok"}
 
 | Comando            | O que faz                                                               |
 | ------------------ | ----------------------------------------------------------------------- |
-| `pnpm dev`         | API em modo watch (`tsx`), lendo o `.env`                               |
+| `pnpm dev`         | API em modo watch (`tsx`), lendo o `.env` da raiz                       |
 | `pnpm test`        | Testes (Vitest) num banco `pi_test` criado automaticamente              |
 | `pnpm typecheck`   | Tipos do código e dos testes                                            |
 | `pnpm build`       | Compila para `dist/`                                                    |
@@ -47,7 +47,7 @@ curl localhost:3333/api/health   # {"status":"ok"}
 | `PRESCRIPTION_DAYS_ANTIMICROBIAL`     | `10`                    | Antimicrobiano                                                     |
 | `PRESCRIPTION_DAYS_SPECIAL_CONTROL`   | `30`                    | Controle especial                                                  |
 
-Toda variável nova entra em `src/env.ts` **e** em `.env.example`.
+Toda variável nova entra em `src/env.ts` **e** no [`.env.example`](../../.env.example) da raiz do monorepo.
 
 ## Estrutura
 

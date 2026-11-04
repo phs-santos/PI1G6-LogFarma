@@ -11,7 +11,7 @@
         "storybook": "pnpm --filter @fatec-pi/style-guide storybook",
         "typecheck": "pnpm -r typecheck",
         "build": "pnpm -r build",
-        "docker:dev": "docker compose -f infra/compose.yaml up --build",
+        "docker:dev": "docker compose $([ -f .env ] && echo --env-file .env) -f infra/compose.yaml up --build",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test": "pnpm -r test"

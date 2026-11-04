@@ -6,7 +6,7 @@ Docker Compose e scripts de deploy do monorepo PI1G6-LogFarma — projeto **Loca
 | ----------------------- | ----------------------------------------------------------------------- |
 | `compose.yaml`          | Desenvolvimento: PostgreSQL + backend + frontend com hot reload         |
 | `compose.prod.yaml`     | Produção na VPS: usa as imagens publicadas no GitHub Container Registry |
-| `scripts/setup-dev.sh`  | Cria os `.env` locais a partir dos exemplos                             |
+| `scripts/setup-dev.sh`  | Cria o `.env` único da raiz a partir do `.env.example`                  |
 | `scripts/deploy.sh`     | Sobe ou atualiza a produção na VPS (também usado pelo botão de deploy)  |
 | `scripts/backup-db.sh`  | Dump do banco de produção, com cópia local em `backups/`                |
 | `scripts/restore-db.sh` | Restaura um dump no banco de desenvolvimento                            |
@@ -16,8 +16,8 @@ Docker Compose e scripts de deploy do monorepo PI1G6-LogFarma — projeto **Loca
 Requisitos: Docker (Desktop ou Engine com Compose v2). Na **raiz do monorepo**:
 
 ```bash
-./infra/scripts/setup-dev.sh   # cria os .env
-pnpm docker:dev                # = docker compose -f infra/compose.yaml up --build
+./infra/scripts/setup-dev.sh   # cria o .env da raiz (opcional: sem ele valem os padrões)
+pnpm docker:dev                # = docker compose --env-file .env -f infra/compose.yaml up --build
 ```
 
 | Serviço            | Endereço                                                                  |

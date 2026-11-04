@@ -29,7 +29,7 @@ Requisitos: Node 24 e pnpm 10 (`corepack enable`). Para o ambiente completo com 
 
 ```bash
 pnpm install
-./infra/scripts/setup-dev.sh   # cria os .env locais
+./infra/scripts/setup-dev.sh   # cria o .env (um só, na raiz)
 pnpm dev                       # backend (3333) + frontend (5173)
 ```
 

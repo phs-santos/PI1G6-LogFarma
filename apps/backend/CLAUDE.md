@@ -6,7 +6,7 @@ API do sistema (`@fatec-pi/backend`). Fastify 5 + TypeScript em ESM (`module: No
 
 ```bash
 pnpm install
-cp .env.example .env
+../../infra/scripts/setup-dev.sh   # cria o .env único na raiz do monorepo
 pnpm dev          # http://localhost:3333 — teste com: curl localhost:3333/api/health
 pnpm typecheck    # obrigatório antes de considerar pronto
 pnpm test         # obrigatório: testes com banco real (docker compose -f ../../infra/compose.yaml up -d db)
@@ -19,7 +19,7 @@ pnpm build
 
 - `src/server.ts` — sobe o servidor (não colocar lógica aqui)
 - `src/app.ts` — `buildApp()`: registra plugins e rotas
-- `src/env.ts` — leitura de variáveis de ambiente; toda nova variável entra aqui **e** em `.env.example`
+- `src/env.ts` — leitura de variáveis de ambiente; toda nova variável entra aqui **e** no `.env.example` da raiz do monorepo
 - `src/routes/<recurso>.ts` — um `FastifyPluginAsync` por recurso, registrado em `app.ts` com `{ prefix: "/api" }`
 - `src/services/<recurso>.ts` — regra de negócio com banco (estoque, pedidos, transferência, compra, entrega, painéis)
 - `src/domain/` — regras puras e erros; `src/auth/` — senha, sessão e guardas; `src/db/` — esquema, migração e seed; `src/contracts.ts` — tipos públicos

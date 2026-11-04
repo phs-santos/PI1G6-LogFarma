@@ -1,9 +1,11 @@
-// Leitura das variáveis de ambiente. Toda variável nova entra aqui e em .env.example.
+// Leitura das variáveis de ambiente. Toda variável nova entra aqui e no .env.example da raiz do monorepo.
 
 function required(name: string): string {
     const value = process.env[name];
     if (!value) {
-        throw new Error(`Variável de ambiente ${name} não definida (veja .env.example).`);
+        throw new Error(
+            `Variável de ambiente ${name} não definida (veja o .env.example da raiz do monorepo).`,
+        );
     }
     return value;
 }
