@@ -11,6 +11,7 @@ import "../services/purchasing-actions.js";
 import { eq } from "drizzle-orm";
 import { purchaseOrders } from "../db/schema.js";
 import { purchaseOrderViews, receivePurchaseOrder, waitlistView } from "../services/purchasing.js";
+import { pharmacyDeliveries } from "../services/deliveries.js";
 import { listTransfers, runTransferAction, type TransferAction } from "../services/transfers.js";
 
 export const idParams = {
@@ -87,6 +88,11 @@ export const pharmacyRoutes: FastifyPluginAsync = async (app) => {
             };
         },
     );
+
+    app.get("/pharmacy/deliveries", async (request) => {
+        const staff = await getStaffByUser(app.db, request.user.id);
+        return { items: await pharmacyDeliveries(app.db, staff.pharmacyId) };
+    });
 
     app.get("/pharmacy/purchase-orders", async (request) => {
         const staff = await getStaffByUser(app.db, request.user.id);
