@@ -22,3 +22,11 @@
 .sg-app-header__actions .sg-button--secondary {
     border-color: var(--color-on-ink);
 }
+
+.sg-app-header__brand {
+    padding-right: var(--space-2);
+}
+
+.sg-app-header__main {
+    flex: 1;
+}

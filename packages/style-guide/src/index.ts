@@ -33,3 +33,5 @@ export { ChoiceGroup, ChoiceOption } from "./components/ChoiceGroup/ChoiceGroup"
 export type { ChoiceGroupProps, ChoiceOptionProps } from "./components/ChoiceGroup/ChoiceGroup";
 export { ConfirmDialog } from "./components/ConfirmDialog/ConfirmDialog";
 export type { ConfirmDialogProps } from "./components/ConfirmDialog/ConfirmDialog";
+export { Logo, LogoSymbol, LOGO_PATHS } from "./components/Logo/Logo";
+export type { LogoProps, LogoSymbolProps } from "./components/Logo/Logo";

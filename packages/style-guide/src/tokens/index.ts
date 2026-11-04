@@ -17,6 +17,7 @@ export const tokens = {
         attentionBorder: "#8A6100",
         onInk: "#FFFFFF",
         backdrop: "rgb(0 0 0 / 0.55)",
+        ruleOnInk: "rgb(255 255 255 / 0.07)",
     },
     font: {
         family: '"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif',
@@ -35,4 +36,5 @@ export const tokens = {
     },
     tap: { mobile: "3.5rem", desktop: "2.75rem" },
     radius: { sm: "4px", md: "8px" },
+    shadow: { sheet: "0 0.75rem 2rem rgb(0 0 0 / 0.18)" },
 } as const;

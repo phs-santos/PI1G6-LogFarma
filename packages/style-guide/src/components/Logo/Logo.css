@@ -1,0 +1,63 @@
+.sg-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    line-height: 1;
+}
+
+.sg-logo__symbol {
+    flex: none;
+    width: 2.2em;
+    height: 2.2em;
+}
+
+.sg-logo__pin {
+    fill: var(--color-ink);
+}
+
+.sg-logo__mark {
+    fill: var(--color-paper);
+    stroke: var(--color-paper);
+    stroke-width: 0;
+}
+
+.sg-logo__mark .sg-logo__snake {
+    fill: none;
+    stroke-width: 2.4;
+}
+
+.sg-logo__word {
+    position: relative;
+    padding-bottom: 0.32em;
+    font-size: 1.5em;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+}
+
+/* A tarja da caixa do remédio, debaixo do nome. */
+.sg-logo__word::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 0.14em;
+    background: var(--color-tarja-red);
+}
+
+/* Sobre a faixa azul: alfinete branco com a taça em azul; nome em branco. */
+.sg-logo--white .sg-logo__pin {
+    fill: var(--color-paper);
+}
+
+.sg-logo--white .sg-logo__mark {
+    fill: var(--color-ink);
+    stroke: var(--color-ink);
+}
+
+.sg-logo--white .sg-logo__word {
+    color: var(--color-on-ink);
+}
+
+.sg-logo--white .sg-logo__word::after {
+    background: var(--color-on-ink);
+}

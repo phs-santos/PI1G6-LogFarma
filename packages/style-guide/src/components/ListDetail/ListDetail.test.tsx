@@ -27,3 +27,11 @@ describe("ListDetail e AppHeader", () => {
         await expectNoAxeViolations(container);
     });
 });
+
+describe("AppHeader com marca", () => {
+    it("mostra a marca antes do título, dentro do banner", () => {
+        render(<AppHeader title="UBS Centro" brand={<span>Marca</span>} />);
+        const banner = screen.getByRole("banner");
+        expect(banner).toHaveTextContent(/^Marca.*UBS Centro/);
+    });
+});
