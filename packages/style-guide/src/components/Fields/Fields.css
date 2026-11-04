@@ -65,3 +65,14 @@
 .sg-checkbox label {
     cursor: pointer;
 }
+
+/* O campo ocupa a coluna e pode encolher: com letra grande no celular não empurra a tela. */
+.sg-field {
+    min-width: 0;
+}
+
+.sg-field__control {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+}

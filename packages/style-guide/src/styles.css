@@ -37,6 +37,8 @@ body {
 /* Telas de celular (paciente e entregador): base maior. */
 .sg-mobile {
     font-size: var(--font-size-lg);
+    /* Com a letra aumentada, palavra longa (e-mail, "consentimento") quebra em vez de empurrar a tela. */
+    overflow-wrap: anywhere;
 }
 
 h1,

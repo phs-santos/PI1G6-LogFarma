@@ -52,7 +52,8 @@ export function ConfirmarPedido() {
     );
     const fulfillment: Fulfillment =
         fulfillmentChoice ?? (profile.data?.mobilityLimited ? "delivery" : "pickup");
-    const [quantity, setQuantity] = useState("30");
+    // null = ainda não mexeu: usa o padrão da forma do remédio (abaixo).
+    const [quantityInput, setQuantity] = useState<string | null>(null);
     const [rxChoice, setRxChoice] = useState<RxChoice | null>(null);
     const [rx, setRx] = useState<PrescriptionInput>(EMPTY_PRESCRIPTION);
     const [formError, setFormError] = useState("");
@@ -79,6 +80,13 @@ export function ConfirmarPedido() {
         <Loaded query={availability} what="o remédio">
             {({ medication }) => {
                 const needsRx = medication.prescriptionType !== "none";
+                // Comprimido e cápsula: 30 (um mês de uso contínuo). Seringa, frasco, bombinha: 1.
+                const quantity =
+                    quantityInput ??
+                    (medication.pharmaceuticalForm === "tablet" ||
+                    medication.pharmaceuticalForm === "capsule"
+                        ? "30"
+                        : "1");
                 const onSubmit = (e: FormEvent) => {
                     e.preventDefault();
                     const qty = Number(quantity);

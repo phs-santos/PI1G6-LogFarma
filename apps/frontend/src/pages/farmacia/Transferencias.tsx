@@ -28,14 +28,16 @@ function statusText(t: TransferView): string {
 /** RF07: transferências entre unidades. */
 export function Transferencias() {
     usePageTitle("Transferências");
-    const incoming = useQuery({
-        queryKey: qk.pharmacy.transfers("incoming"),
-        queryFn: () => listTransfers("incoming"),
-        refetchInterval: LIVE,
-    });
-    const outgoing = useQuery({
+    const toUs = useQuery({
+        // Outras unidades pedem a nós: o remédio sai daqui (from = nós).
         queryKey: qk.pharmacy.transfers("outgoing"),
         queryFn: () => listTransfers("outgoing"),
+        refetchInterval: LIVE,
+    });
+    const ours = useQuery({
+        // Nós pedimos: o remédio chega aqui (to = nós).
+        queryKey: qk.pharmacy.transfers("incoming"),
+        queryFn: () => listTransfers("incoming"),
         refetchInterval: LIVE,
     });
     const [refusing, setRefusing] = useState<string | null>(null);
@@ -54,7 +56,7 @@ export function Transferencias() {
         {
             key: "unit",
             header: mine ? "Pedimos à" : "Pedido da",
-            render: (t: TransferView) => (mine ? t.to.name : t.from.name),
+            render: (t: TransferView) => (mine ? t.from.name : t.to.name),
         },
         {
             key: "batch",
@@ -114,7 +116,7 @@ export function Transferencias() {
                 </Notice>
             )}
             <div className="app-stack">
-                <Loaded query={incoming} what="os pedidos de outras unidades">
+                <Loaded query={toUs} what="os pedidos de outras unidades">
                     {(rows) => (
                         <DataTable
                             caption="Pedidos para nós"
@@ -125,7 +127,7 @@ export function Transferencias() {
                         />
                     )}
                 </Loaded>
-                <Loaded query={outgoing} what="os nossos pedidos">
+                <Loaded query={ours} what="os nossos pedidos">
                     {(rows) => (
                         <DataTable
                             caption="Nossos pedidos"

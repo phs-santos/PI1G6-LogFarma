@@ -116,3 +116,20 @@ describe("Confirmar pedido", () => {
         });
     });
 });
+
+describe("Confirmar pedido — quantidade", () => {
+    it("injetável começa com 1 unidade; comprimido com 30", async () => {
+        const resp = cena1Availability();
+        resp.medication = {
+            ...resp.medication,
+            pharmaceuticalForm: "injectable",
+            displayName: "Adalimumabe 40 mg injetável",
+        };
+        api({ "GET /api/medications/med-los/availability": { body: resp } });
+        renderApp({
+            route: "/pedido/novo?medicationId=med-los&waitlist=1",
+            session: sessions.maria,
+        });
+        expect(await screen.findByLabelText("Quantidade (unidades)")).toHaveValue(1);
+    });
+});

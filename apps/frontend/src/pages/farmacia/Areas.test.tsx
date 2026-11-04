@@ -22,6 +22,7 @@ function transfer(over: Partial<TransferView>): TransferView {
         medication: losartana.displayName,
         batchNumber: "L-001",
         expiryDate: "2027-05-01",
+        // A Vila Negri pediu à UBS Centro: sai do Centro (from) para a Vila (to).
         from: { id: "ph-centro", name: "UBS Centro" },
         to: { id: "ph-vila", name: "UBS Vila Negri" },
         refusalReason: null,
@@ -56,7 +57,7 @@ describe("Farmácia — Transferências", () => {
             ...base,
             "GET /api/pharmacy/transfers": ({ url }) => ({
                 body: {
-                    items: url.searchParams.get("direction") === "incoming" ? [transfer({})] : [],
+                    items: url.searchParams.get("direction") === "outgoing" ? [transfer({})] : [],
                 },
             }),
             "POST /api/pharmacy/transfers/t1/actions": {

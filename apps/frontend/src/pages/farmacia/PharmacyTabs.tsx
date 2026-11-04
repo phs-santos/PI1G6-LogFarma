@@ -14,9 +14,10 @@ export function PharmacyTabs() {
         queryFn: () => listPharmacyRequests(),
         refetchInterval: LIVE,
     });
-    const incoming = useQuery({
-        queryKey: qk.pharmacy.transfers("incoming"),
-        queryFn: () => listTransfers("incoming"),
+    const toUs = useQuery({
+        // Pedidos de outras unidades para nós (o remédio sai daqui).
+        queryKey: qk.pharmacy.transfers("outgoing"),
+        queryFn: () => listTransfers("outgoing"),
         refetchInterval: LIVE,
     });
     const active = pathname.split("/")[2] ?? "pedidos";
@@ -34,7 +35,7 @@ export function PharmacyTabs() {
                 {
                     id: "transferencias",
                     label: "Transferências",
-                    count: incoming.data?.filter((t) => t.status === "requested").length,
+                    count: toUs.data?.filter((t) => t.status === "requested").length,
                 },
                 { id: "compras", label: "Compras" },
                 { id: "estoque", label: "Estoque" },

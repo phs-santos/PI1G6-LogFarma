@@ -17,3 +17,7 @@ graphify-out/
 
 # Rascunhos visuais do brainstorming
 .superpowers/brainstorm/
+
+# Playwright
+test-results/
+playwright-report/
