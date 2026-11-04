@@ -16,7 +16,7 @@ export type RequestStatus =
 const ALLOWED: Record<RequestStatus, RequestStatus[]> = {
     requested: ["ready_for_pickup", "in_transfer", "waitlisted", "cancelled"],
     in_transfer: ["arrived", "requested"],
-    waitlisted: ["arrived", "cancelled"],
+    waitlisted: ["arrived", "ready_for_pickup", "cancelled"],
     arrived: ["ready_for_pickup", "delivery_scheduled"],
     ready_for_pickup: ["delivery_scheduled", "picked_up"],
     delivery_scheduled: ["out_for_delivery"],

@@ -85,7 +85,9 @@ export async function medicationAvailability(
                 });
                 continue;
             }
-            const available = await availableQuantity(tx, unit.id, medicationId, today);
+            const available = await availableQuantity(tx, unit.id, medicationId, today, {
+                lock: false,
+            });
             if (available > 0) foundInNetwork = true;
             const item = itemBy.get(unit.id);
             result.push({

@@ -1,5 +1,5 @@
 // Pedido do paciente (MedicationRequest) e receita. Regras do design, seção "Situações do pedido".
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne } from "drizzle-orm";
 import type { Db, DbOrTx } from "../db/client.js";
 import {
     deliveries,
@@ -256,6 +256,23 @@ export async function createRequest(
                 .where(eq(prescriptions.id, input.prescriptionId));
             if (!own || own.patientId !== patientId || own.medicationId !== medication.id) {
                 throw new NotFoundError("Receita não encontrada.");
+            }
+            // Só receita simples de uso contínuo serve para vários pedidos; as demais (antimicrobiano,
+            // controle especial, simples sem uso contínuo) são retidas e valem para um pedido.
+            if (!(own.type === "simple" && own.continuousUse)) {
+                const used = await tx
+                    .select({ id: medicationRequests.id })
+                    .from(medicationRequests)
+                    .where(
+                        and(
+                            eq(medicationRequests.prescriptionId, own.id),
+                            ne(medicationRequests.status, "cancelled"),
+                        ),
+                    )
+                    .limit(1);
+                if (used.length > 0) {
+                    throw new ConflictError("Esta receita vale para um pedido só e já foi usada.");
+                }
             }
             prescriptionId = own.id;
         } else if (input.prescription) {

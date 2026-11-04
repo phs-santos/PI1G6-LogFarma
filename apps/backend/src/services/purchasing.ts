@@ -130,7 +130,10 @@ async function networkHas(
         .where(inArray(pharmacies.kind, [...kinds]));
     const today = isoDay();
     for (const unit of units) {
-        if ((await availableQuantity(tx, unit.id, medicationId, today)) >= quantity) return true;
+        if (
+            (await availableQuantity(tx, unit.id, medicationId, today, { lock: false })) >= quantity
+        )
+            return true;
     }
     return false;
 }
@@ -455,6 +458,58 @@ export async function runSupplierAction(
     return view!;
 }
 
+/**
+ * Quem ficou na fila depois de uma entrega parcial não pode ficar parado: abre um novo pedido de compra
+ * ao mesmo fornecedor, apaga a previsão antiga e avisa paciente e farmácia.
+ */
+async function followUpLeftovers(tx: Tx, po: typeof purchaseOrders.$inferSelect): Promise<void> {
+    const { notify, notifyPharmacyStaff } = await import("./notifications.js");
+    const leftovers = await tx
+        .select()
+        .from(waitlistEntries)
+        .where(
+            and(
+                eq(waitlistEntries.pharmacyId, po.pharmacyId),
+                eq(waitlistEntries.medicationId, po.medicationId),
+                eq(waitlistEntries.status, "waiting"),
+                isNull(waitlistEntries.purchaseOrderId),
+            ),
+        );
+    if (leftovers.length === 0) return;
+    const [followUp] = await tx
+        .insert(purchaseOrders)
+        .values({
+            pharmacyId: po.pharmacyId,
+            medicationId: po.medicationId,
+            supplierId: po.supplierId,
+            quantity: 0,
+            origin: "manual",
+        })
+        .returning({ id: purchaseOrders.id });
+    await attachWaitingEntries(tx, followUp!.id);
+    await tx
+        .update(medicationRequests)
+        .set({ expectedAt: null, updatedAt: new Date() })
+        .where(
+            inArray(
+                medicationRequests.id,
+                leftovers.map((l) => l.requestId),
+            ),
+        );
+    for (const l of leftovers) {
+        await notify(tx, {
+            userId: l.patientId,
+            requestId: l.requestId,
+            title: "Ainda na lista de espera",
+            body: "Chegou menos do que o necessário. Você continua na lista e já pedimos de novo ao fornecedor.",
+        });
+    }
+    await notifyPharmacyStaff(tx, po.pharmacyId, {
+        title: "Novo pedido de compra",
+        body: `Entrega parcial: ${leftovers.length} paciente(s) continuam na fila; novo pedido aberto ao mesmo fornecedor.`,
+    });
+}
+
 // ---------- recebimento pela farmácia ----------
 
 export async function receivePurchaseOrder(
@@ -525,6 +580,7 @@ export async function receivePurchaseOrder(
                     eq(waitlistEntries.status, "waiting"),
                 ),
             );
+        await followUpLeftovers(tx, po);
     });
     const [view] = await purchaseOrderViews(db, eq(purchaseOrders.id, purchaseOrderId));
     return view!;

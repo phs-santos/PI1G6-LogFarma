@@ -1,5 +1,5 @@
 // Estoque por lote, reservas e movimentos (modelo da BNAFAR). Funções recebem uma transação.
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, lt, sql } from "drizzle-orm";
 import type { DbOrTx } from "../db/client.js";
 import {
     purchaseOrders,
@@ -12,6 +12,7 @@ import {
 import { pickBatchesFefo } from "../domain/batches.js";
 import { BadRequestError, ConflictError, NotFoundError } from "../domain/errors.js";
 import { attachWaitingEntries } from "./purchasing.js";
+import { isoDay } from "../domain/dates.js";
 
 type ExitMovement = "exit_dispensation" | "exit_transfer";
 
@@ -24,13 +25,19 @@ export interface BatchStock {
     available: number;
 }
 
-/** Lotes do par unidade+remédio, travados para atualização, com o que já está reservado. */
+export interface ReadOptions {
+    /** true (padrão) para quem vai alterar o estoque; false para consultas (não espera travas). */
+    lock?: boolean;
+}
+
+/** Lotes do par unidade+remédio, com o que já está reservado. Trava os lotes por padrão. */
 export async function availableByBatch(
     tx: DbOrTx,
     pharmacyId: string,
     medicationId: string,
+    options: ReadOptions = {},
 ): Promise<BatchStock[]> {
-    const batches = await tx
+    const query = tx
         .select()
         .from(stockBatches)
         .where(
@@ -39,8 +46,8 @@ export async function availableByBatch(
                 eq(stockBatches.medicationId, medicationId),
             ),
         )
-        .orderBy(asc(stockBatches.expiryDate))
-        .for("update");
+        .orderBy(asc(stockBatches.expiryDate));
+    const batches = options.lock === false ? await query : await query.for("update");
     if (batches.length === 0) return [];
     const reservedRows = await tx
         .select({
@@ -75,8 +82,9 @@ export async function availableQuantity(
     pharmacyId: string,
     medicationId: string,
     today: string,
+    options: ReadOptions = {},
 ): Promise<number> {
-    const batches = await availableByBatch(tx, pharmacyId, medicationId);
+    const batches = await availableByBatch(tx, pharmacyId, medicationId, options);
     return batches
         .filter((b) => b.expiryDate >= today)
         .reduce((sum, b) => sum + Math.max(b.available, 0), 0);
@@ -157,6 +165,7 @@ export async function consumeReservations(
     today: string,
     onlyBatchId?: string,
 ): Promise<{ batchId: string; quantity: number }[]> {
+    await replaceExpiredReservations(tx, requestId, today, onlyBatchId);
     const reservations = await tx
         .select({
             id: stockReservations.id,
@@ -204,6 +213,52 @@ export async function consumeReservations(
         await ensureReplenishment(tx, t.pharmacyId, t.medicationId, today);
     }
     return reservations.map((r) => ({ batchId: r.batchId, quantity: r.quantity }));
+}
+
+/**
+ * Nunca sai lote vencido: se o lote separado venceu, troca por outro lote válido da mesma unidade
+ * (o que vence primeiro). Sem lote válido suficiente, a ação é recusada.
+ */
+async function replaceExpiredReservations(
+    tx: DbOrTx,
+    requestId: string,
+    today: string,
+    onlyBatchId?: string,
+): Promise<void> {
+    const expired = await tx
+        .select({
+            id: stockReservations.id,
+            quantity: stockReservations.quantity,
+            batchId: stockReservations.batchId,
+            pharmacyId: stockBatches.pharmacyId,
+            medicationId: stockBatches.medicationId,
+        })
+        .from(stockReservations)
+        .innerJoin(stockBatches, eq(stockBatches.id, stockReservations.batchId))
+        .where(and(eq(stockReservations.requestId, requestId), lt(stockBatches.expiryDate, today)))
+        .for("update");
+    for (const r of expired) {
+        if (onlyBatchId && r.batchId === onlyBatchId) {
+            throw new ConflictError("O lote desta transferência venceu; recuse e peça de novo.");
+        }
+        await tx.delete(stockReservations).where(eq(stockReservations.id, r.id));
+        try {
+            await reserve(tx, {
+                pharmacyId: r.pharmacyId,
+                medicationId: r.medicationId,
+                quantity: r.quantity,
+                requestId,
+                today,
+            });
+        } catch (err) {
+            if (err instanceof ConflictError) {
+                throw new ConflictError(
+                    "O remédio separado venceu e não há outro lote válido na unidade.",
+                );
+            }
+            throw err;
+        }
+    }
 }
 
 /** Entrada de estoque: cria o lote (ou soma no mesmo lote) e registra o movimento. */
@@ -289,6 +344,10 @@ export async function adjustBatch(
         .where(eq(stockBatches.id, input.batchId))
         .for("update");
     if (!batch) throw new NotFoundError("Lote não encontrado.");
+    if (input.reason === "exit_loss" && batch.expiryDate < isoDay()) {
+        // Lote vencido pode ser baixado: as reservas nele são liberadas e trocadas na hora da saída.
+        await tx.delete(stockReservations).where(eq(stockReservations.batchId, batch.id));
+    }
     const [stock] = (await availableByBatch(tx, batch.pharmacyId, batch.medicationId)).filter(
         (b) => b.id === batch.id,
     );

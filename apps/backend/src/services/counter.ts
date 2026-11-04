@@ -1,5 +1,5 @@
 // Ações do profissional da unidade responsável sobre o pedido (balcão): preparar, dispensar, agendar entrega.
-import { desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import type { Db, DbOrTx, Tx } from "../db/client.js";
 import {
     caregivers,
@@ -13,6 +13,7 @@ import {
     pharmacyStaff,
     prescriptions,
     stockReservations,
+    waitlistEntries,
 } from "../db/schema.js";
 import { ConflictError, ForbiddenError, NotFoundError } from "../domain/errors.js";
 import { ageOn, isoDay } from "../domain/dates.js";
@@ -81,7 +82,19 @@ export async function assertPrescriptionReady(
 }
 
 async function prepare(tx: Tx, request: MedicationRequestRow, pharmacyName: string): Promise<void> {
-    if (request.status === "requested") {
+    if (request.status === "waitlisted") {
+        // Chegou estoque na unidade por outro caminho: atende quem está na fila.
+        await tx
+            .update(waitlistEntries)
+            .set({ status: "served" })
+            .where(
+                and(
+                    eq(waitlistEntries.requestId, request.id),
+                    eq(waitlistEntries.status, "waiting"),
+                ),
+            );
+    }
+    if (request.status === "requested" || request.status === "waitlisted") {
         await reserve(tx, {
             pharmacyId: request.pharmacyId,
             medicationId: request.medicationId,
@@ -260,10 +273,17 @@ export async function listPharmacyRequests(
     const rows = await db
         .select()
         .from(medicationRequests)
-        .where(eq(medicationRequests.pharmacyId, staff.pharmacyId))
+        .where(
+            status
+                ? and(
+                      eq(medicationRequests.pharmacyId, staff.pharmacyId),
+                      eq(medicationRequests.status, status),
+                  )
+                : eq(medicationRequests.pharmacyId, staff.pharmacyId),
+        )
         .orderBy(desc(medicationRequests.createdAt))
         .limit(200);
-    const filtered = status ? rows.filter((r) => r.status === status) : rows;
+    const filtered = rows;
     if (filtered.length === 0) return [];
     const patientIds = [...new Set(filtered.map((r) => r.patientId))];
     const people = await db.select().from(patients).where(inArray(patients.userId, patientIds));

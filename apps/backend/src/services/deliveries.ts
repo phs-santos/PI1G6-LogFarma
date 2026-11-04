@@ -23,15 +23,23 @@ export interface DeliveryView {
     scheduledWindow: string;
     requiresRefrigeration: boolean;
     courierId: string | null;
-    medication: string;
+    /** null para o entregador até ele aceitar a entrega (LGPD: mínimo de dados). */
+    medication: string | null;
     pharmacy: { name: string; address: string };
-    recipient: { name: string; address: string; phone: string };
+    /** Bairro e cidade, sempre visível para o entregador decidir se aceita. */
+    area: string;
+    recipient: { name: string; address: string; phone: string } | null;
     receivedBy: string | null;
     failureReason: string | null;
     createdAt: string;
 }
 
-async function views(db: DbOrTx, where: SQL | undefined): Promise<DeliveryView[]> {
+/** viewerCourierId: quando é um entregador olhando, esconde paciente e remédio das entregas que não são dele. */
+async function views(
+    db: DbOrTx,
+    where: SQL | undefined,
+    viewerCourierId?: string,
+): Promise<DeliveryView[]> {
     const rows = await db
         .select()
         .from(deliveries)
@@ -65,6 +73,7 @@ async function views(db: DbOrTx, where: SQL | undefined): Promise<DeliveryView[]
         const u = units.find((x) => x.id === r.pharmacyId)!;
         const p = people.find((x) => x.userId === r.patientId)!;
         const a = d.addressSnapshot;
+        const visible = viewerCourierId === undefined || d.courierId === viewerCourierId;
         return {
             id: d.id,
             requestId: d.requestId,
@@ -72,13 +81,18 @@ async function views(db: DbOrTx, where: SQL | undefined): Promise<DeliveryView[]
             scheduledWindow: d.scheduledWindow,
             requiresRefrigeration: d.requiresRefrigeration,
             courierId: d.courierId,
-            medication: medicationDisplayName(meds.find((m) => m.id === r.medicationId)!),
+            medication: visible
+                ? medicationDisplayName(meds.find((m) => m.id === r.medicationId)!)
+                : null,
             pharmacy: { name: u.name, address: u.address },
-            recipient: {
-                name: p.socialName ?? p.fullName,
-                address: `${a.street}, ${a.number} — ${a.district}, ${a.city}/${a.state}`,
-                phone: p.phone,
-            },
+            area: `${a.district}, ${a.city}/${a.state}`,
+            recipient: visible
+                ? {
+                      name: p.socialName ?? p.fullName,
+                      address: `${a.street}, ${a.number} — ${a.district}, ${a.city}/${a.state}`,
+                      phone: p.phone,
+                  }
+                : null,
             receivedBy: d.receivedBy,
             failureReason: d.failureReason,
             createdAt: d.createdAt.toISOString(),
@@ -104,6 +118,7 @@ export async function courierDeliveries(
         scope === "available"
             ? and(eq(deliveries.status, "scheduled"), isNull(deliveries.courierId))
             : eq(deliveries.courierId, courierId),
+        courierId,
     );
 }
 
@@ -217,6 +232,6 @@ export async function runCourierAction(
             });
         }
     });
-    const [view] = await views(db, eq(deliveries.id, deliveryId));
+    const [view] = await views(db, eq(deliveries.id, deliveryId), courierId);
     return view!;
 }

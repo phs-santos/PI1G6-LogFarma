@@ -81,13 +81,18 @@ describe("entrega pelo programa municipal", () => {
             headers: { cookie: cc },
         });
         expect(available.json().items).toHaveLength(1);
-        expect(available.json().items[0].recipient).toMatchObject({
-            name: "Maria Aparecida da Silva",
-        });
+        // Antes de aceitar, o entregador não vê o paciente (LGPD).
+        expect(available.json().items[0].recipient).toBeNull();
 
         expect((await courierAction(app, cc, delivery.id, { action: "accept" })).statusCode).toBe(
             200,
         );
+        const mine = await app.inject({
+            method: "GET",
+            url: "/api/courier/deliveries?scope=mine",
+            headers: { cookie: cc },
+        });
+        expect(mine.json().items[0].recipient).toMatchObject({ name: "Maria Aparecida da Silva" });
         expect((await courierAction(app, cc, delivery.id, { action: "pick_up" })).statusCode).toBe(
             200,
         );

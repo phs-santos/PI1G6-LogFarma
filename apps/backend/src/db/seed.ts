@@ -384,13 +384,32 @@ export async function seedDemo(db: Db, now: Date, password: string): Promise<Dem
     return { pharmacies: pharmacyIds, medications: medicationIds, suppliers: supplierIds, users };
 }
 
+/** Em produção o seed apaga dados reais: exige liberação explícita e uma senha de demonstração própria. */
+export function assertSeedAllowed(env: {
+    nodeEnv: string;
+    allowDemoSeed: boolean;
+    demoPassword: string;
+}): void {
+    if (env.nodeEnv !== "production") return;
+    if (!env.allowDemoSeed) {
+        throw new Error(
+            "Seed recusado: em produção ele apaga todos os dados. Defina ALLOW_DEMO_SEED=true para confirmar.",
+        );
+    }
+    if (!env.demoPassword || env.demoPassword === "demo1234") {
+        throw new Error(
+            "Seed recusado: defina uma DEMO_PASSWORD própria (a padrão é pública no repositório).",
+        );
+    }
+}
+
 // Uso direto pela linha de comando.
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
     const { env } = await import("../env.js");
-    if (env.nodeEnv === "production" && !env.allowDemoSeed) {
-        console.error(
-            "Seed recusado: em produção ele apaga todos os dados. Defina ALLOW_DEMO_SEED=true para confirmar.",
-        );
+    try {
+        assertSeedAllowed(env);
+    } catch (err) {
+        console.error((err as Error).message);
         process.exit(1);
     }
     const { createDb } = await import("./client.js");

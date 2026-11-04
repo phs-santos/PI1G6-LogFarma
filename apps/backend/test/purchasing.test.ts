@@ -259,7 +259,10 @@ describe("compra, fornecedor e fila", () => {
             .select()
             .from(waitlistEntries)
             .where(eq(waitlistEntries.requestId, s.reqJovem.id));
-        expect(restante).toMatchObject({ status: "waiting", purchaseOrderId: null });
+        expect(restante!.status).toBe("waiting");
+        // Quem sobra entra num novo pedido de compra ao mesmo fornecedor (não fica parado).
+        expect(restante!.purchaseOrderId).not.toBeNull();
+        expect(restante!.purchaseOrderId).not.toBe(po!.id);
     });
 
     it("a próxima compra do mesmo remédio religa quem ficou na fila", async () => {

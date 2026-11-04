@@ -194,6 +194,19 @@ export async function runTransferAction(
                 requestId: t.requestId,
             });
         } else if (body.action === "refuse") {
+            if (request) {
+                const shipped = await tx
+                    .select({ id: transfers.id })
+                    .from(transfers)
+                    .where(
+                        and(eq(transfers.requestId, request.id), eq(transfers.status, "shipped")),
+                    );
+                if (shipped.length > 0) {
+                    throw new ConflictError(
+                        "Parte deste pedido já foi enviada; envie o restante ou combine com a unidade de destino.",
+                    );
+                }
+            }
             const siblings = request
                 ? await tx
                       .select({ id: transfers.id })
