@@ -1,24 +1,15 @@
-import { useEffect, useState } from "react";
-import { Button, Card } from "@fatec-pi/style-guide";
+import { useState } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router";
+import { createQueryClient } from "./app/queryClient";
+import { createAppRouter } from "./app/router";
 
 export function App() {
-    const [status, setStatus] = useState("verificando...");
-
-    const checkApi = () => {
-        fetch("/api/health")
-            .then((res) => res.json())
-            .then((data: { status: string }) => setStatus(data.status))
-            .catch(() => setStatus("offline"));
-    };
-
-    useEffect(checkApi, []);
-
+    const [client] = useState(createQueryClient);
+    const [router] = useState(createAppRouter);
     return (
-        <main style={{ maxWidth: 720, margin: "0 auto", padding: "var(--space-8)" }}>
-            <Card title="Fatec PI">
-                <p>Status da API: {status}</p>
-                <Button onClick={checkApi}>Verificar novamente</Button>
-            </Card>
-        </main>
+        <QueryClientProvider client={client}>
+            <RouterProvider router={router} />
+        </QueryClientProvider>
     );
 }

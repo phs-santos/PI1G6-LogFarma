@@ -1,0 +1,49 @@
+/* Moldura das telas do app. Cores, letras e espaços só pelos tokens do style-guide. */
+
+.app-mobile {
+    min-height: 100vh;
+    background: var(--color-paper);
+}
+
+.app-mobile__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    max-width: var(--width-mobile);
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-4) 0;
+}
+
+.app-mobile__main {
+    max-width: var(--width-mobile);
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-4) var(--space-12);
+}
+
+.app-back {
+    padding-left: 0;
+}
+
+.app-desktop {
+    min-height: 100vh;
+    background: var(--color-paper);
+}
+
+.app-desktop__main {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: var(--space-6);
+}
+
+.app-form {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.app-link {
+    color: var(--color-ink);
+    font-weight: var(--font-weight-bold);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}

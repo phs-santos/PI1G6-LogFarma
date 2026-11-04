@@ -1,0 +1,96 @@
+import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
+import { Entrar } from "../pages/entrar/Entrar";
+import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
+import { Placeholder } from "../pages/comum/Placeholder";
+import { CourierLayout } from "./layouts/CourierLayout";
+import { DesktopLayout } from "./layouts/DesktopLayout";
+import { PatientLayout } from "./layouts/PatientLayout";
+import { RequireRole } from "./RequireRole";
+import { SessionRoot } from "./session";
+
+const page = (path: string, title: string): RouteObject => ({
+    path,
+    element: <Placeholder title={title} />,
+});
+
+/** Todas as telas, com endereços em português. */
+export const appRoutes: RouteObject[] = [
+    {
+        element: <SessionRoot />,
+        children: [
+            { path: "/entrar", element: <Entrar /> },
+            {
+                element: <PatientLayout />,
+                children: [page("/cadastro", "Criar conta")],
+            },
+            {
+                element: (
+                    <RequireRole roles={["patient"]}>
+                        <PatientLayout />
+                    </RequireRole>
+                ),
+                children: [
+                    page("/", "Início"),
+                    page("/buscar", "Procurar remédio"),
+                    page("/remedio/:id", "Onde tem"),
+                    page("/remedio/:id/unidades", "Outras unidades"),
+                    page("/remedio/:id/buscar/:pharmacyId", "Vou buscar lá"),
+                    page("/pedido/novo", "Confirmar pedido"),
+                    page("/pedidos", "Meus pedidos"),
+                    page("/pedidos/:id", "Seu pedido"),
+                    page("/avisos", "Avisos"),
+                    page("/meus-dados", "Meus dados"),
+                ],
+            },
+            {
+                element: (
+                    <RequireRole roles={["pharmacy_staff"]}>
+                        <DesktopLayout />
+                    </RequireRole>
+                ),
+                children: [
+                    { path: "/farmacia", element: <Navigate to="/farmacia/pedidos" replace /> },
+                    page("/farmacia/pedidos/:id?", "Pedidos"),
+                    page("/farmacia/transferencias", "Transferências"),
+                    page("/farmacia/compras", "Compras"),
+                    page("/farmacia/estoque", "Estoque"),
+                    page("/farmacia/estoque/novo-medicamento", "Cadastrar medicamento"),
+                    page("/farmacia/entregas", "Entregas"),
+                ],
+            },
+            {
+                element: (
+                    <RequireRole roles={["courier"]}>
+                        <CourierLayout />
+                    </RequireRole>
+                ),
+                children: [page("/entregas", "Entregas"), page("/entregas/:id", "Entrega")],
+            },
+            {
+                element: (
+                    <RequireRole roles={["supplier_staff"]}>
+                        <DesktopLayout />
+                    </RequireRole>
+                ),
+                children: [page("/fornecedor", "Pedidos de compra")],
+            },
+            {
+                element: (
+                    <RequireRole roles={["manager"]}>
+                        <DesktopLayout />
+                    </RequireRole>
+                ),
+                children: [
+                    page("/gestao", "Painel da rede"),
+                    page("/gestao/contas", "Contas"),
+                    page("/gestao/medicamentos/novo", "Cadastrar medicamento"),
+                ],
+            },
+            { path: "*", element: <NaoEncontrada /> },
+        ],
+    },
+];
+
+export function createAppRouter() {
+    return createBrowserRouter(appRoutes);
+}
