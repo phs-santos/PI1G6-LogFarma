@@ -1,21 +1,16 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(pnpm install)",
-      "Bash(pnpm typecheck)",
-      "Bash(pnpm build)",
-      "Bash(pnpm dev)",
-      "Bash(curl -s localhost:*)",
-      "Bash(curl localhost:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./**/.env)",
-      "Bash(npm install:*)",
-      "Bash(yarn add:*)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(pnpm install)",
+            "Bash(pnpm typecheck)",
+            "Bash(pnpm build)",
+            "Bash(pnpm dev)",
+            "Bash(curl -s localhost:*)",
+            "Bash(curl localhost:*)",
+            "Bash(git status:*)",
+            "Bash(git diff:*)",
+            "Bash(git log:*)"
+        ],
+        "deny": ["Read(./.env)", "Read(./**/.env)", "Bash(npm install:*)", "Bash(yarn add:*)"]
+    }
 }

@@ -4,13 +4,13 @@ Monorepo do projeto **Localização, Reposição e Entrega de Medicamentos**. Tu
 
 ## Mapa do monorepo
 
-| Pasta | Pacote | O que é | Porta |
-|---|---|---|---|
-| `apps/backend/` | `@fatec-pi/backend` | API — Node + Fastify 5 + TS (ESM) | 3333 |
-| `apps/frontend/` | `@fatec-pi/frontend` | Telas — React 19 + Vite + TS | 5173 |
-| `packages/style-guide/` | `@fatec-pi/style-guide` | Design system — tokens CSS + componentes React + Storybook | 6006 |
-| `infra/` | — | Docker Compose (dev e produção) e scripts de deploy/backup | — |
-| `docs/` | — | Registro de tudo que foi feito: o que, por que, onde, escolhas e datas | — |
+| Pasta                   | Pacote                  | O que é                                                                | Porta |
+| ----------------------- | ----------------------- | ---------------------------------------------------------------------- | ----- |
+| `apps/backend/`         | `@fatec-pi/backend`     | API — Node + Fastify 5 + TS (ESM)                                      | 3333  |
+| `apps/frontend/`        | `@fatec-pi/frontend`    | Telas — React 19 + Vite + TS                                           | 5173  |
+| `packages/style-guide/` | `@fatec-pi/style-guide` | Design system — tokens CSS + componentes React + Storybook             | 6006  |
+| `infra/`                | —                       | Docker Compose (dev e produção) e scripts de deploy/backup             | —     |
+| `docs/`                 | —                       | Registro de tudo que foi feito: o que, por que, onde, escolhas e datas | —     |
 
 Cada pasta tem o seu `CLAUDE.md`/`AGENTS.md` com as convenções específicas. Leia o da pasta onde vai mexer.
 
@@ -28,6 +28,8 @@ pnpm dev:frontend     # só as telas
 pnpm storybook        # style-guide em http://localhost:6006
 pnpm typecheck        # todos os pacotes — obrigatório antes de considerar pronto
 pnpm build            # todos os pacotes
+pnpm format           # formata tudo com Prettier (indentação de 4 espaços)
+pnpm format:check     # só confere, sem alterar
 pnpm docker:dev       # banco + backend + frontend no Docker (infra/compose.yaml)
 ```
 
@@ -40,7 +42,7 @@ Para adicionar dependência: `pnpm --filter @fatec-pi/<pacote> add <lib>` (nunca
 
 - Ler qualquer arquivo do repositório (exceto `.env` e segredos).
 - Criar e editar código, testes, estilos e documentação **dentro do escopo da tarefa pedida**.
-- Rodar `pnpm install`, `pnpm typecheck`, `pnpm build`, `pnpm dev`, `pnpm storybook` e comandos de leitura do git (`status`, `diff`, `log`).
+- Rodar `pnpm install`, `pnpm typecheck`, `pnpm build`, `pnpm format`, `pnpm dev`, `pnpm storybook` e comandos de leitura do git (`status`, `diff`, `log`).
 - Subir o ambiente local com `pnpm docker:dev` para testar.
 - Criar/atualizar arquivos em `docs/` (é obrigatório — ver abaixo).
 
@@ -66,12 +68,13 @@ Para adicionar dependência: `pnpm --filter @fatec-pi/<pacote> add <lib>` (nunca
 
 1. **Explicar o que foi feito de forma lúdica.** Ao terminar, conte em poucas linhas, com uma analogia do dia a dia, o que mudou e por quê — de um jeito que alguém do grupo que não acompanhou entenda. Depois, os detalhes técnicos.
 2. **Documentar em `docs/`.** Toda tarefa concluída gera ou atualiza um arquivo em `docs/` seguindo o modelo de [`docs/README.md`](docs/README.md): **O que**, **Por que**, **Onde**, **Escolhas feitas**, com a **data de implementação** e, a cada mudança posterior, a **data de alteração**.
-3. Confirmar que `pnpm typecheck` (e `pnpm build`, quando aplicável) passa antes de dizer que terminou.
+3. Rodar `pnpm format` e confirmar que `pnpm typecheck` (e `pnpm build`, quando aplicável) passa antes de dizer que terminou.
 
 ## Regras gerais de código
 
 - Código e comentários em português do Brasil; nomes de variáveis/funções em inglês (ver glossário).
 - Use **pnpm**, nunca npm/yarn.
+- Formatação pelo **Prettier** (`.prettierrc.json`): 4 espaços de indentação (YAML: 2), aspas duplas, ponto e vírgula, largura 100. Não formate à mão.
 - TS strict; sem `any` — use `unknown` e estreite.
 - Mensagens de commit em português, no imperativo (`adiciona rota de login`). Cite o requisito quando houver (ex.: `RF03`).
 
@@ -101,17 +104,18 @@ Sistema que mostra **em tempo real onde um medicamento essencial está disponív
 
 ### Atores
 
-| Ator | Papel |
-|---|---|
-| Paciente | Busca o medicamento, recebe notificações, escolhe retirar ou receber em casa |
-| Farmacêutico / unidade | Consulta estoque, dispensa, registra pedido ao fornecedor |
-| Fornecedor | Confirma (ou não) prazo de entrega de um pedido de reposição |
-| Unidade parceira | Recebe pedidos de transferência entre farmácias da rede |
-| Logística / entrega | Motoboy, parceiro logístico ou Correios para entrega domiciliar |
+| Ator                   | Papel                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| Paciente               | Busca o medicamento, recebe notificações, escolhe retirar ou receber em casa |
+| Farmacêutico / unidade | Consulta estoque, dispensa, registra pedido ao fornecedor                    |
+| Fornecedor             | Confirma (ou não) prazo de entrega de um pedido de reposição                 |
+| Unidade parceira       | Recebe pedidos de transferência entre farmácias da rede                      |
+| Logística / entrega    | Motoboy, parceiro logístico ou Correios para entrega domiciliar              |
 
 ### Requisitos
 
 **Funcionais**
+
 - **RF01** Consultar estoque local de um medicamento.
 - **RF02** Consultar disponibilidade na rede de farmácias parceiras.
 - **RF03** Indicar a unidade mais próxima com o medicamento e calcular a rota.
@@ -122,6 +126,7 @@ Sistema que mostra **em tempo real onde um medicamento essencial está disponív
 - **RF08** Acionar entrega no domicílio.
 
 **Não funcionais**
+
 - **RNF01** Consulta de estoque responde em menos de 10 s.
 - **RNF02** Disponibilidade ~99%, sem queda em horário de atendimento.
 - **RNF03** Dados de paciente e prescrição protegidos conforme a **LGPD** (não logar dados pessoais, não expor em respostas desnecessárias).
@@ -135,36 +140,37 @@ Ao implementar algo ligado a um requisito, cite o código (ex.: `// RF03`) no co
 2. Sistema consulta o **estoque local**. Se atende → dispensa no balcão (fim).
 3. Se não atende → consulta a **rede**. Em paralelo, se o estoque local ficou abaixo do **mínimo**, dispara reposição ao fornecedor sem bloquear o atendimento.
 4. Se alguma unidade tem → indica a mais próxima + rota.
-   - Paciente consegue ir → retira na unidade parceira (fim).
-   - Não consegue → **transferência** para unidade mais acessível.
+    - Paciente consegue ir → retira na unidade parceira (fim).
+    - Não consegue → **transferência** para unidade mais acessível.
 5. Se ninguém tem → **pedido de compra** ao fornecedor.
-   - Fornecedor confirma prazo → notifica paciente com estimativa e opções.
-   - Não confirma → **lista de espera** com alerta, priorizando pacientes **crônicos, oncológicos e de doenças raras**.
+    - Fornecedor confirma prazo → notifica paciente com estimativa e opções.
+    - Não confirma → **lista de espera** com alerta, priorizando pacientes **crônicos, oncológicos e de doenças raras**.
 6. Medicamento chega (transferência ou reposição) → atualiza status do pedido.
-   - Paciente consegue buscar → retirada (fim).
-   - Não consegue → **entrega domiciliar** (etapa crítica).
+    - Paciente consegue buscar → retirada (fim).
+    - Não consegue → **entrega domiciliar** (etapa crítica).
 
 ### Glossário (termo → nome no código)
 
 Código em inglês, UI e comentários em português. Use estes nomes para manter consistência entre backend e frontend:
 
-| Domínio | Código |
-|---|---|
-| Medicamento | `Medication` |
-| Unidade / farmácia | `Pharmacy` |
-| Estoque (item por unidade) / estoque mínimo | `StockItem` / `minQuantity` |
-| Paciente | `Patient` |
-| Dispensação | `Dispensation` |
-| Transferência entre unidades | `Transfer` |
-| Pedido de compra ao fornecedor | `PurchaseOrder` |
-| Fornecedor | `Supplier` |
-| Lista de espera / prioridade | `WaitlistEntry` / `priority` |
-| Entrega domiciliar | `Delivery` (`method`: `motoboy` \| `logistics_partner` \| `correios`) |
-| Notificação | `Notification` |
+| Domínio                                     | Código                                                                |
+| ------------------------------------------- | --------------------------------------------------------------------- |
+| Medicamento                                 | `Medication`                                                          |
+| Unidade / farmácia                          | `Pharmacy`                                                            |
+| Estoque (item por unidade) / estoque mínimo | `StockItem` / `minQuantity`                                           |
+| Paciente                                    | `Patient`                                                             |
+| Dispensação                                 | `Dispensation`                                                        |
+| Transferência entre unidades                | `Transfer`                                                            |
+| Pedido de compra ao fornecedor              | `PurchaseOrder`                                                       |
+| Fornecedor                                  | `Supplier`                                                            |
+| Lista de espera / prioridade                | `WaitlistEntry` / `priority`                                          |
+| Entrega domiciliar                          | `Delivery` (`method`: `motoboy` \| `logistics_partner` \| `correios`) |
+| Notificação                                 | `Notification`                                                        |
 
 ### Decisões em aberto
 
 Não assuma uma resposta sem perguntar ao usuário:
+
 - Rede coberta: só PFPB/SUS ou também farmácias privadas parceiras.
 - Banco de dados, autenticação e perfis de acesso (ainda não definidos no código).
 - Integração real de estoque, mapas/rotas e logística (na POC/MVP, usar dados simulados/mock).

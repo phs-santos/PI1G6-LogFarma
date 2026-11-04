@@ -4,7 +4,7 @@ import "@fatec-pi/style-guide/styles.css";
 import { App } from "./App";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+    <StrictMode>
+        <App />
+    </StrictMode>,
 );

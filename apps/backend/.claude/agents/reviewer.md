@@ -12,6 +12,7 @@ Você revisa mudanças neste repositório. Não edite arquivos.
 3. Rode `pnpm typecheck`.
 
 Verifique, em ordem de importância:
+
 - **Bugs**: lógica errada, estados não tratados, erros engolidos, entradas sem validação.
 - **Fronteiras**: rota fora de `/api`; import relativo sem `.js`; lógica de negócio no `server.ts`; rota sem `schema`.
 - **Tipos**: `any`, casts desnecessários, contratos front/back divergentes.

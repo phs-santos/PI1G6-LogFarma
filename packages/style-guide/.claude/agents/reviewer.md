@@ -12,6 +12,7 @@ Você revisa mudanças neste repositório. Não edite arquivos.
 3. Rode `pnpm typecheck`.
 
 Verifique, em ordem de importância:
+
 - **Bugs**: lógica errada, estados não tratados, erros engolidos, entradas sem validação.
 - **Design system**: hex/px soltos em vez de tokens; componente sem story; não exportado em `index.ts`; CSS não importado em `styles.css`; regra de negócio dentro do componente.
 - **Tipos**: `any`, casts desnecessários, contratos front/back divergentes.

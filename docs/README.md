@@ -19,32 +19,41 @@ Aqui fica registrado **tudo que foi feito** no monorepo: o que mudou, por que, o
 - **Requisitos:** RF0X, RNF0X (se houver)
 
 ## Em poucas palavras
+
 <Explicação lúdica, com uma analogia do dia a dia, em 3–5 linhas.>
 
 ## O que
+
 <O que foi feito, de forma objetiva.>
 
 ## Por que
+
 <Problema que resolve / motivo da mudança.>
 
 ## Onde
+
 <Pastas e arquivos principais afetados.>
 
 ## Escolhas feitas
+
 | Escolha | Alternativas consideradas | Motivo |
-|---|---|---|
+| ------- | ------------------------- | ------ |
 
 ## Como testar
+
 <Comandos ou passos.>
 
 ## Histórico de alterações
-| Data | O que mudou |
-|---|---|
+
+| Data       | O que mudou    |
+| ---------- | -------------- |
 | AAAA-MM-DD | Versão inicial |
 ```
 
 ## Índice
 
-| Data | Documento |
-|---|---|
-| 2026-11-03 | [Migração para monorepo](2026-11-03-monorepo.md) |
+| Data       | Documento                                                    |
+| ---------- | ------------------------------------------------------------ |
+| 2026-11-03 | [Migração para monorepo](2026-11-03-monorepo.md)             |
+| 2026-11-03 | [Grafo de conhecimento com graphify](2026-11-03-graphify.md) |
+| 2026-11-03 | [Formatação automática com Prettier](2026-11-03-prettier.md) |

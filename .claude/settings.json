@@ -1,28 +1,30 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(pnpm install)",
-      "Bash(pnpm typecheck)",
-      "Bash(pnpm build)",
-      "Bash(pnpm dev)",
-      "Bash(pnpm dev:backend)",
-      "Bash(pnpm dev:frontend)",
-      "Bash(pnpm storybook)",
-      "Bash(pnpm --filter:*)",
-      "Bash(curl -s localhost:*)",
-      "Bash(curl localhost:*)",
-      "Bash(git status:*)",
-      "Bash(git diff:*)",
-      "Bash(git log:*)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./**/.env)",
-      "Bash(npm install:*)",
-      "Bash(yarn add:*)",
-      "Bash(git push --force:*)",
-      "Bash(./infra/scripts/deploy.sh:*)",
-      "Bash(./infra/scripts/backup-db.sh:*)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(pnpm install)",
+            "Bash(pnpm typecheck)",
+            "Bash(pnpm build)",
+            "Bash(pnpm dev)",
+            "Bash(pnpm format:check)",
+            "Bash(pnpm format)",
+            "Bash(pnpm dev:backend)",
+            "Bash(pnpm dev:frontend)",
+            "Bash(pnpm storybook)",
+            "Bash(pnpm --filter:*)",
+            "Bash(curl -s localhost:*)",
+            "Bash(curl localhost:*)",
+            "Bash(git status:*)",
+            "Bash(git diff:*)",
+            "Bash(git log:*)"
+        ],
+        "deny": [
+            "Read(./.env)",
+            "Read(./**/.env)",
+            "Bash(npm install:*)",
+            "Bash(yarn add:*)",
+            "Bash(git push --force:*)",
+            "Bash(./infra/scripts/deploy.sh:*)",
+            "Bash(./infra/scripts/backup-db.sh:*)"
+        ]
+    }
 }

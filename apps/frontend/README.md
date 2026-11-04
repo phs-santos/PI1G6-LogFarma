@@ -17,12 +17,12 @@ Para a tela conversar com a API, suba também o backend (`pnpm dev` na raiz sobe
 
 ## Scripts
 
-| Comando | O que faz |
-|---|---|
-| `pnpm dev` | Servidor de desenvolvimento |
-| `pnpm typecheck` | Checa os tipos |
-| `pnpm build` | Build de produção em `dist/` |
-| `pnpm preview` | Serve o build localmente |
+| Comando          | O que faz                    |
+| ---------------- | ---------------------------- |
+| `pnpm dev`       | Servidor de desenvolvimento  |
+| `pnpm typecheck` | Checa os tipos               |
+| `pnpm build`     | Build de produção em `dist/` |
+| `pnpm preview`   | Serve o build localmente     |
 
 ## Style-guide
 

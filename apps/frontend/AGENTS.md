@@ -17,10 +17,10 @@ Para rodar a tela completa, suba também o backend: `pnpm dev` na raiz sobe os d
 
 - Componentes funcionais com export nomeado (`export function Pagina()`), um por arquivo, PascalCase.
 - Estrutura conforme crescer:
-  - `src/pages/` — telas (uma pasta por página)
-  - `src/features/<dominio>/` — lógica e componentes específicos de um domínio
-  - `src/api/` — funções de acesso à API (`fetch` tipado, tipos espelhando o contrato do backend); nunca `fetch` direto dentro de componente
-  - `src/hooks/` — hooks reutilizáveis
+    - `src/pages/` — telas (uma pasta por página)
+    - `src/features/<dominio>/` — lógica e componentes específicos de um domínio
+    - `src/api/` — funções de acesso à API (`fetch` tipado, tipos espelhando o contrato do backend); nunca `fetch` direto dentro de componente
+    - `src/hooks/` — hooks reutilizáveis
 - UI **só** via `@fatec-pi/style-guide`. Se faltar um componente genérico (Input, Modal…), **pare** e informe qual componente e props são necessários — ele nasce em `packages/style-guide`, não aqui.
 - Estilo local mínimo: layout (grid/flex/margens) é ok, sempre com tokens `var(--space-*)`. Nada de hex/px soltos.
 - Chamadas à API usam caminho relativo `/api/...`.

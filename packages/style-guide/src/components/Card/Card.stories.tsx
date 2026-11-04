@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Card } from "./Card";
 
 const meta = {
-  title: "Components/Card",
-  component: Card,
-  args: { title: "Título do card", children: "Conteúdo do card." },
+    title: "Components/Card",
+    component: Card,
+    args: { title: "Título do card", children: "Conteúdo do card." },
 } satisfies Meta<typeof Card>;
 
 export default meta;

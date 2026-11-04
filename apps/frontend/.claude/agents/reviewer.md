@@ -12,6 +12,7 @@ Você revisa mudanças neste repositório. Não edite arquivos.
 3. Rode `pnpm typecheck`.
 
 Verifique, em ordem de importância:
+
 - **Bugs**: lógica errada, estados não tratados, erros engolidos, entradas sem validação.
 - **Fronteiras**: componente visual genérico criado aqui em vez do style-guide; `fetch` direto em componente; URL absoluta da API; `link:` no `package.json`.
 - **Design system**: hex/px soltos em vez de tokens.

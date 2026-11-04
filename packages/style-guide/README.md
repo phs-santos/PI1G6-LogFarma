@@ -15,18 +15,18 @@ pnpm storybook    # http://localhost:6006
 
 ## Scripts
 
-| Comando | O que faz |
-|---|---|
-| `pnpm storybook` | Storybook em modo dev |
-| `pnpm typecheck` | Checa os tipos |
-| `pnpm build` | Build estático do Storybook em `storybook-static/` |
+| Comando          | O que faz                                          |
+| ---------------- | -------------------------------------------------- |
+| `pnpm storybook` | Storybook em modo dev                              |
+| `pnpm typecheck` | Checa os tipos                                     |
+| `pnpm build`     | Build estático do Storybook em `storybook-static/` |
 
 ## Componentes
 
-| Componente | Descrição |
-|---|---|
-| `Button` | Botão com variantes e tamanhos |
-| `Card` | Container com título opcional |
+| Componente | Descrição                      |
+| ---------- | ------------------------------ |
+| `Button`   | Botão com variantes e tamanhos |
+| `Card`     | Container com título opcional  |
 
 Veja todos com exemplos no Storybook.
 

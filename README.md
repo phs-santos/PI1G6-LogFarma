@@ -11,13 +11,13 @@ Orientador: Prof. Gabriel Passatuto Gallo.
 
 ## Estrutura
 
-| Pasta | O que é | Porta |
-|---|---|---|
-| [`apps/frontend`](apps/frontend) | Telas do paciente e da farmácia (React + Vite) | 5173 |
-| [`apps/backend`](apps/backend) | API e regras de negócio (Fastify) | 3333 |
-| [`packages/style-guide`](packages/style-guide) | Design system: tokens, componentes e Storybook | 6006 |
-| [`infra`](infra) | Docker Compose (dev e produção), deploy e backup | — |
-| [`docs`](docs) | Registro do que foi feito, por que e quando | — |
+| Pasta                                          | O que é                                          | Porta |
+| ---------------------------------------------- | ------------------------------------------------ | ----- |
+| [`apps/frontend`](apps/frontend)               | Telas do paciente e da farmácia (React + Vite)   | 5173  |
+| [`apps/backend`](apps/backend)                 | API e regras de negócio (Fastify)                | 3333  |
+| [`packages/style-guide`](packages/style-guide) | Design system: tokens, componentes e Storybook   | 6006  |
+| [`infra`](infra)                               | Docker Compose (dev e produção), deploy e backup | —     |
+| [`docs`](docs)                                 | Registro do que foi feito, por que e quando      | —     |
 
 ```
 packages/style-guide ──(workspace:*)──▶ apps/frontend ──(/api via proxy do Vite)──▶ apps/backend
@@ -41,24 +41,24 @@ pnpm docker:dev
 
 ## Scripts (na raiz)
 
-| Comando | O que faz |
-|---|---|
-| `pnpm dev` | Backend + frontend em modo desenvolvimento |
-| `pnpm dev:backend` / `pnpm dev:frontend` | Só um dos dois |
-| `pnpm storybook` | Storybook do style-guide |
-| `pnpm typecheck` | Checa os tipos de todos os pacotes |
-| `pnpm build` | Build de todos os pacotes |
-| `pnpm docker:dev` | Sobe banco + backend + frontend no Docker |
+| Comando                                  | O que faz                                  |
+| ---------------------------------------- | ------------------------------------------ |
+| `pnpm dev`                               | Backend + frontend em modo desenvolvimento |
+| `pnpm dev:backend` / `pnpm dev:frontend` | Só um dos dois                             |
+| `pnpm storybook`                         | Storybook do style-guide                   |
+| `pnpm typecheck`                         | Checa os tipos de todos os pacotes         |
+| `pnpm build`                             | Build de todos os pacotes                  |
+| `pnpm docker:dev`                        | Sobe banco + backend + frontend no Docker  |
 
 Para um pacote só: `pnpm --filter @fatec-pi/backend <script>`.
 
 ## Como trabalhamos
 
-- Tarefas e features ficam no **[projeto da org](https://github.com/orgs/Grupo-PI-6/projects)**. Pegue um card, mova para *Em andamento* e se atribua.
+- Tarefas e features ficam no **[projeto da org](https://github.com/orgs/Grupo-PI-6/projects)**. Pegue um card, mova para _Em andamento_ e se atribua.
 - Nunca commite direto na `main`. Crie uma branch a partir dela:
-  - `feat/<descricao-curta>` para funcionalidade nova
-  - `fix/<descricao-curta>` para correção
-  - `chore/<descricao-curta>` para configuração, docs e afins
+    - `feat/<descricao-curta>` para funcionalidade nova
+    - `fix/<descricao-curta>` para correção
+    - `chore/<descricao-curta>` para configuração, docs e afins
 - Commits em português, no imperativo: `adiciona busca de medicamento`, `corrige rota de estoque`.
 - Abra um Pull Request para a `main`, cite o card/issue e o requisito (ex.: `RF01`), e peça revisão de alguém do grupo.
 - Antes do PR: `pnpm typecheck` e `pnpm build` (na raiz) precisam passar.

@@ -17,19 +17,19 @@ curl localhost:3333/api/health   # {"status":"ok"}
 
 ## Scripts
 
-| Comando | O que faz |
-|---|---|
-| `pnpm dev` | Sobe a API em modo watch (`tsx`) |
-| `pnpm typecheck` | Checa os tipos |
-| `pnpm build` | Compila para `dist/` |
-| `pnpm start` | Roda a versão compilada |
+| Comando          | O que faz                        |
+| ---------------- | -------------------------------- |
+| `pnpm dev`       | Sobe a API em modo watch (`tsx`) |
+| `pnpm typecheck` | Checa os tipos                   |
+| `pnpm build`     | Compila para `dist/`             |
+| `pnpm start`     | Roda a versão compilada          |
 
 ## Variáveis de ambiente
 
-| Variável | Padrão | Descrição |
-|---|---|---|
-| `PORT` | `3333` | Porta da API |
-| `HOST` | `0.0.0.0` | Interface de rede |
+| Variável      | Padrão                  | Descrição                       |
+| ------------- | ----------------------- | ------------------------------- |
+| `PORT`        | `3333`                  | Porta da API                    |
+| `HOST`        | `0.0.0.0`               | Interface de rede               |
 | `CORS_ORIGIN` | `http://localhost:5173` | Origem liberada para o frontend |
 
 Toda variável nova entra em `src/env.ts` **e** em `.env.example`.
@@ -55,6 +55,6 @@ src/
 
 ## Endpoints
 
-| Método | Caminho | Descrição |
-|---|---|---|
-| `GET` | `/api/health` | Status da API |
+| Método | Caminho       | Descrição     |
+| ------ | ------------- | ------------- |
+| `GET`  | `/api/health` | Status da API |

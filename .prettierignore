@@ -1,0 +1,7 @@
+# Gerados / dependências
+node_modules
+dist
+storybook-static
+pnpm-lock.yaml
+graphify-out
+infra/backups

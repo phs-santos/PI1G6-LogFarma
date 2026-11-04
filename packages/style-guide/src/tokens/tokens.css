@@ -1,37 +1,37 @@
 :root {
-  /* Cores */
-  --color-primary: #b20000;
-  --color-primary-hover: #8f0000;
-  --color-on-primary: #ffffff;
-  --color-secondary: #1f2937;
-  --color-bg: #ffffff;
-  --color-surface: #f5f5f5;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-border: #e5e7eb;
-  --color-success: #15803d;
-  --color-danger: #dc2626;
+    /* Cores */
+    --color-primary: #b20000;
+    --color-primary-hover: #8f0000;
+    --color-on-primary: #ffffff;
+    --color-secondary: #1f2937;
+    --color-bg: #ffffff;
+    --color-surface: #f5f5f5;
+    --color-text: #111827;
+    --color-text-muted: #6b7280;
+    --color-border: #e5e7eb;
+    --color-success: #15803d;
+    --color-danger: #dc2626;
 
-  /* Tipografia */
-  --font-family: "Inter", system-ui, -apple-system, sans-serif;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-weight-regular: 400;
-  --font-weight-bold: 600;
+    /* Tipografia */
+    --font-family: "Inter", system-ui, -apple-system, sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+    --font-weight-regular: 400;
+    --font-weight-bold: 600;
 
-  /* Espaçamento */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
+    /* Espaçamento */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
 
-  /* Bordas e sombras */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
-  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.1);
+    /* Bordas e sombras */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.1);
 }
