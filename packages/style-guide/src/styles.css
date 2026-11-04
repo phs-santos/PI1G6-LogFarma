@@ -1,3 +1,5 @@
+@import "@fontsource/atkinson-hyperlegible/400.css";
+@import "@fontsource/atkinson-hyperlegible/700.css";
 @import "./tokens/tokens.css";
 @import "./components/Button/Button.css";
 @import "./components/Card/Card.css";
@@ -12,6 +14,48 @@ body {
     margin: 0;
     font-family: var(--font-family);
     font-size: var(--font-size-md);
+    line-height: var(--line-height);
     color: var(--color-text);
-    background: var(--color-bg);
+    background: var(--color-paper);
+}
+
+/* Telas de celular (paciente e entregador): base maior. */
+.sg-mobile {
+    font-size: var(--font-size-lg);
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-ink);
+    line-height: 1.25;
+    margin: 0 0 var(--space-3);
+}
+
+a {
+    color: var(--color-ink);
+    text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.sg-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+        animation: none !important;
+    }
 }

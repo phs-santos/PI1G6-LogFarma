@@ -3,19 +3,31 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    border: 1px solid transparent;
+    min-height: var(--tap-min-desktop);
+    border: var(--border-thick) solid transparent;
     border-radius: var(--radius-md);
     font-family: inherit;
     font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    text-align: center;
     cursor: pointer;
     transition:
         background-color 0.15s,
         border-color 0.15s;
 }
 
+.sg-mobile .sg-button {
+    min-height: var(--tap-min-mobile);
+}
+
 .sg-button:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    opacity: 0.65;
+}
+
+.sg-button--block {
+    display: flex;
+    width: 100%;
 }
 
 .sg-button--sm {
@@ -24,34 +36,42 @@
 }
 .sg-button--md {
     padding: var(--space-2) var(--space-4);
-    font-size: var(--font-size-md);
+    font-size: 1em;
 }
 .sg-button--lg {
     padding: var(--space-3) var(--space-6);
-    font-size: var(--font-size-lg);
+    font-size: 1.1em;
 }
 
 .sg-button--primary {
-    background: var(--color-primary);
-    color: var(--color-on-primary);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
 }
 .sg-button--primary:hover:not(:disabled) {
-    background: var(--color-primary-hover);
+    background: var(--color-ink-strong);
 }
 
 .sg-button--secondary {
-    background: var(--color-bg);
-    color: var(--color-text);
-    border-color: var(--color-border);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-color: var(--color-ink);
 }
 .sg-button--secondary:hover:not(:disabled) {
-    background: var(--color-surface);
+    background: var(--color-ink-soft);
+}
+
+.sg-button--danger {
+    background: var(--color-paper);
+    color: var(--color-tarja-red);
+    border-color: var(--color-tarja-red);
+}
+.sg-button--danger:hover:not(:disabled) {
+    background: var(--color-tarja-red-soft);
 }
 
 .sg-button--ghost {
     background: transparent;
-    color: var(--color-primary);
-}
-.sg-button--ghost:hover:not(:disabled) {
-    background: var(--color-surface);
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
 }

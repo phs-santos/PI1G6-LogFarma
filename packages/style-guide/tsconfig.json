@@ -13,8 +13,8 @@
         "noUnusedParameters": true,
         "jsx": "react-jsx",
         "lib": ["ES2022", "DOM", "DOM.Iterable"],
-        "types": ["vite/client"],
+        "types": ["vite/client", "node"],
         "noEmit": true
     },
-    "include": ["src", ".storybook"]
+    "include": ["src", ".storybook", "test", "vitest.config.ts"]
 }
