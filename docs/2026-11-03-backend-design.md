@@ -1,6 +1,6 @@
 # Design do backend — demonstração "Dona Maria"
 
-- **Implementado em:** — (design aprovado em 2026-11-03; implementação a seguir)
+- **Implementado em:** 2026-11-03 (ver [registro da implementação](2026-11-03-backend.md))
 - **Última alteração:** —
 - **Requisitos:** RF01–RF08, RNF01, RNF03
 

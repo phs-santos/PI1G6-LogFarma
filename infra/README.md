@@ -105,7 +105,23 @@ VPS_HOST=SEU_IP VPS_USER=deploy ./scripts/backup-db.sh                  # dump +
 
 Dumps de produção podem ter dados pessoais de pacientes (LGPD): `infra/backups/` está no `.gitignore`. Não compartilhe esses arquivos.
 
+## Banco e dados da demonstração
+
+- **Migrações** rodam sozinhas quando o backend inicia (as migrações SQL vão dentro da imagem). Não há passo manual no deploy.
+- **Variáveis novas no `.env` da VPS** (ver `.env.prod.example`): `JWT_SECRET` (obrigatória — gere com `openssl rand -hex 32`), `COOKIE_SECURE`, `ALLOW_DEMO_SEED`, `DEMO_PASSWORD`.
+- **Recarregar os dados da demonstração** (Taquaritinga, Dona Maria). **Apaga todos os dados do banco** — só para ensaio e apresentação:
+
+    ```bash
+    # Desenvolvimento (na raiz do monorepo)
+    docker compose -f infra/compose.yaml exec backend pnpm db:seed
+
+    # Produção (na VPS, em ~/grupo-pi-6) — feito por uma pessoa do grupo
+    docker compose exec -e ALLOW_DEMO_SEED=true backend node dist/db/seed.js
+    ```
+
+    Sem `ALLOW_DEMO_SEED=true` o seed se recusa a rodar em produção. As contas criadas estão no `apps/backend/README.md`.
+
 ## Pendências
 
 - **HTTPS**: o compose de produção serve HTTP. Para ter domínio com certificado, coloque um proxy (Caddy ou Traefik) na frente do frontend.
-- **Migrações**: o backend ainda não usa banco nem tem ORM. Quando tiver, o passo de migração entra no `deploy.sh` antes do `up`.
+- **Cookie seguro**: enquanto não houver HTTPS, mantenha `COOKIE_SECURE=false`; com HTTPS, troque para `true`.

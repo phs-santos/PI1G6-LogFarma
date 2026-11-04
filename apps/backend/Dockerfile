@@ -2,7 +2,10 @@
 #   docker build -f apps/backend/Dockerfile --target prod .
 # Alvos:
 #   dev  — tsx watch com o código montado como volume (infra/compose.yaml)
-#   prod — node dist/server.js, só com dependências de produção
+#   prod — node dist/server.js, só com dependências de produção (aplica as migrações ao iniciar)
+#
+# Seed da demonstração dentro do container de produção (apaga os dados!):
+#   docker compose exec -e ALLOW_DEMO_SEED=true backend node dist/db/seed.js
 FROM node:24-slim AS base
 RUN corepack enable
 WORKDIR /app
@@ -32,6 +35,8 @@ FROM manifests AS prod
 ENV NODE_ENV=production
 RUN pnpm install --frozen-lockfile --prod --filter @fatec-pi/backend
 COPY --from=build /app/apps/backend/dist apps/backend/dist
+# Migrações SQL: o servidor aplica ao iniciar (src/db/migrate.ts lê ./drizzle).
+COPY apps/backend/drizzle apps/backend/drizzle
 WORKDIR /app/apps/backend
 USER node
 EXPOSE 3333

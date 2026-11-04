@@ -52,8 +52,10 @@ Aqui fica registrado **tudo que foi feito** no monorepo: o que mudou, por que, o
 
 ## Índice
 
-| Data       | Documento                                                    |
-| ---------- | ------------------------------------------------------------ |
-| 2026-11-03 | [Migração para monorepo](2026-11-03-monorepo.md)             |
-| 2026-11-03 | [Grafo de conhecimento com graphify](2026-11-03-graphify.md) |
-| 2026-11-03 | [Formatação automática com Prettier](2026-11-03-prettier.md) |
+| Data       | Documento                                                                   |
+| ---------- | --------------------------------------------------------------------------- |
+| 2026-11-03 | [Migração para monorepo](2026-11-03-monorepo.md)                            |
+| 2026-11-03 | [Grafo de conhecimento com graphify](2026-11-03-graphify.md)                |
+| 2026-11-03 | [Formatação automática com Prettier](2026-11-03-prettier.md)                |
+| 2026-11-03 | [Design do backend — demonstração Dona Maria](2026-11-03-backend-design.md) |
+| 2026-11-03 | [Backend implementado: API, banco e as três cenas](2026-11-03-backend.md)   |

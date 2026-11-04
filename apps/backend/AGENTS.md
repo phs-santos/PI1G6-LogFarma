@@ -9,6 +9,8 @@ pnpm install
 cp .env.example .env
 pnpm dev          # http://localhost:3333 — teste com: curl localhost:3333/api/health
 pnpm typecheck    # obrigatório antes de considerar pronto
+pnpm test         # obrigatório: testes com banco real (docker compose -f ../../infra/compose.yaml up -d db)
+pnpm db:seed      # recarrega a demonstração (apaga o banco de dev)
 pnpm build
 ```
 
@@ -18,7 +20,8 @@ pnpm build
 - `src/app.ts` — `buildApp()`: registra plugins e rotas
 - `src/env.ts` — leitura de variáveis de ambiente; toda nova variável entra aqui **e** em `.env.example`
 - `src/routes/<recurso>.ts` — um `FastifyPluginAsync` por recurso, registrado em `app.ts` com `{ prefix: "/api" }`
-- `src/services/<recurso>.ts` — regra de negócio, quando o handler crescer
+- `src/services/<recurso>.ts` — regra de negócio com banco (estoque, pedidos, transferência, compra, entrega, painéis)
+- `src/domain/` — regras puras e erros; `src/auth/` — senha, sessão e guardas; `src/db/` — esquema, migração e seed; `src/contracts.ts` — tipos públicos
 
 ## Convenções
 
@@ -28,7 +31,12 @@ pnpm build
 - Exporte os tipos de request/response: o frontend espelha esses contratos.
 - Erros: `reply.code(4xx).send({ message })` ou erros do Fastify; nunca exponha stack.
 - Use `app.log`, não `console.log`. Nunca logue dados pessoais de paciente (LGPD).
-- Sem banco/ORM/autenticação ainda — confirme com o usuário antes de escolher. Na POC, dados simulados em memória.
+- Banco: PostgreSQL + Drizzle (`src/db/schema.ts`). Mudou o esquema → `pnpm db:generate` e commit da migração em `drizzle/`.
+- Regra de negócio em `src/services/` dentro de `db.transaction`, travando com `.for("update")` o pedido/lote que vai mudar; situações do pedido só mudam por `setStatus` (que chama `assertTransition`).
+- Regras puras (prioridade, lotes FEFO, validade de receita, distância) ficam em `src/domain/` e são testadas sem banco.
+- Rotas protegidas usam `requireAuth` + `requireRole(...)`; o profissional só age na própria unidade, o fornecedor só nos pedidos dele, o entregador só nas entregas dele.
+- Erros de regra: lance `ConflictError` (409), `ForbiddenError` (403), `NotFoundError` (404) ou `BadRequestError` (400) de `src/domain/errors.ts`.
+- Testes: `pnpm test` (Vitest, banco `pi_test`; precisa do Postgres do `infra/compose.yaml`). Toda regra nova chega com teste que falhou antes.
 
 ## Monorepo
 

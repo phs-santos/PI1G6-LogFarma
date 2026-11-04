@@ -50,7 +50,7 @@ Para adicionar dependência: `pnpm --filter @fatec-pi/<pacote> add <lib>` (nunca
 
 - Fazer commit, criar branch, abrir PR ou fazer push.
 - Adicionar ou trocar biblioteca (router, estado global, ORM, UI kit, etc.).
-- Decidir algo listado em **Decisões em aberto** (banco, autenticação, rede coberta, integrações reais).
+- Decidir algo listado em **Decisões em aberto** (integrações reais, módulos futuros) ou mudar uma **Decisão tomada**.
 - Mexer em `infra/` (compose, scripts de deploy/backup) ou em `.github/workflows/`.
 - Apagar arquivos ou mudar a API pública de um componente do style-guide ou de uma rota do backend.
 - Qualquer coisa fora do escopo do que foi pedido.
@@ -153,27 +153,44 @@ Ao implementar algo ligado a um requisito, cite o código (ex.: `// RF03`) no co
 
 Código em inglês, UI e comentários em português. Use estes nomes para manter consistência entre backend e frontend:
 
-| Domínio                                     | Código                                                                |
-| ------------------------------------------- | --------------------------------------------------------------------- |
-| Medicamento                                 | `Medication`                                                          |
-| Unidade / farmácia                          | `Pharmacy`                                                            |
-| Estoque (item por unidade) / estoque mínimo | `StockItem` / `minQuantity`                                           |
-| Paciente                                    | `Patient`                                                             |
-| Dispensação                                 | `Dispensation`                                                        |
-| Transferência entre unidades                | `Transfer`                                                            |
-| Pedido de compra ao fornecedor              | `PurchaseOrder`                                                       |
-| Fornecedor                                  | `Supplier`                                                            |
-| Lista de espera / prioridade                | `WaitlistEntry` / `priority`                                          |
-| Entrega domiciliar                          | `Delivery` (`method`: `motoboy` \| `logistics_partner` \| `correios`) |
-| Notificação                                 | `Notification`                                                        |
+| Domínio                                             | Código                                                                                        |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Medicamento                                         | `Medication`                                                                                  |
+| Unidade / farmácia                                  | `Pharmacy`                                                                                    |
+| Estoque (item por unidade) / estoque mínimo         | `StockItem` / `minQuantity`                                                                   |
+| Paciente                                            | `Patient`                                                                                     |
+| Dispensação                                         | `Dispensation`                                                                                |
+| Transferência entre unidades                        | `Transfer`                                                                                    |
+| Pedido de compra ao fornecedor                      | `PurchaseOrder`                                                                               |
+| Fornecedor                                          | `Supplier`                                                                                    |
+| Lista de espera / prioridade                        | `WaitlistEntry` / `priority`                                                                  |
+| Entrega domiciliar (programa municipal)             | `Delivery` (`method`: `municipal_program`)                                                    |
+| Notificação                                         | `Notification`                                                                                |
+| Usuário (login) / perfil                            | `User` / `role` (`patient` \| `pharmacy_staff` \| `supplier_staff` \| `courier` \| `manager`) |
+| Pedido do paciente                                  | `MedicationRequest`                                                                           |
+| Receita                                             | `Prescription`                                                                                |
+| Lote / validade                                     | `StockBatch` / `expiryDate`                                                                   |
+| Remédio separado para um pedido                     | `StockReservation`                                                                            |
+| Movimento de estoque                                | `StockMovement`                                                                               |
+| Profissional da farmácia (farmacêutico ou auxiliar) | `PharmacyStaff` (`occupation`)                                                                |
+| Atendente do fornecedor                             | `SupplierStaff`                                                                               |
+| Entregador                                          | `Courier`                                                                                     |
+| Responsável pela retirada                           | `Caregiver`                                                                                   |
+| Prioridade clínica declarada (com consentimento)    | `PatientPriority`                                                                             |
+| Busca registrada (demanda não atendida)             | `SearchEvent`                                                                                 |
+
+### Decisões tomadas (2026-11-03)
+
+- **Rede coberta:** núcleo na rede municipal do SUS (UBS e farmácia municipal) + farmácia estadual de especializados; Farmácia Popular só para consulta. Entrega pelo programa municipal.
+- **Banco:** PostgreSQL com Drizzle ORM; migrações aplicadas ao iniciar o backend.
+- **Login e perfis:** paciente, profissional da farmácia (farmacêutico ou auxiliar), fornecedor, entregador e gestor; cada um faz só o seu papel.
+- Detalhes em `docs/2026-11-03-backend-design.md`.
 
 ### Decisões em aberto
 
 Não assuma uma resposta sem perguntar ao usuário:
 
-- Rede coberta: só PFPB/SUS ou também farmácias privadas parceiras.
-- Banco de dados, autenticação e perfis de acesso (ainda não definidos no código).
-- Integração real de estoque, mapas/rotas e logística (na POC/MVP, usar dados simulados/mock).
+- Integração real de estoque (BNAFAR/Hórus), mapas/rotas e logística — o modelo já guarda os campos, mas nada é integrado.
 - Futuro, fora do MVP: módulo de adesão ao tratamento e programa de entrega voluntária.
 
 ## graphify
