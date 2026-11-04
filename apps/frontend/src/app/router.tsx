@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
+import { EntregaDetalhe } from "../pages/entregador/EntregaDetalhe";
+import { EntregasEntregador } from "../pages/entregador/Entregas";
 import { Compras } from "../pages/farmacia/Compras";
 import { Entregas } from "../pages/farmacia/Entregas";
 import { Estoque } from "../pages/farmacia/Estoque";
@@ -86,7 +88,10 @@ export const appRoutes: RouteObject[] = [
                         <CourierLayout />
                     </RequireRole>
                 ),
-                children: [page("/entregas", "Entregas"), page("/entregas/:id", "Entrega")],
+                children: [
+                    { path: "/entregas", element: <EntregasEntregador /> },
+                    { path: "/entregas/:id", element: <EntregaDetalhe /> },
+                ],
             },
             {
                 element: (

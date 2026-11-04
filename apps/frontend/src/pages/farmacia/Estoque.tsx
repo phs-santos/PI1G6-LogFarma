@@ -8,7 +8,7 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { daysUntil, formatDate } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
-import { InlineText } from "./InlineReason";
+import { InlineText } from "../../ui/InlineText";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
 

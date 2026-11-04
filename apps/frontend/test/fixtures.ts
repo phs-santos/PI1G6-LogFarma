@@ -243,3 +243,40 @@ export function stockOf(med: Med, available: number): UnitStockItem {
             : [],
     };
 }
+
+import type { DeliveryView } from "../src/api/types";
+
+/** Entrega da cena 2; disponível = sem dados da paciente (LGPD). */
+export function delivery(over: Partial<DeliveryView> = {}): DeliveryView {
+    return {
+        id: "d1",
+        requestId: "req-1",
+        status: "scheduled",
+        scheduledWindow: "Amanhã, 8h às 12h",
+        requiresRefrigeration: true,
+        courierId: null,
+        medication: null,
+        pharmacy: {
+            name: "UBS Centro",
+            address: "Rua Sete de Setembro, 100, Centro, Taquaritinga",
+        },
+        area: "Centro, Taquaritinga",
+        recipient: null,
+        receivedBy: null,
+        failureReason: null,
+        createdAt: new Date().toISOString(),
+        ...over,
+    };
+}
+
+export const acceptedDelivery = (over: Partial<DeliveryView> = {}) =>
+    delivery({
+        courierId: "u-carlos",
+        medication: "Losartana potássica 50 mg comprimido (30)",
+        recipient: {
+            name: "Maria Aparecida da Silva",
+            address: "Rua Sete de Setembro, 50 — Centro",
+            phone: "16991234567",
+        },
+        ...over,
+    });

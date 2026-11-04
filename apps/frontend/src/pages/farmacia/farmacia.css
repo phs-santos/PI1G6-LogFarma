@@ -67,20 +67,6 @@
     margin: 0;
 }
 
-.app-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
-}
-
-.app-inline-form {
-    padding: var(--space-4);
-    border: var(--border-thin) solid var(--color-ink);
-    border-radius: var(--radius-md);
-    background: var(--color-ink-soft);
-}
-
 .app-blocked {
     font-weight: var(--font-weight-bold);
     color: var(--color-text-muted);

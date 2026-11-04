@@ -91,3 +91,19 @@
     gap: var(--space-3);
     margin-top: var(--space-6);
 }
+
+/* Formulários curtos dentro da tela (motivo, quantidade, entrega no balcão). */
+.app-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+}
+
+.app-inline-form {
+    margin: var(--space-4) 0;
+    padding: var(--space-4);
+    border: var(--border-thin) solid var(--color-ink);
+    border-radius: var(--radius-md);
+    background: var(--color-ink-soft);
+}

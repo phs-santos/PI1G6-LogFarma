@@ -7,7 +7,7 @@ import { LIVE, qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
-import { InlineText } from "./InlineReason";
+import { InlineText } from "../../ui/InlineText";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
 
