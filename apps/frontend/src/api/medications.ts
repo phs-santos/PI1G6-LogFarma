@@ -28,3 +28,15 @@ export async function createMedication(input: MedicationInput): Promise<Medicati
         await apiFetch<{ medication: Medication }>("/medications", { method: "POST", body: input })
     ).medication;
 }
+
+export async function updateMedication(
+    id: string,
+    patch: Partial<MedicationInput>,
+): Promise<Medication> {
+    return (
+        await apiFetch<{ medication: Medication }>(`/medications/${id}`, {
+            method: "PATCH",
+            body: patch,
+        })
+    ).medication;
+}

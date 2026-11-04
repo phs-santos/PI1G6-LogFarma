@@ -21,3 +21,11 @@ export function formatDayTime(iso: string): string {
     const day = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
     return `${day}, ${formatTime(iso)}`;
 }
+
+/** Dias de hoje até a data (negativo se já passou), contando dias de calendário locais. */
+export function daysUntil(isoDay: string, now: Date = new Date()): number {
+    const [y, m, d] = isoDay.split("-").map(Number);
+    const target = new Date(y!, m! - 1, d!);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((target.getTime() - today.getTime()) / 86_400_000);
+}

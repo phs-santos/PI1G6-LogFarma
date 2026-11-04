@@ -2,7 +2,12 @@ import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
+import { Compras } from "../pages/farmacia/Compras";
+import { Entregas } from "../pages/farmacia/Entregas";
+import { Estoque } from "../pages/farmacia/Estoque";
+import { NovoMedicamento } from "../pages/farmacia/NovoMedicamento";
 import { Pedidos } from "../pages/farmacia/Pedidos";
+import { Transferencias } from "../pages/farmacia/Transferencias";
 import { Avisos } from "../pages/paciente/Avisos";
 import { ConfirmarPedido } from "../pages/paciente/ConfirmarPedido";
 import { CriarConta } from "../pages/paciente/CriarConta";
@@ -60,11 +65,19 @@ export const appRoutes: RouteObject[] = [
                 children: [
                     { path: "/farmacia", element: <Navigate to="/farmacia/pedidos" replace /> },
                     { path: "/farmacia/pedidos/:id?", element: <Pedidos /> },
-                    page("/farmacia/transferencias", "Transferências"),
-                    page("/farmacia/compras", "Compras"),
-                    page("/farmacia/estoque", "Estoque"),
-                    page("/farmacia/estoque/novo-medicamento", "Cadastrar medicamento"),
-                    page("/farmacia/entregas", "Entregas"),
+                    { path: "/farmacia/transferencias", element: <Transferencias /> },
+                    { path: "/farmacia/compras", element: <Compras /> },
+                    { path: "/farmacia/estoque", element: <Estoque /> },
+                    {
+                        path: "/farmacia/estoque/novo-medicamento",
+                        element: (
+                            <NovoMedicamento
+                                backTo="/farmacia/estoque"
+                                backLabel="Voltar ao estoque"
+                            />
+                        ),
+                    },
+                    { path: "/farmacia/entregas", element: <Entregas /> },
                 ],
             },
             {
@@ -92,7 +105,10 @@ export const appRoutes: RouteObject[] = [
                 children: [
                     page("/gestao", "Painel da rede"),
                     page("/gestao/contas", "Contas"),
-                    page("/gestao/medicamentos/novo", "Cadastrar medicamento"),
+                    {
+                        path: "/gestao/medicamentos/novo",
+                        element: <NovoMedicamento backTo="/gestao" backLabel="Voltar ao painel" />,
+                    },
                 ],
             },
             { path: "*", element: <NaoEncontrada /> },
