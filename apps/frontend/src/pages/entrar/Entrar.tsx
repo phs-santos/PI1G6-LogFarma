@@ -1,10 +1,11 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Notice, TextField } from "@fatec-pi/style-guide";
+import { Button, Logo, Notice, TextField } from "@fatec-pi/style-guide";
 import { login } from "../../api/auth";
 import type { Session } from "../../api/types";
 import { qk } from "../../app/queryKeys";
+import "./entrar.css";
 import { afterLoginPath, homeFor, useSession } from "../../app/session";
 import { usePageTitle } from "../../app/usePageTitle";
 
@@ -17,6 +18,7 @@ export function Entrar() {
     const { user } = useSession();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const expired = params.get("expirou") === "1";
     const location = useLocation();
     const navState = location.state as { signedOut?: boolean; created?: boolean } | null;
@@ -43,13 +45,39 @@ export function Entrar() {
     };
 
     return (
-        <div className="sg-mobile app-mobile">
-            <main className="app-mobile__main">
-                <header className="app-band">
-                    <p className="app-band__brand">LogFarma</p>
-                    <p>Onde tem o seu remédio na rede do SUS</p>
-                </header>
-                <h1>Entrar</h1>
+        <div className="sg-mobile entrar">
+            <section className="entrar__intro" aria-labelledby="entrar-promessa">
+                <p className="entrar__brand">
+                    <Logo tone="white" />
+                </p>
+                <p className="entrar__tagline">
+                    Remédios do SUS em Taquaritinga, Matão e Monte Alto
+                </p>
+                <h2 id="entrar-promessa" className="entrar__promise">
+                    Saiba onde tem o seu remédio antes de sair de casa.
+                </h2>
+                <p className="entrar__lead">
+                    Veja em qual unidade do SUS ele está disponível, peça para retirar ou para
+                    receber em casa, e acompanhe tudo pelo celular.
+                </p>
+                {/* Exemplo do que a pessoa vê depois de entrar (ilustração). */}
+                <div className="entrar__sample" aria-hidden="true">
+                    <p className="entrar__sample-med">Losartana potássica 50 mg</p>
+                    <p className="entrar__sample-unit">UBS Jardim São Sebastião</p>
+                    <p className="entrar__sample-facts">
+                        <span className="sg-stamp sg-stamp--ok">Tem</span>
+                        <span>A 1,1 km de você</span>
+                    </p>
+                </div>
+            </section>
+
+            <main className="entrar__sheet">
+                <div className="entrar__letterhead">
+                    <Logo className="entrar__letterhead-logo" />
+                    <span className="entrar__letterhead-note">Serviço público e gratuito</span>
+                </div>
+                <h1 className="entrar__title">Entrar</h1>
+                <p className="entrar__hint">Use o e-mail e a senha do seu cadastro.</p>
                 {expired && <Notice tone="attention" title="Sua sessão terminou. Entre de novo." />}
                 {created && (
                     <Notice
@@ -57,38 +85,55 @@ export function Entrar() {
                         title="Sua conta foi criada. Entre com seu e-mail e senha."
                     />
                 )}
-                <form className="app-form" onSubmit={onSubmit}>
+                <form className="entrar__form" onSubmit={onSubmit}>
                     <TextField
                         label="E-mail"
                         type="email"
                         autoComplete="username"
+                        inputMode="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
+                        id="entrar-senha"
                         label="Senha"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="entrar__reveal"
+                        aria-controls="entrar-senha"
+                        aria-pressed={showPassword}
+                        onClick={() => setShowPassword((v) => !v)}
+                    >
+                        {showPassword ? "Esconder senha" : "Mostrar senha"}
+                    </Button>
+                    {mutation.isError && (
+                        <p className="sg-field__error" role="alert">
+                            {mutation.error.message}
+                        </p>
+                    )}
                     <Button type="submit" block size="lg" loading={mutation.isPending}>
                         Entrar
                     </Button>
                 </form>
-                {mutation.isError && (
-                    <p className="sg-field__error" role="alert">
-                        {mutation.error.message}
+                <div className="entrar__footer">
+                    <p>
+                        Ainda não tem conta?{" "}
+                        <Link className="app-link" to="/cadastro">
+                            Criar conta
+                        </Link>
                     </p>
-                )}
-                <p>
-                    Ainda não tem conta?{" "}
-                    <Link className="app-link" to="/cadastro">
-                        Criar conta
-                    </Link>
-                </p>
+                    <p className="entrar__help">
+                        Esqueceu a senha? Peça ajuda no balcão da sua unidade de saúde.
+                    </p>
+                </div>
             </main>
         </div>
     );

@@ -31,6 +31,7 @@ import { SignOutButton } from "../../app/session";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { formatPhone, onlyDigits } from "../../lib/format";
+import { maskPhone } from "../../lib/masks";
 import { Loaded } from "../../ui/Loaded";
 import { AddressFields, cleanAddress, validateAddress, type AddressErrors } from "./AddressFields";
 import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
@@ -147,7 +148,7 @@ function ContactSection({ profile }: SectionProps) {
                     type="tel"
                     value={phone}
                     error={phoneError || undefined}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(maskPhone(e.target.value))}
                 />
                 <AddressFields value={address} errors={errors} onChange={setAddress} />
                 <Button type="submit" block loading={saving}>
@@ -395,7 +396,12 @@ function CaregiversSection() {
                 {field("fullName", "Nome completo")}
                 {field("document", "Documento (RG ou CPF)", { inputMode: "numeric" })}
                 {field("relationship", "Parentesco", { hint: "Por exemplo: filha, vizinho." })}
-                {field("phone", "Telefone do responsável", { type: "tel" })}
+                <TextField
+                    label="Telefone do responsável"
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: maskPhone(e.target.value) })}
+                />
                 {(error || add.isError) && (
                     <p className="sg-field__error" role="alert">
                         {error || add.error?.message}

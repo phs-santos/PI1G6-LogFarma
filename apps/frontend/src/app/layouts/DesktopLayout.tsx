@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { AppHeader } from "@fatec-pi/style-guide";
+import { AppHeader, Logo } from "@fatec-pi/style-guide";
 import type { MeProfile } from "../../api/types";
 import { useSession, SignOutButton } from "../session";
 
@@ -28,6 +28,7 @@ export function DesktopLayout() {
     return (
         <div className="app-desktop">
             <AppHeader
+                brand={<Logo tone="white" />}
                 title={title}
                 subtitle={subtitle}
                 actions={<SignOutButton variant="secondary" />}

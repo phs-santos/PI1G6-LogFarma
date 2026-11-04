@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Checkbox,
+    Logo,
     SelectField,
     TextField,
     ChoiceGroup,
@@ -15,6 +16,7 @@ import type { Address, PriorityCategory, RegisterPatientInput, Session } from ".
 import { requestLocation, type Coordinates } from "../../app/geolocation";
 import { qk } from "../../app/queryKeys";
 import { onlyDigits } from "../../lib/format";
+import { maskCns, maskPhone } from "../../lib/masks";
 import {
     AddressFields,
     cleanAddress,
@@ -198,6 +200,9 @@ export function CriarConta() {
     return (
         <div className="sg-mobile app-mobile">
             <main className="app-mobile__main">
+                <p className="app-logo-top">
+                    <Logo />
+                </p>
                 <h1>Criar conta</h1>
                 <p className="app-lead">
                     Passo {step} de {TOTAL}
@@ -233,7 +238,7 @@ export function CriarConta() {
                                 inputMode="numeric"
                                 value={f.cns}
                                 error={errors.cns}
-                                onChange={(e) => set("cns", e.target.value)}
+                                onChange={(e) => set("cns", maskCns(e.target.value))}
                             />
                             <TextField
                                 label="Telefone com DDD"
@@ -241,7 +246,7 @@ export function CriarConta() {
                                 autoComplete="tel"
                                 value={f.phone}
                                 error={errors.phone}
-                                onChange={(e) => set("phone", e.target.value)}
+                                onChange={(e) => set("phone", maskPhone(e.target.value))}
                             />
                         </>
                     )}

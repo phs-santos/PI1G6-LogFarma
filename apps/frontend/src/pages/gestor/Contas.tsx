@@ -7,6 +7,7 @@ import type { CreateAccountInput, StaffOccupation } from "../../api/types";
 import { qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { onlyDigits } from "../../lib/format";
+import { maskPhone } from "../../lib/masks";
 import { ManagerTabs } from "./ManagerTabs";
 import "./gestor.css";
 import { usePageTitle } from "../../app/usePageTitle";
@@ -184,7 +185,7 @@ export function Contas() {
                             label="Telefone com DDD"
                             type="tel"
                             value={f.phone}
-                            onChange={(e) => set("phone", e.target.value)}
+                            onChange={(e) => set("phone", maskPhone(e.target.value))}
                         />
                         <TextField
                             label="Programa de entrega"
