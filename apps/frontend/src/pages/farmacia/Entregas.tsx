@@ -6,6 +6,7 @@ import { LIVE, qk } from "../../app/queryKeys";
 import { Loaded } from "../../ui/Loaded";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 function statusText(d: DeliveryView): string {
     switch (d.status) {
@@ -24,6 +25,7 @@ function statusText(d: DeliveryView): string {
 
 /** RF08: entregas da unidade. */
 export function Entregas() {
+    usePageTitle("Entregas da unidade");
     const query = useQuery({
         queryKey: qk.pharmacy.deliveries,
         queryFn: listPharmacyDeliveries,

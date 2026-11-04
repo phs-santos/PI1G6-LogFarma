@@ -6,9 +6,11 @@ import { login } from "../../api/auth";
 import type { Session } from "../../api/types";
 import { qk } from "../../app/queryKeys";
 import { afterLoginPath, homeFor, useSession } from "../../app/session";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Tela única de entrada para todos os perfis. */
 export function Entrar() {
+    usePageTitle("Entrar");
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const client = useQueryClient();

@@ -12,6 +12,26 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     loading?: boolean;
 }
 
+/** Classes do botão, para um link (`<a>`) que precisa da mesma aparência. */
+export function buttonClassName({
+    variant = "primary",
+    size = "md",
+    block = false,
+}: {
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+    block?: boolean;
+}): string {
+    return [
+        "sg-button",
+        `sg-button--${variant}`,
+        `sg-button--${size}`,
+        block ? "sg-button--block" : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
+}
+
 export function Button({
     variant = "primary",
     size = "md",
@@ -23,13 +43,7 @@ export function Button({
     children,
     ...props
 }: ButtonProps) {
-    const classes = [
-        "sg-button",
-        `sg-button--${variant}`,
-        `sg-button--${size}`,
-        block ? "sg-button--block" : "",
-        className,
-    ]
+    const classes = [buttonClassName({ variant, size, block }), className]
         .filter(Boolean)
         .join(" ");
     return (

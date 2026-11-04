@@ -6,9 +6,11 @@ import { searchMedications } from "../../api/medications";
 import { qk } from "../../app/queryKeys";
 import { useDebounced } from "../../lib/useDebounced";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF01: procurar o remédio pelo nome, com sugestões enquanto digita. */
 export function Procurar() {
+    usePageTitle("Procurar remédio");
     const navigate = useNavigate();
     const [text, setText] = useState("");
     const term = useDebounced(text.trim());

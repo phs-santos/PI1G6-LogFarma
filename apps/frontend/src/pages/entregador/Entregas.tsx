@@ -8,9 +8,11 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { Loaded } from "../../ui/Loaded";
 import { DELIVERY_STATUS } from "./texts";
 import "../paciente/paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF08: entregas disponíveis (sem dados da paciente) e as minhas. */
 export function EntregasEntregador() {
+    usePageTitle("Entregas");
     const [params, setParams] = useSearchParams();
     const navigate = useNavigate();
     const tab = params.get("aba") === "minhas" ? "minhas" : "disponiveis";

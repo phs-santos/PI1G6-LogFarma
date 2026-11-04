@@ -1,6 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Checkbox, Notice, SelectField, TextField } from "@fatec-pi/style-guide";
+import {
+    Button,
+    Checkbox,
+    Notice,
+    SelectField,
+    TextField,
+    ChoiceGroup,
+    ChoiceOption,
+    ConfirmDialog,
+} from "@fatec-pi/style-guide";
 import {
     addCaregiver,
     getProfile,
@@ -22,15 +31,15 @@ import { useSignOut } from "../../app/session";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { formatPhone, onlyDigits } from "../../lib/format";
-import { Choice, Choices } from "../../ui/Choices";
-import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { Loaded } from "../../ui/Loaded";
 import { AddressFields, cleanAddress, validateAddress, type AddressErrors } from "./AddressFields";
 import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Dados da paciente: contato, endereço, unidade, localização, responsáveis e prioridade. */
 export function MeusDados() {
+    usePageTitle("Meus dados");
     const query = useQuery({ queryKey: qk.profile, queryFn: getProfile });
     const signOut = useSignOut();
     return (
@@ -254,9 +263,9 @@ function PrioritySection({ profile, onSave, saving }: SectionProps) {
                 </>
             ) : (
                 <>
-                    <Choices legend="Você tem alguma destas condições?">
+                    <ChoiceGroup legend="Você tem alguma destas condições?">
                         {(Object.keys(PRIORITY_TEXT) as PriorityCategory[]).map((c) => (
-                            <Choice
+                            <ChoiceOption
                                 key={c}
                                 name="priority"
                                 label={PRIORITY_TEXT[c]}
@@ -264,7 +273,7 @@ function PrioritySection({ profile, onSave, saving }: SectionProps) {
                                 onChange={() => setCategory(c)}
                             />
                         ))}
-                    </Choices>
+                    </ChoiceGroup>
                     {category && (
                         <>
                             <Checkbox

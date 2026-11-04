@@ -16,6 +16,7 @@ export const tokens = {
         attentionBg: "#FFF4D6",
         attentionBorder: "#8A6100",
         onInk: "#FFFFFF",
+        backdrop: "rgb(0 0 0 / 0.55)",
     },
     font: {
         family: '"Atkinson Hyperlegible", system-ui, -apple-system, sans-serif',

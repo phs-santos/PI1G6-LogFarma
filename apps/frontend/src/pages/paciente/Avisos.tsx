@@ -8,9 +8,11 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { formatAgo } from "../../lib/format";
 import { Loaded } from "../../ui/Loaded";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF05: avisos; os novos marcados com a palavra "Novo" (não só com cor). */
 export function Avisos() {
+    usePageTitle("Avisos");
     const navigate = useNavigate();
     const query = useQuery({
         queryKey: qk.notifications(false),

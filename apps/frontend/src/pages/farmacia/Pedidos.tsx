@@ -10,9 +10,11 @@ import { PedidoDetalhe } from "./PedidoDetalhe";
 import { PharmacyTabs } from "./PharmacyTabs";
 import { OPEN_STATUSES, STAFF_STATUS } from "./texts";
 import "./farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Balcão: fila de pedidos à esquerda, pedido aberto com o próximo passo à direita. */
 export function Pedidos() {
+    usePageTitle("Pedidos");
     const { id } = useParams();
     const [filter, setFilter] = useState<"open" | "all">("open");
     const query = useQuery({

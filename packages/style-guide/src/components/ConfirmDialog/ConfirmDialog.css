@@ -1,0 +1,22 @@
+.sg-dialog {
+    width: min(100% - 2 * var(--space-4), var(--width-mobile));
+    padding: var(--space-6);
+    border: var(--border-thick) solid var(--color-ink);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    background: var(--color-paper);
+}
+
+.sg-dialog::backdrop {
+    background: var(--color-backdrop);
+}
+
+.sg-dialog__title {
+    margin-top: 0;
+}
+
+.sg-dialog__actions {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { Button } from "./Button";
+import { Button, buttonClassName } from "./Button";
 import { expectNoAxeViolations } from "../../../test/setup";
 
 describe("Button", () => {
@@ -26,5 +26,14 @@ describe("Button", () => {
     it("não tem violações de acessibilidade", async () => {
         const { container } = render(<Button>Procurar remédio</Button>);
         await expectNoAxeViolations(container);
+    });
+});
+
+describe("buttonClassName", () => {
+    it("gera as mesmas classes do Button para um link com cara de botão", () => {
+        expect(buttonClassName({ variant: "secondary", size: "lg", block: true })).toBe(
+            "sg-button sg-button--secondary sg-button--lg sg-button--block",
+        );
+        expect(buttonClassName({})).toBe("sg-button sg-button--primary sg-button--md");
     });
 });

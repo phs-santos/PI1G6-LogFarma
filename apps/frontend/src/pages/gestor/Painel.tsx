@@ -7,6 +7,7 @@ import { daysUntil, formatDate } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
 import { ManagerTabs } from "./ManagerTabs";
 import "./gestor.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Soma as buscas sem estoque de cada remédio em todas as unidades, maior primeiro. */
 export function totalsByMedication(items: UnmetDemandItem[]): { label: string; value: number }[] {
@@ -19,6 +20,7 @@ export function totalsByMedication(items: UnmetDemandItem[]): { label: string; v
 
 /** Painel da rede: onde falta remédio, o que vai vencer e quem espera. */
 export function Painel() {
+    usePageTitle("Painel da rede");
     const summary = useQuery({
         queryKey: qk.manager.summary,
         queryFn: getSummary,

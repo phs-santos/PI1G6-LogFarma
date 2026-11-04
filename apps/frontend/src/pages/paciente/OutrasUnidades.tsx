@@ -5,9 +5,11 @@ import { hasIt } from "./recommendation";
 import { useAvailability, usePharmacies } from "./queries";
 import { UnitFacts, UnitStamp } from "./UnitStatus";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF02: todas as unidades da rede para este remédio. */
 export function OutrasUnidades() {
+    usePageTitle("Outras unidades");
     const { id = "" } = useParams();
     const query = useAvailability(id);
     const pharmacies = usePharmacies();

@@ -1,6 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Notice, SelectField, Stamp, Tarja, TextField } from "@fatec-pi/style-guide";
+import {
+    Button,
+    Notice,
+    SelectField,
+    Stamp,
+    Tarja,
+    TextField,
+    ChoiceGroup,
+    ChoiceOption,
+} from "@fatec-pi/style-guide";
 import {
     attachPrescription,
     checkPrescription,
@@ -16,7 +25,6 @@ import { useSession } from "../../app/session";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { formatCns, formatPhone, joinUnits } from "../../lib/format";
-import { Choice, Choices } from "../../ui/Choices";
 import {
     cleanPrescription,
     EMPTY_PRESCRIPTION,
@@ -317,15 +325,15 @@ function DispenseForm({
                 )
             }
         >
-            <Choices legend="Quem está retirando?">
-                <Choice
+            <ChoiceGroup legend="Quem está retirando?">
+                <ChoiceOption
                     name="who"
                     label={`${item.patient.name} (paciente)`}
                     checked={who === "patient"}
                     onChange={() => setWho("patient")}
                 />
                 {item.patient.caregivers.map((c) => (
-                    <Choice
+                    <ChoiceOption
                         key={c.id}
                         name="who"
                         label={`${c.fullName} (${c.relationship})`}
@@ -333,7 +341,7 @@ function DispenseForm({
                         onChange={() => setWho(c.id)}
                     />
                 ))}
-            </Choices>
+            </ChoiceGroup>
             <p>Confira o documento de quem retira.</p>
         </FormShell>
     );

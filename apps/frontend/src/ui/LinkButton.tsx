@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import type { ButtonSize, ButtonVariant } from "@fatec-pi/style-guide";
+import { buttonClassName, type ButtonSize, type ButtonVariant } from "@fatec-pi/style-guide";
 
 interface Props {
     to: string;
@@ -22,15 +22,7 @@ export function LinkButton({
     size = "lg",
     block = true,
 }: Props) {
-    const className = [
-        "sg-button",
-        `sg-button--${variant}`,
-        `sg-button--${size}`,
-        block ? "sg-button--block" : "",
-        "app-link-button",
-    ]
-        .filter(Boolean)
-        .join(" ");
+    const className = `${buttonClassName({ variant, size, block })} app-link-button`;
     if (external) {
         return (
             <a className={className} href={to} target="_blank" rel="noopener noreferrer">

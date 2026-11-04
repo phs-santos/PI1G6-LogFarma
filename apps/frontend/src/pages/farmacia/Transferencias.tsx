@@ -10,6 +10,7 @@ import { Loaded } from "../../ui/Loaded";
 import { InlineText } from "../../ui/InlineText";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 function statusText(t: TransferView): string {
     switch (t.status) {
@@ -26,6 +27,7 @@ function statusText(t: TransferView): string {
 
 /** RF07: transferências entre unidades. */
 export function Transferencias() {
+    usePageTitle("Transferências");
     const incoming = useQuery({
         queryKey: qk.pharmacy.transfers("incoming"),
         queryFn: () => listTransfers("incoming"),

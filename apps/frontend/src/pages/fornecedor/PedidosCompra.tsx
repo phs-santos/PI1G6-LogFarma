@@ -9,6 +9,7 @@ import { daysSince, todayIso } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
 import { purchaseStatusText } from "../farmacia/Compras";
 import "../farmacia/farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 const OPEN = ["placed", "confirmed", "no_date"];
 
@@ -16,6 +17,7 @@ type Panel = { id: string; kind: "confirm" | "ship" } | null;
 
 /** RF04/RF05: pedidos de compra recebidos pelo fornecedor. */
 export function PedidosCompra() {
+    usePageTitle("Pedidos de compra");
     const query = useQuery({
         queryKey: qk.supplier.purchaseOrders,
         queryFn: listSupplierOrders,

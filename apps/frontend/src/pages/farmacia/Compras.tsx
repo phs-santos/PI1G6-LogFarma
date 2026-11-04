@@ -15,6 +15,7 @@ import { Loaded } from "../../ui/Loaded";
 import { PRIORITY_TEXT } from "../paciente/profileText";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 export function purchaseStatusText(po: PurchaseOrderView): string {
     switch (po.status) {
@@ -35,6 +36,7 @@ export function purchaseStatusText(po: PurchaseOrderView): string {
 
 /** RF04/RF06: compras ao fornecedor e a fila de espera de cada remédio. */
 export function Compras() {
+    usePageTitle("Compras");
     const orders = useQuery({
         queryKey: qk.pharmacy.purchaseOrders,
         queryFn: listPharmacyPurchaseOrders,

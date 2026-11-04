@@ -11,6 +11,7 @@ import { LinkButton } from "../../ui/LinkButton";
 import { InlineText } from "../../ui/InlineText";
 import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 const EXPIRY_WARNING_DAYS = 60;
 
@@ -29,6 +30,7 @@ type Panel = { kind: "min"; medicationId: string } | { kind: "loss"; batchId: st
 
 /** Estoque da unidade: por remédio, com lotes, validade, reservado e mínimo. */
 export function Estoque() {
+    usePageTitle("Estoque");
     const query = useQuery({
         queryKey: qk.pharmacy.stock,
         queryFn: listUnitStock,

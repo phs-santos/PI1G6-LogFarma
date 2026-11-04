@@ -1,5 +1,5 @@
 export { tokens } from "./tokens";
-export { Button } from "./components/Button/Button";
+export { Button, buttonClassName } from "./components/Button/Button";
 export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/Button/Button";
 export { Card } from "./components/Card/Card";
 export type { CardProps } from "./components/Card/Card";
@@ -29,3 +29,7 @@ export { StatTile, BarList } from "./components/Stats/Stats";
 export type { StatTileProps, BarListProps } from "./components/Stats/Stats";
 export { AppHeader } from "./components/AppHeader/AppHeader";
 export type { AppHeaderProps } from "./components/AppHeader/AppHeader";
+export { ChoiceGroup, ChoiceOption } from "./components/ChoiceGroup/ChoiceGroup";
+export type { ChoiceGroupProps, ChoiceOptionProps } from "./components/ChoiceGroup/ChoiceGroup";
+export { ConfirmDialog } from "./components/ConfirmDialog/ConfirmDialog";
+export type { ConfirmDialogProps } from "./components/ConfirmDialog/ConfirmDialog";

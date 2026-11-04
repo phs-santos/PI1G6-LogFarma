@@ -1,6 +1,8 @@
 import { Link } from "react-router";
+import { usePageTitle } from "../../app/usePageTitle";
 
 export function NaoEncontrada() {
+    usePageTitle("Página não encontrada");
     return (
         <div className="sg-mobile app-mobile">
             <main className="app-mobile__main">

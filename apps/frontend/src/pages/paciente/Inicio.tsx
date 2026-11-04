@@ -6,9 +6,11 @@ import { LIVE, qk } from "../../app/queryKeys";
 import { useSession } from "../../app/session";
 import { LinkButton } from "../../ui/LinkButton";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Início da paciente: o aviso que importa agora e três caminhos grandes. */
 export function Inicio() {
+    usePageTitle("Início");
     const { profile } = useSession();
     const unread = useQuery({
         queryKey: qk.notifications(true),

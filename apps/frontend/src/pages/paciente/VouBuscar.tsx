@@ -5,6 +5,7 @@ import { LinkButton } from "../../ui/LinkButton";
 import { formatKm, telHref, formatPhone } from "../../lib/format";
 import { useAvailability, usePharmacies } from "./queries";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Sem a localização da paciente, o mapa abre pelo endereço da unidade. */
 export function mapUrl(routeUrl: string | null, address: string): string {
@@ -15,6 +16,7 @@ export function mapUrl(routeUrl: string | null, address: string): string {
 
 /** RF03: como chegar. Não cria pedido: é só ir até lá. */
 export function VouBuscar() {
+    usePageTitle("Como chegar");
     const { id = "", pharmacyId = "" } = useParams();
     const query = useAvailability(id);
     const pharmacies = usePharmacies();

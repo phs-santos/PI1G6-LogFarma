@@ -8,8 +8,10 @@ import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import { STATUS_TEXT } from "./statusText";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 export function MeusPedidos() {
+    usePageTitle("Meus pedidos");
     const query = useQuery({
         queryKey: qk.requests,
         queryFn: listRequests,

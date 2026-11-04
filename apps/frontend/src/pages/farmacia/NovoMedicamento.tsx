@@ -5,6 +5,7 @@ import { createMedication } from "../../api/medications";
 import { qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { MedicamentoForm } from "./MedicamentoForm";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Tela de cadastro de medicamento (farmácia: volta ao Estoque; gestor: ao painel). */
 export function NovoMedicamento({
@@ -16,6 +17,7 @@ export function NovoMedicamento({
     backLabel: string;
     tabs?: React.ReactNode;
 }) {
+    usePageTitle("Cadastrar medicamento");
     const [saved, setSaved] = useState("");
     const [formKey, setFormKey] = useState(0);
     const create = useActionMutation(createMedication, {

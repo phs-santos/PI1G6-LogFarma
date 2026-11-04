@@ -6,9 +6,11 @@ import { hasIt, pickRecommendation } from "./recommendation";
 import { useAvailability } from "./queries";
 import { UnitFacts } from "./UnitStatus";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF02–RF03: a unidade dela primeiro, depois a mais próxima que tem. */
 export function OndeTem() {
+    usePageTitle("Onde tem o remédio");
     const { id = "" } = useParams();
     const query = useAvailability(id);
     const homeDelivery = `/pedido/novo?medicationId=${id}&fulfillment=delivery`;

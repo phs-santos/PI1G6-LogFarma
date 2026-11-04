@@ -1,14 +1,20 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, EmptyState, Tarja, TextField } from "@fatec-pi/style-guide";
+import {
+    Button,
+    EmptyState,
+    Tarja,
+    TextField,
+    ChoiceGroup,
+    ChoiceOption,
+} from "@fatec-pi/style-guide";
 import { getProfile, listCaregivers, listMyPrescriptions } from "../../api/me";
 import { createRequest } from "../../api/requests";
 import type { CreateRequestInput, Fulfillment, PrescriptionInput } from "../../api/types";
 import { qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
-import { Choice, Choices } from "../../ui/Choices";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import {
@@ -19,11 +25,13 @@ import {
 } from "../../ui/PrescriptionFields";
 import { useAvailability } from "./queries";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 type RxChoice = { kind: "saved"; id: string } | { kind: "new" } | { kind: "counter" };
 
 /** RF04/RF06/RF08: pedir o remédio para retirar ou receber em casa. */
 export function ConfirmarPedido() {
+    usePageTitle("Confirmar pedido");
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const medicationId = params.get("medicationId") ?? "";
@@ -116,31 +124,31 @@ export function ConfirmarPedido() {
                             />
                         </div>
 
-                        <Choices
+                        <ChoiceGroup
                             legend={
                                 waitlist
                                     ? "Quando chegar, como você quer receber?"
                                     : "Como você quer receber?"
                             }
                         >
-                            <Choice
+                            <ChoiceOption
                                 name="fulfillment"
                                 label="Buscar na farmácia"
                                 checked={fulfillment === "pickup"}
                                 onChange={() => setFulfillment("pickup")}
                             />
-                            <Choice
+                            <ChoiceOption
                                 name="fulfillment"
                                 label="Receber em casa"
                                 checked={fulfillment === "delivery"}
                                 onChange={() => setFulfillment("delivery")}
                             />
-                        </Choices>
+                        </ChoiceGroup>
 
                         {needsRx && (
-                            <Choices legend="Receita">
+                            <ChoiceGroup legend="Receita">
                                 {usable.map((p) => (
-                                    <Choice
+                                    <ChoiceOption
                                         key={p.id}
                                         name="rx"
                                         label={`Receita de ${p.prescriberName}, de ${formatDate(p.issuedAt)}, vale até ${formatDate(p.validUntil)}`}
@@ -150,19 +158,19 @@ export function ConfirmarPedido() {
                                         onChange={() => setRxChoice({ kind: "saved", id: p.id })}
                                     />
                                 ))}
-                                <Choice
+                                <ChoiceOption
                                     name="rx"
                                     label="Informar uma receita nova"
                                     checked={rxSelected.kind === "new"}
                                     onChange={() => setRxChoice({ kind: "new" })}
                                 />
-                                <Choice
+                                <ChoiceOption
                                     name="rx"
                                     label="Vou mostrar a receita na farmácia"
                                     checked={rxSelected.kind === "counter"}
                                     onChange={() => setRxChoice({ kind: "counter" })}
                                 />
-                            </Choices>
+                            </ChoiceGroup>
                         )}
                         {needsRx && rxSelected.kind === "new" && (
                             <div className="app-section">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ActionList, Button, EmptyState, Notice } from "@fatec-pi/style-guide";
+import { ActionList, Button, buttonClassName, EmptyState, Notice } from "@fatec-pi/style-guide";
 import { courierAction, listCourierDeliveries } from "../../api/courier";
 import type { CourierAction } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -12,9 +12,11 @@ import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import { DELIVERY_STATUS } from "./texts";
 import "../paciente/paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** Uma entrega aceita: para quem, onde, e os três passos. */
 export function EntregaDetalhe() {
+    usePageTitle("Entrega");
     const { id = "" } = useParams();
     const query = useQuery({
         queryKey: qk.courier.deliveries("mine"),
@@ -75,7 +77,7 @@ export function EntregaDetalhe() {
                         )}
                         <ActionList label="Entrega">
                             <a
-                                className="sg-button sg-button--secondary sg-button--lg sg-button--block app-link-button"
+                                className={`${buttonClassName({ variant: "secondary", size: "lg", block: true })} app-link-button`}
                                 href={telHref(d.recipient.phone)}
                             >
                                 Ligar para {formatPhone(d.recipient.phone)}

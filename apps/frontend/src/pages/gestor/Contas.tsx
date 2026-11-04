@@ -9,6 +9,7 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { onlyDigits } from "../../lib/format";
 import { ManagerTabs } from "./ManagerTabs";
 import "./gestor.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 type Role = CreateAccountInput["role"];
 
@@ -35,6 +36,7 @@ const EMPTY = {
 
 /** Contas de quem trabalha na rede (o paciente se cadastra sozinho). */
 export function Contas() {
+    usePageTitle("Criar conta de trabalho");
     const [f, setF] = useState(EMPTY);
     const [error, setError] = useState("");
     const [created, setCreated] = useState("");

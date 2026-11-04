@@ -1,31 +1,31 @@
-import { useEffect, useId, useRef } from "react";
-import { Button } from "@fatec-pi/style-guide";
+import { useEffect, useId, useRef, type ReactNode } from "react";
+import { Button } from "../Button/Button";
 
-interface Props {
+export interface ConfirmDialogProps {
     open: boolean;
     title: string;
-    children?: React.ReactNode;
+    children?: ReactNode;
     confirmLabel: string;
     cancelLabel: string;
+    /** Ação que desfaz algo (cancelar pedido, retirar consentimento). */
     danger?: boolean;
     loading?: boolean;
     onConfirm: () => void;
     onClose: () => void;
 }
 
-/** Pergunta de confirmação no <dialog> nativo: prende o foco e fecha com Esc. */
-export function ConfirmDialog(props: Props) {
-    const {
-        open,
-        title,
-        children,
-        confirmLabel,
-        cancelLabel,
-        danger,
-        loading,
-        onConfirm,
-        onClose,
-    } = props;
+/** Pergunta de confirmação no <dialog> nativo: prende o foco, fecha com Esc e devolve o foco. */
+export function ConfirmDialog({
+    open,
+    title,
+    children,
+    confirmLabel,
+    cancelLabel,
+    danger = false,
+    loading = false,
+    onConfirm,
+    onClose,
+}: ConfirmDialogProps) {
     const ref = useRef<HTMLDialogElement>(null);
     const titleId = useId();
 
@@ -44,16 +44,18 @@ export function ConfirmDialog(props: Props) {
     return (
         <dialog
             ref={ref}
-            className="app-dialog"
+            className="sg-dialog"
             aria-labelledby={titleId}
             onCancel={(e) => {
                 e.preventDefault();
                 onClose();
             }}
         >
-            <h2 id={titleId}>{title}</h2>
+            <h2 id={titleId} className="sg-dialog__title">
+                {title}
+            </h2>
             {children}
-            <div className="app-dialog__actions">
+            <div className="sg-dialog__actions">
                 <Button
                     variant={danger ? "danger" : "primary"}
                     block

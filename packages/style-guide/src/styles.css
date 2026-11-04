@@ -16,6 +16,8 @@
 @import "./components/DataTable/DataTable.css";
 @import "./components/Stats/Stats.css";
 @import "./components/AppHeader/AppHeader.css";
+@import "./components/ChoiceGroup/ChoiceGroup.css";
+@import "./components/ConfirmDialog/ConfirmDialog.css";
 
 *,
 *::before,

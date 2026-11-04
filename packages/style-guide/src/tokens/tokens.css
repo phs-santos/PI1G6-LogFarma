@@ -16,6 +16,7 @@
     --color-attention-bg: #fff4d6;
     --color-attention-border: #8a6100;
     --color-on-ink: #ffffff;
+    --color-backdrop: rgb(0 0 0 / 0.55); /* fundo escurecido atrás de um diálogo */
 
     /* Tipografia */
     --font-family: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;

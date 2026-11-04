@@ -1,14 +1,20 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Checkbox, SelectField, TextField } from "@fatec-pi/style-guide";
+import {
+    Button,
+    Checkbox,
+    SelectField,
+    TextField,
+    ChoiceGroup,
+    ChoiceOption,
+} from "@fatec-pi/style-guide";
 import { getMe, register } from "../../api/auth";
 import { listPharmacies } from "../../api/pharmacies";
 import type { Address, PriorityCategory, RegisterPatientInput, Session } from "../../api/types";
 import { requestLocation, type Coordinates } from "../../app/geolocation";
 import { qk } from "../../app/queryKeys";
 import { onlyDigits } from "../../lib/format";
-import { Choice, Choices } from "../../ui/Choices";
 import {
     AddressFields,
     cleanAddress,
@@ -18,6 +24,7 @@ import {
 } from "./AddressFields";
 import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 const TOTAL = 6;
 const TITLES = [
@@ -43,6 +50,7 @@ function stepOfApiError(message: string): number {
 
 /** Cadastro da paciente em passos curtos, um assunto por tela. */
 export function CriarConta() {
+    usePageTitle("Criar conta");
     const navigate = useNavigate();
     const client = useQueryClient();
     const [step, setStep] = useState(1);
@@ -272,15 +280,15 @@ export function CriarConta() {
                                 checked={f.mobilityLimited}
                                 onChange={(e) => set("mobilityLimited", e.target.checked)}
                             />
-                            <Choices legend="Você tem alguma destas condições? Quem tem recebe primeiro quando o remédio chega.">
-                                <Choice
+                            <ChoiceGroup legend="Você tem alguma destas condições? Quem tem recebe primeiro quando o remédio chega.">
+                                <ChoiceOption
                                     name="priority"
                                     label="Prefiro não informar"
                                     checked={f.category === null}
                                     onChange={() => set("category", null)}
                                 />
                                 {(Object.keys(PRIORITY_TEXT) as PriorityCategory[]).map((c) => (
-                                    <Choice
+                                    <ChoiceOption
                                         key={c}
                                         name="priority"
                                         label={PRIORITY_TEXT[c]}
@@ -288,7 +296,7 @@ export function CriarConta() {
                                         onChange={() => set("category", c)}
                                     />
                                 ))}
-                            </Choices>
+                            </ChoiceGroup>
                             {f.category && (
                                 <>
                                     <Checkbox

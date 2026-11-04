@@ -5,6 +5,7 @@ import { getMe, logout } from "../api/auth";
 import { UNAUTHORIZED_EVENT } from "../api/client";
 import type { MeProfile, Session, SessionUser, UserRole } from "../api/types";
 import { qk } from "./queryKeys";
+import { useFocusOnNavigate } from "./useFocusOnNavigate";
 
 /** Tela inicial de cada perfil. */
 export function homeFor(role: UserRole): string {
@@ -81,6 +82,7 @@ export function SessionRoot() {
     const here = useRef("");
     here.current = location.pathname + location.search;
     useSession();
+    useFocusOnNavigate();
 
     useEffect(() => {
         const onUnauthorized = () => {

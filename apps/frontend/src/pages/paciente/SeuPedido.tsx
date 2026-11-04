@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Notice, Tarja, Timeline } from "@fatec-pi/style-guide";
+import { Button, Notice, Tarja, Timeline, ConfirmDialog } from "@fatec-pi/style-guide";
 import { getRequest, updateRequest } from "../../api/requests";
 import { LIVE, qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDayMonth } from "../../lib/dates";
-import { ConfirmDialog } from "../../ui/ConfirmDialog";
 import { Loaded } from "../../ui/Loaded";
 import { requestTimeline } from "./timeline";
 import "./paciente.css";
+import { usePageTitle } from "../../app/usePageTitle";
 
 /** RF05: acompanhar o pedido, ao vivo. */
 export function SeuPedido() {
+    usePageTitle("Seu pedido");
     const { id = "" } = useParams();
     const [confirming, setConfirming] = useState(false);
     const query = useQuery({
