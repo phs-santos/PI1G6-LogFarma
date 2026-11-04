@@ -19,6 +19,7 @@
 @import "./components/ChoiceGroup/ChoiceGroup.css";
 @import "./components/ConfirmDialog/ConfirmDialog.css";
 @import "./components/Logo/Logo.css";
+@import "./components/Segmented/Segmented.css";
 
 *,
 *::before,

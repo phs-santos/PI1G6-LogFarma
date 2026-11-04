@@ -1,0 +1,53 @@
+.sg-segmented {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-1);
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+    background: var(--color-ink-soft);
+}
+
+.sg-segmented__option {
+    display: grid;
+    align-content: center;
+    gap: 0.1em;
+    min-height: var(--tap-min-desktop);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--color-ink);
+    text-align: center;
+    cursor: pointer;
+}
+
+.sg-mobile .sg-segmented__option {
+    min-height: var(--tap-min-mobile);
+}
+
+.sg-segmented__option:hover {
+    background: var(--color-paper);
+}
+
+.sg-segmented__option--on {
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+}
+
+.sg-segmented__option--on:hover {
+    background: var(--color-ink-strong);
+}
+
+.sg-segmented__option:has(input:focus-visible) {
+    box-shadow: var(--focus-ring);
+}
+
+.sg-segmented__label {
+    font-weight: var(--font-weight-bold);
+}
+
+.sg-segmented__hint {
+    font-size: var(--font-size-sm);
+    line-height: 1.3;
+}
