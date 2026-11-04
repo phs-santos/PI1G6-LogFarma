@@ -9,6 +9,8 @@ import { authRoutes } from "./routes/auth.js";
 import { notificationRoutes } from "./routes/notifications.js";
 import { medicationRoutes } from "./routes/medications.js";
 import { pharmacyListRoutes } from "./routes/pharmacies.js";
+import { requestRoutes } from "./routes/requests.js";
+import { pharmacyRoutes } from "./routes/pharmacy.js";
 
 export interface AppDeps {
     db: Db;
@@ -54,6 +56,8 @@ export function buildApp(deps: AppDeps) {
     app.register(notificationRoutes, { prefix: "/api" });
     app.register(medicationRoutes, { prefix: "/api" });
     app.register(pharmacyListRoutes, { prefix: "/api" });
+    app.register(requestRoutes, { prefix: "/api" });
+    app.register(pharmacyRoutes, { prefix: "/api" });
 
     return app;
 }

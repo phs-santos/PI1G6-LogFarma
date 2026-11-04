@@ -211,3 +211,22 @@ export async function createBatch(values: {
     const [row] = await testDb.insert(stockBatches).values(batch).returning();
     return row!;
 }
+
+export const prescriptionPayload = {
+    issuedAt: "2026-11-01",
+    prescriberName: "Dra. Helena Souza",
+    prescriberCouncil: "CRM",
+    prescriberNumber: "123456",
+    prescriberState: "SP",
+    continuousUse: true,
+};
+
+export async function createSpecializedPharmacy() {
+    return createPharmacy({
+        name: "Farmácia de Medicamentos Especializados",
+        kind: "specialized_pharmacy",
+        network: "state",
+        latitude: -21.41,
+        longitude: -48.51,
+    });
+}
