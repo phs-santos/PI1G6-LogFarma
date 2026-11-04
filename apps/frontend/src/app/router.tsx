@@ -2,6 +2,11 @@ import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
+import { Inicio } from "../pages/paciente/Inicio";
+import { OndeTem } from "../pages/paciente/OndeTem";
+import { OutrasUnidades } from "../pages/paciente/OutrasUnidades";
+import { Procurar } from "../pages/paciente/Procurar";
+import { VouBuscar } from "../pages/paciente/VouBuscar";
 import { CourierLayout } from "./layouts/CourierLayout";
 import { DesktopLayout } from "./layouts/DesktopLayout";
 import { PatientLayout } from "./layouts/PatientLayout";
@@ -30,11 +35,11 @@ export const appRoutes: RouteObject[] = [
                     </RequireRole>
                 ),
                 children: [
-                    page("/", "Início"),
-                    page("/buscar", "Procurar remédio"),
-                    page("/remedio/:id", "Onde tem"),
-                    page("/remedio/:id/unidades", "Outras unidades"),
-                    page("/remedio/:id/buscar/:pharmacyId", "Vou buscar lá"),
+                    { path: "/", element: <Inicio /> },
+                    { path: "/buscar", element: <Procurar /> },
+                    { path: "/remedio/:id", element: <OndeTem /> },
+                    { path: "/remedio/:id/unidades", element: <OutrasUnidades /> },
+                    { path: "/remedio/:id/buscar/:pharmacyId", element: <VouBuscar /> },
                     page("/pedido/novo", "Confirmar pedido"),
                     page("/pedidos", "Meus pedidos"),
                     page("/pedidos/:id", "Seu pedido"),

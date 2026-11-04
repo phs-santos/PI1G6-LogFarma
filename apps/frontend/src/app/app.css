@@ -47,3 +47,29 @@
     text-decoration: underline;
     text-underline-offset: 0.2em;
 }
+
+.app-link-button {
+    text-decoration: none;
+}
+
+/* Faixa de tinta azul, como o cabeçalho do receituário. Ocupa a largura toda do celular. */
+.app-band {
+    margin: calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-6);
+    padding: var(--space-6) var(--space-4);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+}
+
+.app-band h1 {
+    margin: 0 0 var(--space-1);
+    color: var(--color-on-ink);
+}
+
+.app-band p {
+    margin: 0;
+}
+
+.app-band__brand {
+    font-size: 1.6em;
+    font-weight: var(--font-weight-bold);
+}

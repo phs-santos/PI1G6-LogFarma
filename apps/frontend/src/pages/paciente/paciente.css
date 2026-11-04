@@ -1,0 +1,70 @@
+.app-lead {
+    margin-top: calc(-1 * var(--space-2));
+    color: var(--color-text-muted);
+}
+
+.app-unit {
+    position: relative;
+    display: grid;
+    gap: var(--space-1);
+    margin: var(--space-4) 0;
+    padding: var(--space-4);
+    border: var(--border-thin) solid var(--color-text);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+}
+
+.app-unit--ok {
+    border-color: var(--color-ok);
+    border-width: var(--border-thick);
+}
+
+.app-unit__title {
+    margin: 0;
+    font-size: 1.2em;
+    color: var(--color-text);
+}
+
+.app-unit__fact {
+    margin: 0;
+}
+
+.app-unit__fact--muted {
+    color: var(--color-text-muted);
+}
+
+.app-unit .sg-stamp {
+    justify-self: start;
+}
+
+.app-units {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.app-units > li {
+    border-bottom: var(--border-thin) solid var(--color-rule);
+    padding: var(--space-4) 0;
+    display: grid;
+    gap: var(--space-1);
+}
+
+.app-units > li > .sg-stamp {
+    justify-self: start;
+}
+
+.app-facts {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-4) 0 var(--space-6);
+}
+
+.app-facts dt {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.app-facts dd {
+    margin: 0;
+}

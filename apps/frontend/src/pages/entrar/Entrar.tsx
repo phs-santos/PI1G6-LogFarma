@@ -38,7 +38,11 @@ export function Entrar() {
     return (
         <div className="sg-mobile app-mobile">
             <main className="app-mobile__main">
-                <h1>Entrar no LogFarma</h1>
+                <header className="app-band">
+                    <p className="app-band__brand">LogFarma</p>
+                    <p>Onde tem o seu remédio na rede do SUS</p>
+                </header>
+                <h1>Entrar</h1>
                 {expired && <Notice tone="attention" title="Sua sessão terminou. Entre de novo." />}
                 <form className="app-form" onSubmit={onSubmit}>
                     <TextField

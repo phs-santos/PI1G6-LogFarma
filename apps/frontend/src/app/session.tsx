@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router";
 import { getMe, logout } from "../api/auth";
 import { UNAUTHORIZED_EVENT } from "../api/client";
 import type { MeProfile, Session, SessionUser, UserRole } from "../api/types";
@@ -95,5 +95,10 @@ export function SessionRoot() {
         return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
     }, [client, navigate]);
 
-    return <Outlet />;
+    return (
+        <>
+            <ScrollRestoration />
+            <Outlet />
+        </>
+    );
 }
