@@ -497,6 +497,27 @@ export const notifications = pgTable("notifications", {
     readAt: timestamp({ withTimezone: true }),
 });
 
+// Histórico da própria paciente (só ela vê e pode apagar). Separado de search_events,
+// que é anônimo e serve só para o painel do gestor.
+export const patientRecentMedications = pgTable(
+    "patient_recent_medications",
+    {
+        patientId: uuid()
+            .notNull()
+            .references(() => patients.userId, { onDelete: "cascade" }),
+        medicationId: uuid()
+            .notNull()
+            .references(() => medications.id),
+        viewedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    },
+    (t) => [
+        uniqueIndex("patient_recent_medications_patient_medication").on(
+            t.patientId,
+            t.medicationId,
+        ),
+    ],
+);
+
 export const searchEvents = pgTable("search_events", {
     id: id(),
     medicationId: uuid()

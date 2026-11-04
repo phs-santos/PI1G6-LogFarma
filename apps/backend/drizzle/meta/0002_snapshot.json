@@ -1,0 +1,2386 @@
+{
+    "id": "9f9964c6-8bf0-4883-bc12-330f93edddd4",
+    "prevId": "bd2b3d7c-81ca-4766-b946-f55c0d7ec9b1",
+    "version": "7",
+    "dialect": "postgresql",
+    "tables": {
+        "public.caregivers": {
+            "name": "caregivers",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "full_name": {
+                    "name": "full_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "document": {
+                    "name": "document",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "relationship": {
+                    "name": "relationship",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "phone": {
+                    "name": "phone",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "caregivers_patient_id_patients_user_id_fk": {
+                    "name": "caregivers_patient_id_patients_user_id_fk",
+                    "tableFrom": "caregivers",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.couriers": {
+            "name": "couriers",
+            "schema": "",
+            "columns": {
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "full_name": {
+                    "name": "full_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "phone": {
+                    "name": "phone",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "delivery_program": {
+                    "name": "delivery_program",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "couriers_user_id_users_id_fk": {
+                    "name": "couriers_user_id_users_id_fk",
+                    "tableFrom": "couriers",
+                    "tableTo": "users",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.deliveries": {
+            "name": "deliveries",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "method": {
+                    "name": "method",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'municipal_program'"
+                },
+                "courier_id": {
+                    "name": "courier_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "scheduled_by_staff_id": {
+                    "name": "scheduled_by_staff_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "address_snapshot": {
+                    "name": "address_snapshot",
+                    "type": "jsonb",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "scheduled_window": {
+                    "name": "scheduled_window",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "requires_refrigeration": {
+                    "name": "requires_refrigeration",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "status": {
+                    "name": "status",
+                    "type": "delivery_status",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'scheduled'"
+                },
+                "received_by": {
+                    "name": "received_by",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "failure_reason": {
+                    "name": "failure_reason",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "picked_up_at": {
+                    "name": "picked_up_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "delivered_at": {
+                    "name": "delivered_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "deliveries_request_id_medication_requests_id_fk": {
+                    "name": "deliveries_request_id_medication_requests_id_fk",
+                    "tableFrom": "deliveries",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "deliveries_courier_id_couriers_user_id_fk": {
+                    "name": "deliveries_courier_id_couriers_user_id_fk",
+                    "tableFrom": "deliveries",
+                    "tableTo": "couriers",
+                    "columnsFrom": ["courier_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "deliveries_scheduled_by_staff_id_users_id_fk": {
+                    "name": "deliveries_scheduled_by_staff_id_users_id_fk",
+                    "tableFrom": "deliveries",
+                    "tableTo": "users",
+                    "columnsFrom": ["scheduled_by_staff_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.dispensations": {
+            "name": "dispensations",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "batch_id": {
+                    "name": "batch_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "dispensed_at": {
+                    "name": "dispensed_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "staff_user_id": {
+                    "name": "staff_user_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescription_id": {
+                    "name": "prescription_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "picked_up_by": {
+                    "name": "picked_up_by",
+                    "type": "picked_up_by",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "caregiver_id": {
+                    "name": "caregiver_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "partial_reason": {
+                    "name": "partial_reason",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "dispensations_request_id_medication_requests_id_fk": {
+                    "name": "dispensations_request_id_medication_requests_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_pharmacy_id_pharmacies_id_fk": {
+                    "name": "dispensations_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_medication_id_medications_id_fk": {
+                    "name": "dispensations_medication_id_medications_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_batch_id_stock_batches_id_fk": {
+                    "name": "dispensations_batch_id_stock_batches_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "stock_batches",
+                    "columnsFrom": ["batch_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_staff_user_id_users_id_fk": {
+                    "name": "dispensations_staff_user_id_users_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "users",
+                    "columnsFrom": ["staff_user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_prescription_id_prescriptions_id_fk": {
+                    "name": "dispensations_prescription_id_prescriptions_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "prescriptions",
+                    "columnsFrom": ["prescription_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "dispensations_caregiver_id_caregivers_id_fk": {
+                    "name": "dispensations_caregiver_id_caregivers_id_fk",
+                    "tableFrom": "dispensations",
+                    "tableTo": "caregivers",
+                    "columnsFrom": ["caregiver_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.medication_requests": {
+            "name": "medication_requests",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescription_id": {
+                    "name": "prescription_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "fulfillment": {
+                    "name": "fulfillment",
+                    "type": "fulfillment",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "status": {
+                    "name": "status",
+                    "type": "request_status",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'requested'"
+                },
+                "source_pharmacy_id": {
+                    "name": "source_pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "expected_at": {
+                    "name": "expected_at",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "medication_requests_patient_id_patients_user_id_fk": {
+                    "name": "medication_requests_patient_id_patients_user_id_fk",
+                    "tableFrom": "medication_requests",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "medication_requests_medication_id_medications_id_fk": {
+                    "name": "medication_requests_medication_id_medications_id_fk",
+                    "tableFrom": "medication_requests",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "medication_requests_prescription_id_prescriptions_id_fk": {
+                    "name": "medication_requests_prescription_id_prescriptions_id_fk",
+                    "tableFrom": "medication_requests",
+                    "tableTo": "prescriptions",
+                    "columnsFrom": ["prescription_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "medication_requests_pharmacy_id_pharmacies_id_fk": {
+                    "name": "medication_requests_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "medication_requests",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "medication_requests_source_pharmacy_id_pharmacies_id_fk": {
+                    "name": "medication_requests_source_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "medication_requests",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["source_pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.medications": {
+            "name": "medications",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "active_ingredient": {
+                    "name": "active_ingredient",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "concentration": {
+                    "name": "concentration",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "pharmaceutical_form": {
+                    "name": "pharmaceutical_form",
+                    "type": "pharmaceutical_form",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "route": {
+                    "name": "route",
+                    "type": "administration_route",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "dispensing_unit": {
+                    "name": "dispensing_unit",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "component": {
+                    "name": "component",
+                    "type": "medication_component",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "therapeutic_class": {
+                    "name": "therapeutic_class",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescription_type": {
+                    "name": "prescription_type",
+                    "type": "prescription_type",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "storage": {
+                    "name": "storage",
+                    "type": "storage_condition",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "in_rename": {
+                    "name": "in_rename",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": true
+                },
+                "in_farmacia_popular": {
+                    "name": "in_farmacia_popular",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": false
+                },
+                "catmat_code": {
+                    "name": "catmat_code",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "search_name": {
+                    "name": "search_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.notifications": {
+            "name": "notifications",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "title": {
+                    "name": "title",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "body": {
+                    "name": "body",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "read_at": {
+                    "name": "read_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "notifications_user_id_users_id_fk": {
+                    "name": "notifications_user_id_users_id_fk",
+                    "tableFrom": "notifications",
+                    "tableTo": "users",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "notifications_request_id_medication_requests_id_fk": {
+                    "name": "notifications_request_id_medication_requests_id_fk",
+                    "tableFrom": "notifications",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.patient_priorities": {
+            "name": "patient_priorities",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "category": {
+                    "name": "category",
+                    "type": "priority_category",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "declared_at": {
+                    "name": "declared_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "consent_at": {
+                    "name": "consent_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "revoked_at": {
+                    "name": "revoked_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "patient_priorities_patient_id_patients_user_id_fk": {
+                    "name": "patient_priorities_patient_id_patients_user_id_fk",
+                    "tableFrom": "patient_priorities",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.patient_recent_medications": {
+            "name": "patient_recent_medications",
+            "schema": "",
+            "columns": {
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "viewed_at": {
+                    "name": "viewed_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {
+                "patient_recent_medications_patient_medication": {
+                    "name": "patient_recent_medications_patient_medication",
+                    "columns": [
+                        {
+                            "expression": "patient_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        },
+                        {
+                            "expression": "medication_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        }
+                    ],
+                    "isUnique": true,
+                    "concurrently": false,
+                    "method": "btree",
+                    "with": {}
+                }
+            },
+            "foreignKeys": {
+                "patient_recent_medications_patient_id_patients_user_id_fk": {
+                    "name": "patient_recent_medications_patient_id_patients_user_id_fk",
+                    "tableFrom": "patient_recent_medications",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "patient_recent_medications_medication_id_medications_id_fk": {
+                    "name": "patient_recent_medications_medication_id_medications_id_fk",
+                    "tableFrom": "patient_recent_medications",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.patients": {
+            "name": "patients",
+            "schema": "",
+            "columns": {
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "full_name": {
+                    "name": "full_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "social_name": {
+                    "name": "social_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "birth_date": {
+                    "name": "birth_date",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "cns": {
+                    "name": "cns",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "cpf": {
+                    "name": "cpf",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "phone": {
+                    "name": "phone",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "address": {
+                    "name": "address",
+                    "type": "jsonb",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "latitude": {
+                    "name": "latitude",
+                    "type": "double precision",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "longitude": {
+                    "name": "longitude",
+                    "type": "double precision",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "reference_pharmacy_id": {
+                    "name": "reference_pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "mobility_limited": {
+                    "name": "mobility_limited",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": false
+                },
+                "notifications_consent_at": {
+                    "name": "notifications_consent_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "patients_user_id_users_id_fk": {
+                    "name": "patients_user_id_users_id_fk",
+                    "tableFrom": "patients",
+                    "tableTo": "users",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "patients_reference_pharmacy_id_pharmacies_id_fk": {
+                    "name": "patients_reference_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "patients",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["reference_pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {
+                "patients_cns_unique": {
+                    "name": "patients_cns_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["cns"]
+                },
+                "patients_cpf_unique": {
+                    "name": "patients_cpf_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["cpf"]
+                }
+            },
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.pharmacies": {
+            "name": "pharmacies",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "cnes": {
+                    "name": "cnes",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "cnpj": {
+                    "name": "cnpj",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "kind": {
+                    "name": "kind",
+                    "type": "pharmacy_kind",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "network": {
+                    "name": "network",
+                    "type": "pharmacy_network",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "address": {
+                    "name": "address",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "latitude": {
+                    "name": "latitude",
+                    "type": "double precision",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "longitude": {
+                    "name": "longitude",
+                    "type": "double precision",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "phone": {
+                    "name": "phone",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "opening_hours": {
+                    "name": "opening_hours",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.pharmacy_staff": {
+            "name": "pharmacy_staff",
+            "schema": "",
+            "columns": {
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "full_name": {
+                    "name": "full_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "occupation": {
+                    "name": "occupation",
+                    "type": "staff_occupation",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "crf_number": {
+                    "name": "crf_number",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "crf_state": {
+                    "name": "crf_state",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "pharmacy_staff_user_id_users_id_fk": {
+                    "name": "pharmacy_staff_user_id_users_id_fk",
+                    "tableFrom": "pharmacy_staff",
+                    "tableTo": "users",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "pharmacy_staff_pharmacy_id_pharmacies_id_fk": {
+                    "name": "pharmacy_staff_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "pharmacy_staff",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.prescriptions": {
+            "name": "prescriptions",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "type": {
+                    "name": "type",
+                    "type": "prescription_type",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "issued_at": {
+                    "name": "issued_at",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "valid_until": {
+                    "name": "valid_until",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescriber_name": {
+                    "name": "prescriber_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescriber_council": {
+                    "name": "prescriber_council",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescriber_number": {
+                    "name": "prescriber_number",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "prescriber_state": {
+                    "name": "prescriber_state",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "continuous_use": {
+                    "name": "continuous_use",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": false
+                },
+                "checked_by_staff_id": {
+                    "name": "checked_by_staff_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "checked_at": {
+                    "name": "checked_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "prescriptions_patient_id_patients_user_id_fk": {
+                    "name": "prescriptions_patient_id_patients_user_id_fk",
+                    "tableFrom": "prescriptions",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "prescriptions_medication_id_medications_id_fk": {
+                    "name": "prescriptions_medication_id_medications_id_fk",
+                    "tableFrom": "prescriptions",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "prescriptions_checked_by_staff_id_users_id_fk": {
+                    "name": "prescriptions_checked_by_staff_id_users_id_fk",
+                    "tableFrom": "prescriptions",
+                    "tableTo": "users",
+                    "columnsFrom": ["checked_by_staff_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.purchase_orders": {
+            "name": "purchase_orders",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "supplier_id": {
+                    "name": "supplier_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "status": {
+                    "name": "status",
+                    "type": "purchase_status",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'placed'"
+                },
+                "expected_at": {
+                    "name": "expected_at",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "origin": {
+                    "name": "origin",
+                    "type": "purchase_origin",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "invoice_number": {
+                    "name": "invoice_number",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "shipped_batch_number": {
+                    "name": "shipped_batch_number",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "shipped_expiry_date": {
+                    "name": "shipped_expiry_date",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "shipped_quantity": {
+                    "name": "shipped_quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "shipped_at": {
+                    "name": "shipped_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "received_at": {
+                    "name": "received_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "purchase_orders_pharmacy_id_pharmacies_id_fk": {
+                    "name": "purchase_orders_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "purchase_orders",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "purchase_orders_medication_id_medications_id_fk": {
+                    "name": "purchase_orders_medication_id_medications_id_fk",
+                    "tableFrom": "purchase_orders",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "purchase_orders_supplier_id_suppliers_id_fk": {
+                    "name": "purchase_orders_supplier_id_suppliers_id_fk",
+                    "tableFrom": "purchase_orders",
+                    "tableTo": "suppliers",
+                    "columnsFrom": ["supplier_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.search_events": {
+            "name": "search_events",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "found_in_network": {
+                    "name": "found_in_network",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "search_events_medication_id_medications_id_fk": {
+                    "name": "search_events_medication_id_medications_id_fk",
+                    "tableFrom": "search_events",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "search_events_pharmacy_id_pharmacies_id_fk": {
+                    "name": "search_events_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "search_events",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.stock_batches": {
+            "name": "stock_batches",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "batch_number": {
+                    "name": "batch_number",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "expiry_date": {
+                    "name": "expiry_date",
+                    "type": "date",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "manufacturer_cnpj": {
+                    "name": "manufacturer_cnpj",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "anvisa_registration": {
+                    "name": "anvisa_registration",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "received_at": {
+                    "name": "received_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {
+                "stock_batches_pharmacy_medication_batch": {
+                    "name": "stock_batches_pharmacy_medication_batch",
+                    "columns": [
+                        {
+                            "expression": "pharmacy_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        },
+                        {
+                            "expression": "medication_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        },
+                        {
+                            "expression": "batch_number",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        }
+                    ],
+                    "isUnique": true,
+                    "concurrently": false,
+                    "method": "btree",
+                    "with": {}
+                }
+            },
+            "foreignKeys": {
+                "stock_batches_pharmacy_id_pharmacies_id_fk": {
+                    "name": "stock_batches_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "stock_batches",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "stock_batches_medication_id_medications_id_fk": {
+                    "name": "stock_batches_medication_id_medications_id_fk",
+                    "tableFrom": "stock_batches",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {
+                "stock_batches_quantity_non_negative": {
+                    "name": "stock_batches_quantity_non_negative",
+                    "value": "\"stock_batches\".\"quantity\" >= 0"
+                }
+            },
+            "isRLSEnabled": false
+        },
+        "public.stock_items": {
+            "name": "stock_items",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "min_quantity": {
+                    "name": "min_quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": 0
+                },
+                "updated_at": {
+                    "name": "updated_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {
+                "stock_items_pharmacy_medication": {
+                    "name": "stock_items_pharmacy_medication",
+                    "columns": [
+                        {
+                            "expression": "pharmacy_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        },
+                        {
+                            "expression": "medication_id",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        }
+                    ],
+                    "isUnique": true,
+                    "concurrently": false,
+                    "method": "btree",
+                    "with": {}
+                }
+            },
+            "foreignKeys": {
+                "stock_items_pharmacy_id_pharmacies_id_fk": {
+                    "name": "stock_items_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "stock_items",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "stock_items_medication_id_medications_id_fk": {
+                    "name": "stock_items_medication_id_medications_id_fk",
+                    "tableFrom": "stock_items",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.stock_movements": {
+            "name": "stock_movements",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "batch_id": {
+                    "name": "batch_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "type": {
+                    "name": "type",
+                    "type": "movement_type",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "related_id": {
+                    "name": "related_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "staff_user_id": {
+                    "name": "staff_user_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "stock_movements_pharmacy_id_pharmacies_id_fk": {
+                    "name": "stock_movements_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "stock_movements",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "stock_movements_batch_id_stock_batches_id_fk": {
+                    "name": "stock_movements_batch_id_stock_batches_id_fk",
+                    "tableFrom": "stock_movements",
+                    "tableTo": "stock_batches",
+                    "columnsFrom": ["batch_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "stock_movements_staff_user_id_users_id_fk": {
+                    "name": "stock_movements_staff_user_id_users_id_fk",
+                    "tableFrom": "stock_movements",
+                    "tableTo": "users",
+                    "columnsFrom": ["staff_user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.stock_reservations": {
+            "name": "stock_reservations",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "batch_id": {
+                    "name": "batch_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "stock_reservations_batch_id_stock_batches_id_fk": {
+                    "name": "stock_reservations_batch_id_stock_batches_id_fk",
+                    "tableFrom": "stock_reservations",
+                    "tableTo": "stock_batches",
+                    "columnsFrom": ["batch_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "stock_reservations_request_id_medication_requests_id_fk": {
+                    "name": "stock_reservations_request_id_medication_requests_id_fk",
+                    "tableFrom": "stock_reservations",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.supplier_staff": {
+            "name": "supplier_staff",
+            "schema": "",
+            "columns": {
+                "user_id": {
+                    "name": "user_id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true
+                },
+                "full_name": {
+                    "name": "full_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "supplier_id": {
+                    "name": "supplier_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "supplier_staff_user_id_users_id_fk": {
+                    "name": "supplier_staff_user_id_users_id_fk",
+                    "tableFrom": "supplier_staff",
+                    "tableTo": "users",
+                    "columnsFrom": ["user_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "cascade",
+                    "onUpdate": "no action"
+                },
+                "supplier_staff_supplier_id_suppliers_id_fk": {
+                    "name": "supplier_staff_supplier_id_suppliers_id_fk",
+                    "tableFrom": "supplier_staff",
+                    "tableTo": "suppliers",
+                    "columnsFrom": ["supplier_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.suppliers": {
+            "name": "suppliers",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "name": {
+                    "name": "name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "cnpj": {
+                    "name": "cnpj",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.transfers": {
+            "name": "transfers",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "batch_id": {
+                    "name": "batch_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "quantity": {
+                    "name": "quantity",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "from_pharmacy_id": {
+                    "name": "from_pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "to_pharmacy_id": {
+                    "name": "to_pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "status": {
+                    "name": "status",
+                    "type": "transfer_status",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'requested'"
+                },
+                "refusal_reason": {
+                    "name": "refusal_reason",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "shipped_at": {
+                    "name": "shipped_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "received_at": {
+                    "name": "received_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "transfers_request_id_medication_requests_id_fk": {
+                    "name": "transfers_request_id_medication_requests_id_fk",
+                    "tableFrom": "transfers",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "transfers_medication_id_medications_id_fk": {
+                    "name": "transfers_medication_id_medications_id_fk",
+                    "tableFrom": "transfers",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "transfers_batch_id_stock_batches_id_fk": {
+                    "name": "transfers_batch_id_stock_batches_id_fk",
+                    "tableFrom": "transfers",
+                    "tableTo": "stock_batches",
+                    "columnsFrom": ["batch_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "transfers_from_pharmacy_id_pharmacies_id_fk": {
+                    "name": "transfers_from_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "transfers",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["from_pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "transfers_to_pharmacy_id_pharmacies_id_fk": {
+                    "name": "transfers_to_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "transfers",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["to_pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.users": {
+            "name": "users",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "role": {
+                    "name": "role",
+                    "type": "user_role",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "email": {
+                    "name": "email",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "password_hash": {
+                    "name": "password_hash",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "active": {
+                    "name": "active",
+                    "type": "boolean",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": true
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {
+                "users_email_unique": {
+                    "name": "users_email_unique",
+                    "nullsNotDistinct": false,
+                    "columns": ["email"]
+                }
+            },
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "public.waitlist_entries": {
+            "name": "waitlist_entries",
+            "schema": "",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "uuid",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "default": "gen_random_uuid()"
+                },
+                "request_id": {
+                    "name": "request_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "patient_id": {
+                    "name": "patient_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "medication_id": {
+                    "name": "medication_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "pharmacy_id": {
+                    "name": "pharmacy_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "purchase_order_id": {
+                    "name": "purchase_order_id",
+                    "type": "uuid",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "priority": {
+                    "name": "priority",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "status": {
+                    "name": "status",
+                    "type": "waitlist_status",
+                    "typeSchema": "public",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "'waiting'"
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "waitlist_entries_request_id_medication_requests_id_fk": {
+                    "name": "waitlist_entries_request_id_medication_requests_id_fk",
+                    "tableFrom": "waitlist_entries",
+                    "tableTo": "medication_requests",
+                    "columnsFrom": ["request_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "waitlist_entries_patient_id_patients_user_id_fk": {
+                    "name": "waitlist_entries_patient_id_patients_user_id_fk",
+                    "tableFrom": "waitlist_entries",
+                    "tableTo": "patients",
+                    "columnsFrom": ["patient_id"],
+                    "columnsTo": ["user_id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "waitlist_entries_medication_id_medications_id_fk": {
+                    "name": "waitlist_entries_medication_id_medications_id_fk",
+                    "tableFrom": "waitlist_entries",
+                    "tableTo": "medications",
+                    "columnsFrom": ["medication_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "waitlist_entries_pharmacy_id_pharmacies_id_fk": {
+                    "name": "waitlist_entries_pharmacy_id_pharmacies_id_fk",
+                    "tableFrom": "waitlist_entries",
+                    "tableTo": "pharmacies",
+                    "columnsFrom": ["pharmacy_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                },
+                "waitlist_entries_purchase_order_id_purchase_orders_id_fk": {
+                    "name": "waitlist_entries_purchase_order_id_purchase_orders_id_fk",
+                    "tableFrom": "waitlist_entries",
+                    "tableTo": "purchase_orders",
+                    "columnsFrom": ["purchase_order_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        }
+    },
+    "enums": {
+        "public.administration_route": {
+            "name": "administration_route",
+            "schema": "public",
+            "values": [
+                "oral",
+                "subcutaneous",
+                "intramuscular",
+                "intravenous",
+                "topical",
+                "inhalation",
+                "other"
+            ]
+        },
+        "public.delivery_status": {
+            "name": "delivery_status",
+            "schema": "public",
+            "values": ["scheduled", "out_for_delivery", "delivered", "failed"]
+        },
+        "public.fulfillment": {
+            "name": "fulfillment",
+            "schema": "public",
+            "values": ["pickup", "delivery"]
+        },
+        "public.medication_component": {
+            "name": "medication_component",
+            "schema": "public",
+            "values": ["basic", "strategic", "specialized"]
+        },
+        "public.movement_type": {
+            "name": "movement_type",
+            "schema": "public",
+            "values": [
+                "entry_purchase",
+                "entry_transfer",
+                "exit_dispensation",
+                "exit_transfer",
+                "exit_loss",
+                "adjustment"
+            ]
+        },
+        "public.pharmaceutical_form": {
+            "name": "pharmaceutical_form",
+            "schema": "public",
+            "values": [
+                "tablet",
+                "capsule",
+                "oral_solution",
+                "oral_suspension",
+                "injectable",
+                "cream",
+                "inhaler",
+                "other"
+            ]
+        },
+        "public.pharmacy_kind": {
+            "name": "pharmacy_kind",
+            "schema": "public",
+            "values": ["ubs", "municipal_pharmacy", "specialized_pharmacy", "pfpb"]
+        },
+        "public.pharmacy_network": {
+            "name": "pharmacy_network",
+            "schema": "public",
+            "values": ["municipal", "state", "pfpb"]
+        },
+        "public.picked_up_by": {
+            "name": "picked_up_by",
+            "schema": "public",
+            "values": ["patient", "caregiver", "delivery"]
+        },
+        "public.prescription_type": {
+            "name": "prescription_type",
+            "schema": "public",
+            "values": ["none", "simple", "antimicrobial", "special_control"]
+        },
+        "public.priority_category": {
+            "name": "priority_category",
+            "schema": "public",
+            "values": ["chronic", "oncology", "rare_disease"]
+        },
+        "public.purchase_origin": {
+            "name": "purchase_origin",
+            "schema": "public",
+            "values": ["manual", "auto_min_stock"]
+        },
+        "public.purchase_status": {
+            "name": "purchase_status",
+            "schema": "public",
+            "values": ["placed", "confirmed", "no_date", "shipped", "received"]
+        },
+        "public.request_status": {
+            "name": "request_status",
+            "schema": "public",
+            "values": [
+                "requested",
+                "ready_for_pickup",
+                "in_transfer",
+                "waitlisted",
+                "arrived",
+                "delivery_scheduled",
+                "out_for_delivery",
+                "picked_up",
+                "delivered",
+                "cancelled"
+            ]
+        },
+        "public.staff_occupation": {
+            "name": "staff_occupation",
+            "schema": "public",
+            "values": ["pharmacist", "pharmacy_assistant"]
+        },
+        "public.storage_condition": {
+            "name": "storage_condition",
+            "schema": "public",
+            "values": ["room_temperature", "refrigerated"]
+        },
+        "public.transfer_status": {
+            "name": "transfer_status",
+            "schema": "public",
+            "values": ["requested", "shipped", "received", "refused"]
+        },
+        "public.user_role": {
+            "name": "user_role",
+            "schema": "public",
+            "values": ["patient", "pharmacy_staff", "supplier_staff", "courier", "manager"]
+        },
+        "public.waitlist_status": {
+            "name": "waitlist_status",
+            "schema": "public",
+            "values": ["waiting", "served", "cancelled"]
+        }
+    },
+    "schemas": {},
+    "sequences": {},
+    "roles": {},
+    "policies": {},
+    "views": {},
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
+    }
+}

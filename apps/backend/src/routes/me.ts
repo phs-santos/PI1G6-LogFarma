@@ -9,6 +9,7 @@ import {
     updateProfile,
     type ProfilePatch,
 } from "../services/profile.js";
+import { clearRecentMedications, listRecentMedications } from "../services/search-history.js";
 
 const addressSchema = {
     type: "object",
@@ -90,6 +91,15 @@ export const meRoutes: FastifyPluginAsync = async (app) => {
             ),
         }),
     );
+
+    app.get("/me/recent-medications", async (request) => ({
+        items: await listRecentMedications(app.db, request.user.id),
+    }));
+
+    app.delete("/me/recent-medications", async (request) => {
+        await clearRecentMedications(app.db, request.user.id);
+        return { ok: true };
+    });
 
     app.get("/me/caregivers", async (request) => ({
         items: await listCaregivers(app.db, request.user.id),

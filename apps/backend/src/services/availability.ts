@@ -7,6 +7,7 @@ import { distanceKm, latLng, routeUrl } from "../domain/geo.js";
 import { NotFoundError } from "../domain/errors.js";
 import { isoDay } from "../domain/dates.js";
 import { availableQuantity } from "./stock.js";
+import { rememberMedication } from "./search-history.js";
 import { toMedicationSummary, type MedicationSummary } from "./medications.js";
 
 export interface AvailabilityItem {
@@ -104,6 +105,9 @@ export async function medicationAvailability(
             if (b.distanceKm === null) return -1;
             return a.distanceKm - b.distanceKm;
         });
+
+        // Histórico da própria paciente (aparece só para ela no Início e na busca).
+        await rememberMedication(tx, patientUserId, medicationId);
 
         // Demanda não atendida: sem nenhum dado do paciente além da unidade de referência.
         await tx
