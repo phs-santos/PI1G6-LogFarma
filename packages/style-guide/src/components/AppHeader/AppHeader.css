@@ -1,0 +1,24 @@
+.sg-app-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+}
+
+.sg-app-header__title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.sg-app-header__subtitle {
+    margin: 0;
+}
+
+.sg-app-header__actions .sg-button--secondary {
+    border-color: var(--color-on-ink);
+}

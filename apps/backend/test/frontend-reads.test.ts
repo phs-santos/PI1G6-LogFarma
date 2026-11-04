@@ -106,15 +106,13 @@ describe("leituras para as telas", () => {
             pharmacyId: ubs.id,
             status: "waitlisted",
         });
-        await testDb
-            .insert(waitlistEntries)
-            .values({
-                requestId: r.id,
-                patientId: p.id,
-                medicationId: med.id,
-                pharmacyId: ubs.id,
-                priority: 0,
-            });
+        await testDb.insert(waitlistEntries).values({
+            requestId: r.id,
+            patientId: p.id,
+            medicationId: med.id,
+            pharmacyId: ubs.id,
+            priority: 0,
+        });
         const gestor = await createManager();
         const res = await app.inject({
             method: "GET",
@@ -202,14 +200,12 @@ describe("leituras para as telas", () => {
                 validUntil: addDays(today, 10),
             })
             .returning();
-        await testDb
-            .insert(prescriptions)
-            .values({
-                ...base,
-                type: "antimicrobial",
-                issuedAt: addDays(today, -40),
-                validUntil: addDays(today, -30),
-            });
+        await testDb.insert(prescriptions).values({
+            ...base,
+            type: "antimicrobial",
+            issuedAt: addDays(today, -40),
+            validUntil: addDays(today, -30),
+        });
         const [livre] = await testDb
             .insert(prescriptions)
             .values({

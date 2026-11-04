@@ -1,0 +1,67 @@
+.sg-field {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+}
+
+.sg-field__label {
+    font-weight: var(--font-weight-bold);
+}
+
+.sg-field__hint {
+    display: block;
+    margin: 0;
+    font-size: 0.9em;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-muted);
+}
+
+.sg-field__control {
+    min-height: var(--tap-min-desktop);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-thin) solid var(--color-text-muted);
+    border-radius: var(--radius-md);
+    font: inherit;
+    color: var(--color-text);
+    background: var(--color-paper);
+}
+
+.sg-mobile .sg-field__control {
+    min-height: var(--tap-min-mobile);
+}
+
+.sg-field--error .sg-field__control {
+    border-color: var(--color-tarja-red);
+    border-width: var(--border-thick);
+}
+
+.sg-field__error {
+    margin: 0;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-tarja-red);
+}
+
+.sg-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-height: var(--tap-min-desktop);
+    padding: var(--space-2) 0;
+    margin-bottom: var(--space-2);
+}
+
+.sg-mobile .sg-checkbox {
+    min-height: var(--tap-min-mobile);
+}
+
+.sg-checkbox input {
+    flex: none;
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0.1em 0 0;
+    accent-color: var(--color-ink);
+}
+
+.sg-checkbox label {
+    cursor: pointer;
+}

@@ -1,0 +1,21 @@
+.sg-list-detail {
+    display: grid;
+    gap: var(--space-6);
+}
+
+@media (min-width: 64rem) {
+    .sg-list-detail {
+        grid-template-columns: minmax(18rem, 2fr) 3fr;
+        align-items: start;
+    }
+}
+
+.sg-list-detail__list {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.sg-list-detail__detail {
+    padding-left: var(--space-6);
+    border-left: var(--border-thin) solid var(--color-rule);
+}
