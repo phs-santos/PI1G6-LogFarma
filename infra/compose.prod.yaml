@@ -1,17 +1,23 @@
 # Produção (VPS). Usa as imagens publicadas pelos workflows imagem-backend/imagem-frontend do monorepo.
 # Fica em ~/grupo-pi-6 na VPS junto com o .env (copiado de .env.prod.example e preenchido lá).
 # Quem sobe isso é o scripts/deploy.sh; não é preciso clonar nada na VPS.
+#
+# Banco: o backend usa só o DATABASE_URL do .env.
+#   - Postgres que já existe no servidor: DATABASE_URL apontando para ele (padrão).
+#   - Postgres próprio deste compose: COMPOSE_PROFILES=banco-proprio e
+#     DATABASE_URL=postgres://<POSTGRES_USER>:<POSTGRES_PASSWORD>@db:5432/<POSTGRES_DB>.
 
 name: pi
 
 services:
   db:
     image: postgres:17-alpine
+    profiles: ["banco-proprio"]
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:?defina no .env}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina no .env}
-      POSTGRES_DB: ${POSTGRES_DB:?defina no .env}
+      POSTGRES_USER: ${POSTGRES_USER:-pi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_DB: ${POSTGRES_DB:-pi}
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +34,7 @@ services:
       PORT: 3333
       HOST: 0.0.0.0
       CORS_ORIGIN: ${PUBLIC_URL:?defina no .env}
-      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL:?defina no .env}
       JWT_SECRET: ${JWT_SECRET:?defina no .env}
       # true só quando houver HTTPS na frente (ver Pendências no infra/README.md)
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
@@ -37,12 +43,15 @@ services:
     depends_on:
       db:
         condition: service_healthy
+        # Só espera o banco próprio quando o perfil banco-proprio está ligado.
+        required: false
 
   frontend:
     image: ${IMAGE_PREFIX:-ghcr.io/phs-santos/pi1g6-logfarma}/frontend:${FRONTEND_TAG:-latest}
     restart: unless-stopped
     ports:
-      - "${HTTP_PORT:-80}:80"
+      # HTTP_HOST=127.0.0.1 quando há um proxy com HTTPS (Caddy, nginx) na frente no mesmo servidor.
+      - "${HTTP_HOST:-0.0.0.0}:${HTTP_PORT:-80}:80"
     depends_on:
       backend:
         condition: service_healthy

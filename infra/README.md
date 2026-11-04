@@ -55,6 +55,10 @@ Para voltar uma versão (rollback), rode o deploy informando o sha curto do comm
 
 Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repassa `/api/` para o backend. O banco não tem porta pública.
 
+**Banco:** o backend usa só o `DATABASE_URL` do `.env`. O padrão é apontar para um Postgres que já existe no servidor (o container do backend precisa estar na mesma rede Docker dele; na VPS do grupo isso fica num `compose.override.yaml` ao lado do `compose.yaml`). Para usar o Postgres próprio deste compose, ligue `COMPOSE_PROFILES=banco-proprio` e aponte `DATABASE_URL` para `db`. Ver `.env.prod.example`.
+
+**HTTPS:** com um proxy no mesmo servidor (Caddy, nginx), use `HTTP_HOST=127.0.0.1` para a porta do site ficar só local, e `COOKIE_SECURE=true`.
+
 ### Preparar a VPS (uma vez)
 
 1. Instale Docker Engine + plugin Compose e crie um usuário de deploy no grupo `docker`:
@@ -71,7 +75,7 @@ Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repass
     ```bash
     ssh deploy@SEU_IP 'mkdir -p ~/grupo-pi-6'
     scp infra/.env.prod.example deploy@SEU_IP:~/grupo-pi-6/.env
-    ssh deploy@SEU_IP 'chmod 600 ~/grupo-pi-6/.env && nano ~/grupo-pi-6/.env'   # troque a senha, o PUBLIC_URL e confira o IMAGE_PREFIX
+    ssh deploy@SEU_IP 'chmod 600 ~/grupo-pi-6/.env && nano ~/grupo-pi-6/.env'   # preencha DATABASE_URL, PUBLIC_URL, JWT_SECRET e confira o IMAGE_PREFIX
     ```
 
 ### Configurar o GitHub (uma vez)
@@ -108,7 +112,8 @@ Dumps de produção podem ter dados pessoais de pacientes (LGPD): `infra/backups
 ## Banco e dados da demonstração
 
 - **Migrações** rodam sozinhas quando o backend inicia (as migrações SQL vão dentro da imagem). Não há passo manual no deploy.
-- **Variáveis novas no `.env` da VPS** (ver `.env.prod.example`): `JWT_SECRET` (obrigatória — gere com `openssl rand -hex 32`), `COOKIE_SECURE`, `ALLOW_DEMO_SEED`, `DEMO_PASSWORD`.
+- **Variáveis do `.env` da VPS** (ver `.env.prod.example`): `DATABASE_URL` e `JWT_SECRET` (obrigatórias; gere o segredo com `openssl rand -hex 32`), `PUBLIC_URL`, `HTTP_HOST`/`HTTP_PORT`, `COOKIE_SECURE`, `ALLOW_DEMO_SEED`, `DEMO_PASSWORD`.
+- **Catálogo (unidades e medicamentos):** `docker compose exec backend node dist/db/seed-catalog.js` só acrescenta e pode rodar em produção.
 - **Recarregar os dados da demonstração** (Taquaritinga, Dona Maria). **Apaga todos os dados do banco** — só para ensaio e apresentação:
 
     ```bash
