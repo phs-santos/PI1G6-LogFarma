@@ -89,3 +89,8 @@
     border-radius: var(--radius-md);
     background: var(--color-ink-soft);
 }
+
+.app-signout-error {
+    margin: var(--space-2) 0 0;
+    font-weight: var(--font-weight-bold);
+}

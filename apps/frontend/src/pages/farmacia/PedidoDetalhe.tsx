@@ -4,6 +4,7 @@ import {
     Button,
     Notice,
     SelectField,
+    Spinner,
     Stamp,
     Tarja,
     TextField,
@@ -58,7 +59,15 @@ export function PedidoDetalhe({ item }: { item: PharmacyRequestItem }) {
         refetchInterval: REGULAR,
     });
     const own = stock.data?.find((s) => s.medication.id === r.medication.id)?.available ?? 0;
-    const step = nextStep(item, network.data ?? [], occupation, own);
+    // Sem estoque e rede carregados, a sugestão seria errada (ex.: "Pedir ao fornecedor"
+    // com o remédio na prateleira). Só sugere com os dois em mãos.
+    const ready = stock.data !== undefined && network.data !== undefined;
+    const lookupFailed = !ready && (stock.isError || network.isError);
+    const step = ready ? nextStep(item, network.data, occupation, own) : null;
+    const retryLookup = () => {
+        void stock.refetch();
+        void network.refetch();
+    };
     const [form, setForm] = useState<ActionKey | null>(null);
     const [done, setDone] = useState("");
 
@@ -95,7 +104,7 @@ export function PedidoDetalhe({ item }: { item: PharmacyRequestItem }) {
             case "schedule_delivery":
                 return "Agendar entrega";
             case "request_transfer":
-                return step.transferFrom
+                return step?.transferFrom
                     ? `Pedir à ${step.transferFrom.pharmacyName}`
                     : "Pedir a outra unidade";
             case "order_from_supplier":
@@ -107,7 +116,7 @@ export function PedidoDetalhe({ item }: { item: PharmacyRequestItem }) {
         if (FORM_ACTIONS.includes(a)) return setForm(a);
         if (a === "check_prescription" && r.prescription) return check.run(r.prescription.id);
         if (a === "prepare") return act.run({ action: "prepare" });
-        if (a === "request_transfer" && step.transferFrom) {
+        if (a === "request_transfer" && step?.transferFrom) {
             return act.run({
                 action: "request_transfer",
                 fromPharmacyId: step.transferFrom.pharmacyId,
@@ -136,19 +145,35 @@ export function PedidoDetalhe({ item }: { item: PharmacyRequestItem }) {
                 </Notice>
             )}
 
-            <div className="app-actions">
-                {step.primary && (
-                    <Button size="lg" loading={pending} onClick={() => start(step.primary!)}>
-                        {label(step.primary)}
+            {lookupFailed && (
+                <Notice tone="attention" title="Não foi possível consultar o estoque.">
+                    <p>Sem o estoque da unidade e da rede não dá para sugerir o próximo passo.</p>
+                    <Button variant="secondary" onClick={retryLookup}>
+                        Tentar de novo
                     </Button>
-                )}
-                {step.others.map((a) => (
-                    <Button key={a} variant="secondary" disabled={pending} onClick={() => start(a)}>
-                        {label(a)}
-                    </Button>
-                ))}
-                {step.blocked && <span className="app-blocked">{step.blocked}</span>}
-            </div>
+                </Notice>
+            )}
+            {!ready && !lookupFailed && <Spinner label="Consultando o estoque" />}
+            {step && (
+                <div className="app-actions">
+                    {step.primary && (
+                        <Button size="lg" loading={pending} onClick={() => start(step.primary!)}>
+                            {label(step.primary)}
+                        </Button>
+                    )}
+                    {step.others.map((a) => (
+                        <Button
+                            key={a}
+                            variant="secondary"
+                            disabled={pending}
+                            onClick={() => start(a)}
+                        >
+                            {label(a)}
+                        </Button>
+                    ))}
+                    {step.blocked && <span className="app-blocked">{step.blocked}</span>}
+                </div>
+            )}
 
             {form === "register_prescription" && (
                 <RegisterPrescriptionForm
@@ -230,10 +255,19 @@ export function PedidoDetalhe({ item }: { item: PharmacyRequestItem }) {
 
             <section aria-labelledby="det-estoque">
                 <h3 id="det-estoque">Estoque</h3>
-                <p>Nesta unidade: {stock.isPending ? "carregando…" : `${own} disponíveis`}</p>
                 <p>
-                    {network.isPending
-                        ? "Consultando a rede…"
+                    Nesta unidade:{" "}
+                    {stock.data !== undefined
+                        ? `${own} disponíveis`
+                        : stock.isError
+                          ? "não foi possível consultar"
+                          : "carregando…"}
+                </p>
+                <p>
+                    {network.data === undefined
+                        ? network.isError
+                            ? "Não foi possível consultar a rede."
+                            : "Consultando a rede…"
                         : others.length === 0
                           ? "Nenhuma outra unidade da rede tem este remédio."
                           : `Tem ${joinUnits(others.map((n) => `na ${n.pharmacyName} (${n.available})`))}`}

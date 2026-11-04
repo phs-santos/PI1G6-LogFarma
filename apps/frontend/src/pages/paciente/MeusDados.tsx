@@ -27,7 +27,7 @@ import type {
 } from "../../api/types";
 import { requestLocation } from "../../app/geolocation";
 import { qk } from "../../app/queryKeys";
-import { useSignOut } from "../../app/session";
+import { SignOutButton } from "../../app/session";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { formatPhone, onlyDigits } from "../../lib/format";
@@ -41,7 +41,6 @@ import { usePageTitle } from "../../app/usePageTitle";
 export function MeusDados() {
     usePageTitle("Meus dados");
     const query = useQuery({ queryKey: qk.profile, queryFn: getProfile });
-    const signOut = useSignOut();
     return (
         <>
             <h1>Meus dados</h1>
@@ -49,55 +48,21 @@ export function MeusDados() {
                 {(profile) => <ProfileSections profile={profile} />}
             </Loaded>
             <div className="app-section">
-                <Button variant="secondary" block onClick={() => void signOut()}>
-                    Sair
-                </Button>
+                <SignOutButton variant="secondary" block />
             </div>
         </>
     );
 }
 
 function ProfileSections({ profile }: { profile: PatientProfile }) {
-    const client = useQueryClient();
-    const [message, setMessage] = useState("");
-    const save = useActionMutation((patch: ProfilePatch) => updateProfile(patch), {
-        invalidate: [qk.me],
-        onSuccess: (updated) => {
-            client.setQueryData(qk.profile, updated);
-            setMessage("Dados salvos.");
-        },
-    });
-
     return (
         <>
             <p className="app-lead">{profile.socialName ?? profile.fullName}</p>
-            <div aria-live="polite">{message && <Notice tone="success" title={message} />}</div>
-            {save.isError && (
-                <p className="sg-field__error" role="alert">
-                    {save.error.message}
-                </p>
-            )}
-            <ContactSection profile={profile} onSave={(p) => save.run(p)} saving={save.isPending} />
-            <UnitSection profile={profile} onSave={(p) => save.run(p)} saving={save.isPending} />
-            <LocationSection
-                profile={profile}
-                onSave={(p) => save.run(p)}
-                saving={save.isPending}
-            />
-            <section className="app-section" aria-labelledby="locomocao">
-                <h2 id="locomocao">Locomoção</h2>
-                <Checkbox
-                    label="Tenho dificuldade para me locomover"
-                    checked={profile.mobilityLimited}
-                    disabled={save.isPending}
-                    onChange={(e) => save.run({ mobilityLimited: e.target.checked })}
-                />
-            </section>
-            <PrioritySection
-                profile={profile}
-                onSave={(p) => save.run(p)}
-                saving={save.isPending}
-            />
+            <ContactSection profile={profile} />
+            <UnitSection profile={profile} />
+            <LocationSection profile={profile} />
+            <LocomotionSection profile={profile} />
+            <PrioritySection profile={profile} />
             <CaregiversSection />
         </>
     );
@@ -105,11 +70,60 @@ function ProfileSections({ profile }: { profile: PatientProfile }) {
 
 interface SectionProps {
     profile: PatientProfile;
-    onSave: (patch: ProfilePatch) => void;
-    saving: boolean;
 }
 
-function ContactSection({ profile, onSave, saving }: SectionProps) {
+/**
+ * Salvar de uma seção: o retorno ("Dados salvos." ou o erro) aparece dentro dela, perto do
+ * botão; cada envio limpa o retorno anterior. Unidade e localização mudam "Onde tem",
+ * por isso a disponibilidade também é recarregada.
+ */
+function useProfileSave(onDone?: () => void) {
+    const client = useQueryClient();
+    const [message, setMessage] = useState("");
+    const save = useActionMutation((patch: ProfilePatch) => updateProfile(patch), {
+        invalidate: [qk.me, ["availability"]],
+        onSuccess: (updated) => {
+            client.setQueryData(qk.profile, updated);
+            setMessage("Dados salvos.");
+            onDone?.();
+        },
+    });
+    const run = (patch: ProfilePatch) => {
+        setMessage("");
+        save.reset();
+        save.run(patch);
+    };
+    const feedback = (
+        <div aria-live="polite">
+            {message && <Notice tone="success" title={message} />}
+            {save.isError && (
+                <p className="sg-field__error" role="alert">
+                    {save.error.message}
+                </p>
+            )}
+        </div>
+    );
+    return { run, pending: save.isPending, feedback };
+}
+
+function LocomotionSection({ profile }: SectionProps) {
+    const { run, pending, feedback } = useProfileSave();
+    return (
+        <section className="app-section" aria-labelledby="locomocao">
+            <h2 id="locomocao">Locomoção</h2>
+            <Checkbox
+                label="Tenho dificuldade para me locomover"
+                checked={profile.mobilityLimited}
+                disabled={pending}
+                onChange={(e) => run({ mobilityLimited: e.target.checked })}
+            />
+            {feedback}
+        </section>
+    );
+}
+
+function ContactSection({ profile }: SectionProps) {
+    const { run: onSave, pending: saving, feedback } = useProfileSave();
     const [phone, setPhone] = useState(formatPhone(profile.phone));
     const [address, setAddress] = useState<Address>(profile.address);
     const [errors, setErrors] = useState<AddressErrors>({});
@@ -140,11 +154,13 @@ function ContactSection({ profile, onSave, saving }: SectionProps) {
                     Salvar contato e endereço
                 </Button>
             </form>
+            {feedback}
         </section>
     );
 }
 
-function UnitSection({ profile, onSave, saving }: SectionProps) {
+function UnitSection({ profile }: SectionProps) {
+    const { run: onSave, pending: saving, feedback } = useProfileSave();
     const units = useQuery({
         queryKey: qk.pharmacies,
         queryFn: listPharmacies,
@@ -176,11 +192,13 @@ function UnitSection({ profile, onSave, saving }: SectionProps) {
                     Salvar unidade
                 </Button>
             )}
+            {feedback}
         </section>
     );
 }
 
-function LocationSection({ profile, onSave, saving }: SectionProps) {
+function LocationSection({ profile }: SectionProps) {
+    const { run: onSave, pending: saving, feedback } = useProfileSave();
     const [asking, setAsking] = useState(false);
     const [denied, setDenied] = useState(false);
     const has = profile.latitude !== null && profile.longitude !== null;
@@ -221,12 +239,14 @@ function LocationSection({ profile, onSave, saving }: SectionProps) {
                     </Button>
                 )}
             </div>
+            {feedback}
         </section>
     );
 }
 
-function PrioritySection({ profile, onSave, saving }: SectionProps) {
+function PrioritySection({ profile }: SectionProps) {
     const [confirming, setConfirming] = useState(false);
+    const { run: onSave, pending: saving, feedback } = useProfileSave(() => setConfirming(false));
     const [category, setCategory] = useState<PriorityCategory | null>(null);
     const [consent, setConsent] = useState(false);
     const current = profile.priority;
@@ -251,7 +271,6 @@ function PrioritySection({ profile, onSave, saving }: SectionProps) {
                         loading={saving}
                         onConfirm={() => {
                             onSave({ priority: { revoke: true } });
-                            setConfirming(false);
                         }}
                         onClose={() => setConfirming(false)}
                     >
@@ -259,6 +278,7 @@ function PrioritySection({ profile, onSave, saving }: SectionProps) {
                             A informação é apagada e você deixa de ter prioridade na lista de
                             espera.
                         </p>
+                        {confirming && feedback}
                     </ConfirmDialog>
                 </>
             ) : (
@@ -293,6 +313,7 @@ function PrioritySection({ profile, onSave, saving }: SectionProps) {
                     )}
                 </>
             )}
+            {!confirming && feedback}
         </section>
     );
 }

@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Outlet, ScrollRestoration, useLocation, useNavigate } from "react-router";
 import { getMe, logout } from "../api/auth";
-import { UNAUTHORIZED_EVENT } from "../api/client";
+import { ApiError, UNAUTHORIZED_EVENT } from "../api/client";
+import { Button, type ButtonVariant } from "@fatec-pi/style-guide";
 import type { MeProfile, Session, SessionUser, UserRole } from "../api/types";
 import { qk } from "./queryKeys";
 import { useFocusOnNavigate } from "./useFocusOnNavigate";
@@ -58,17 +59,59 @@ export function useSession(): SessionState {
     };
 }
 
-/** Sair: avisa a API, esquece tudo o que estava em cache e vai para Entrar. */
-export function useSignOut(): () => Promise<void> {
+const SIGN_OUT_FAILED = "Não foi possível sair. Verifique a internet e tente de novo.";
+
+/**
+ * Sair: avisa a API e só então esquece tudo o que estava em cache e vai para Entrar.
+ * Se a API não responde, a sessão continua valendo no servidor: avisa e fica na tela
+ * (num celular compartilhado, "sair" que não saiu é pior que um aviso).
+ */
+export function useSignOut() {
     const client = useQueryClient();
     const navigate = useNavigate();
-    return async () => {
-        await logout().catch(() => undefined);
+    const [pending, setPending] = useState(false);
+    const [error, setError] = useState("");
+    const signOut = async () => {
+        if (pending) return;
+        setPending(true);
+        setError("");
+        try {
+            await logout();
+        } catch (err) {
+            // 401: a sessão já tinha acabado; o resto do app cuida (vai para Entrar).
+            if (!(err instanceof ApiError && err.status === 401)) {
+                setPending(false);
+                setError(SIGN_OUT_FAILED);
+                return;
+            }
+        }
         // Navega antes de esquecer a sessão (mesma razão do aviso de sessão vencida).
         void navigate("/entrar", { replace: true, flushSync: true, state: { signedOut: true } });
         client.removeQueries({ predicate: (q) => q.queryKey[0] !== qk.me[0] });
         client.setQueryData<Session | null>(qk.me, null);
     };
+    return { signOut, pending, error };
+}
+
+export function SignOutButton(props: { variant: ButtonVariant; block?: boolean }) {
+    const { signOut, pending, error } = useSignOut();
+    return (
+        <>
+            <Button
+                variant={props.variant}
+                block={props.block}
+                loading={pending}
+                onClick={() => void signOut()}
+            >
+                Sair
+            </Button>
+            {error && (
+                <p className="app-signout-error" role="alert">
+                    {error}
+                </p>
+            )}
+        </>
+    );
 }
 
 /**

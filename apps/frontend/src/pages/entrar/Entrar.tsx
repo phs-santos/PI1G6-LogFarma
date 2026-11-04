@@ -19,7 +19,9 @@ export function Entrar() {
     const [password, setPassword] = useState("");
     const expired = params.get("expirou") === "1";
     const location = useLocation();
-    const signedOut = (location.state as { signedOut?: boolean } | null)?.signedOut === true;
+    const navState = location.state as { signedOut?: boolean; created?: boolean } | null;
+    const signedOut = navState?.signedOut === true;
+    const created = navState?.created === true;
     const voltar = params.get("voltar");
 
     const mutation = useMutation({
@@ -49,6 +51,12 @@ export function Entrar() {
                 </header>
                 <h1>Entrar</h1>
                 {expired && <Notice tone="attention" title="Sua sessão terminou. Entre de novo." />}
+                {created && (
+                    <Notice
+                        tone="success"
+                        title="Sua conta foi criada. Entre com seu e-mail e senha."
+                    />
+                )}
                 <form className="app-form" onSubmit={onSubmit}>
                     <TextField
                         label="E-mail"

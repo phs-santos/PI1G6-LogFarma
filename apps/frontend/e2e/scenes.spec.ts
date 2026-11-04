@@ -168,8 +168,22 @@ test("Celular estreito e letra em 200%: nada rola para o lado", async ({ browser
     await searchAndOpen(maria, "losartana", /Losartana/);
     await expect(maria.getByText("Tem na UBS Jardim São Sebastião")).toBeVisible();
     await expectNoHorizontalScroll(maria);
+    const ondeTem = maria.url();
+    await maria.getByRole("link", { name: "Vou buscar lá" }).click();
+    await expect(maria.getByRole("link", { name: "Abrir o caminho no mapa" })).toBeVisible();
+    await expectNoHorizontalScroll(maria);
+    await maria.goto(`${ondeTem}/unidades`);
+    await expect(maria.getByRole("list", { name: "Unidades da rede" })).toBeVisible();
+    await expectNoHorizontalScroll(maria);
+    await maria.goto(ondeTem);
     await maria.getByRole("link", { name: "Não consigo ir — receber em casa" }).click();
-    await expect(maria.getByRole("button", { name: "Confirmar pedido" })).toBeVisible();
+    await expect(maria.getByRole("button", { name: "Confirmar pedido" })).toBeEnabled();
+    await expectNoHorizontalScroll(maria);
+    await maria.getByRole("button", { name: "Confirmar pedido" }).click();
+    await expect(maria.getByRole("list", { name: "Situação do pedido" })).toBeVisible();
+    await expectNoHorizontalScroll(maria);
+    await maria.goto("/cadastro");
+    await expect(maria.getByRole("heading", { level: 1, name: "Criar conta" })).toBeVisible();
     await expectNoHorizontalScroll(maria);
 
     const carlos = await loginAs(browser, "entregador1@demo.logfarma", {
@@ -177,5 +191,10 @@ test("Celular estreito e letra em 200%: nada rola para o lado", async ({ browser
         bigText: true,
     });
     await expect(carlos.getByRole("heading", { level: 1, name: "Entregas" })).toBeVisible();
+    await expectNoHorizontalScroll(carlos);
+    // Detalhe da entrega: o pedido da Maria (acima) ainda não foi agendado, então a tela mostra
+    // o estado "não está com você"; o detalhe completo é medido na cena 2 (largura padrão).
+    await carlos.goto("/entregas/qualquer");
+    await expect(carlos.getByText("Esta entrega não está com você.")).toBeVisible();
     await expectNoHorizontalScroll(carlos);
 });

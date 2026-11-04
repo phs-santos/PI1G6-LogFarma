@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
     Button,
     EmptyState,
+    Notice,
     Tarja,
     TextField,
     ChoiceGroup,
@@ -80,6 +81,15 @@ export function ConfirmarPedido() {
         <Loaded query={availability} what="o remédio">
             {({ medication }) => {
                 const needsRx = medication.prescriptionType !== "none";
+                // Os padrões (receita salva, receber em casa) dependem destes dados:
+                // sem eles, o pedido sairia sem a receita ou com a forma de receber errada.
+                const dataFailed = profile.isError || (needsRx && prescriptions.isError);
+                const dataReady =
+                    profile.data !== undefined && (!needsRx || prescriptions.data !== undefined);
+                const retryData = () => {
+                    void profile.refetch();
+                    void prescriptions.refetch();
+                };
                 // Comprimido e cápsula: 30 (um mês de uso contínuo). Seringa, frasco, bombinha: 1.
                 const quantity =
                     quantityInput ??
@@ -211,12 +221,33 @@ export function ConfirmarPedido() {
                             </ul>
                         </section>
 
+                        {dataFailed && (
+                            <Notice
+                                tone="attention"
+                                title={
+                                    needsRx && prescriptions.isError
+                                        ? "Não foi possível carregar suas receitas."
+                                        : "Não foi possível carregar seus dados."
+                                }
+                            >
+                                <p>Verifique a internet e toque em Tentar de novo.</p>
+                                <Button variant="secondary" onClick={retryData}>
+                                    Tentar de novo
+                                </Button>
+                            </Notice>
+                        )}
                         {(formError || create.isError) && (
                             <p className="sg-field__error" role="alert">
                                 {formError || create.error?.message}
                             </p>
                         )}
-                        <Button type="submit" block size="lg" loading={create.isPending}>
+                        <Button
+                            type="submit"
+                            block
+                            size="lg"
+                            loading={create.isPending}
+                            disabled={!dataReady}
+                        >
                             Confirmar pedido
                         </Button>
                     </form>

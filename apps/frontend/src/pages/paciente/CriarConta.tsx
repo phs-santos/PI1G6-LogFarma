@@ -74,6 +74,8 @@ export function CriarConta() {
     const [locationMsg, setLocationMsg] = useState("");
     const [apiError, setApiError] = useState("");
     const heading = useRef<HTMLHeadingElement>(null);
+    // Trava contra toque duplo em "Criar conta" (o botão só desabilita no próximo desenho).
+    const sending = useRef(false);
     const firstRender = useRef(true);
 
     const units = useQuery({
@@ -96,11 +98,20 @@ export function CriarConta() {
     const signup = useMutation({
         mutationFn: async (input: RegisterPatientInput) => {
             await register(input);
-            return getMe();
+            // A conta já existe a partir daqui: uma falha ao ler a sessão não é erro do
+            // cadastro (tentar de novo daria "e-mail já cadastrado").
+            return getMe().catch(() => null);
         },
         onSuccess: (session) => {
-            client.setQueryData<Session | null>(qk.me, session);
-            navigate("/", { replace: true });
+            if (session) {
+                client.setQueryData<Session | null>(qk.me, session);
+                navigate("/", { replace: true });
+            } else {
+                navigate("/entrar", { replace: true, state: { created: true } });
+            }
+        },
+        onSettled: () => {
+            sending.current = false;
         },
         onError: (err) => {
             setApiError(err.message);
@@ -172,6 +183,8 @@ export function CriarConta() {
             ...(coords ? { latitude: coords.latitude, longitude: coords.longitude } : {}),
             ...(f.category ? { priority: { category: f.category, consent: true as const } } : {}),
         };
+        if (sending.current) return;
+        sending.current = true;
         signup.mutate(input);
     };
 
