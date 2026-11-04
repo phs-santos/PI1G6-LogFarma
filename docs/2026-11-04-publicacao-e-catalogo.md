@@ -1,7 +1,7 @@
 # Publicação na VPS, catálogo de unidades e medicamentos, logo e cadastro mais fácil
 
 - **Implementado em:** 2026-11-04
-- **Última alteração:** —
+- **Última alteração:** 2026-11-04
 - **Requisitos:** RF01–RF03, RNF02, RNF03
 
 ## Em poucas palavras
@@ -64,6 +64,15 @@ Na VPS, depois de publicar a imagem nova:
 ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalog.js'
 ```
 
+## Telas no computador, Início útil e histórico de buscas (alteração)
+
+- **Computador:** a paciente ganhou topo azul com menu (Início, Procurar remédio, Meus pedidos, Avisos, Meus dados) e as telas viraram uma folha branca sobre fundo azul-claro. O Criar conta usa o mesmo desenho do Entrar: painel azul com a lista dos 6 passos e a folha com o formulário.
+- **Entrar:** seletor **Sou paciente / Sou da equipe** (padrão paciente). Na equipe, os textos mudam, some o "Criar conta" (contas da equipe são criadas pelo gestor) e o painel mostra um exemplo do balcão. O link `/entrar?perfil=equipe` já abre na equipe. Componente novo no style-guide: `Segmented`.
+- **Início:** busca direto na tela, "Você procurou recentemente", pedidos em andamento, avisos recentes e "Bom saber". Os quatro botões grandes ficam só no celular (no computador o menu faz esse papel). Notícias sobre medicamentos ficaram para quando o grupo escolher uma fonte confiável.
+- **Procurar:** "Mais procurados" (um toque preenche a busca), buscas recentes com "Limpar histórico" e a mensagem de ajuda sem sobrepor o campo.
+- **Histórico de buscas (backend):** tabela `patient_recent_medications` (migração `0002`), uma linha por paciente e remédio; gravada ao abrir "Onde tem"; `GET /api/me/recent-medications` (só a própria paciente) e `DELETE` para limpar. A tabela `search_events`, que alimenta o painel do gestor, continua anônima (LGPD).
+- **Detalhes:** mais espaço entre os blocos das telas; sem `?voltar=/` quando a origem é o início; sem moldura no título que recebe o foco; rótulo "Unidade" no cadastro.
+
 ## Pendências
 
 - O nginx do frontend guarda o endereço do backend; se um deploy recriar só o backend, o site dá 502 até reiniciar o frontend (`docker compose restart frontend`). Correção: resolver o endereço a cada pedido no `nginx.conf`.
@@ -71,6 +80,7 @@ ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalo
 
 ## Histórico de alterações
 
-| Data       | O que mudou    |
-| ---------- | -------------- |
-| 2026-11-04 | Versão inicial |
+| Data       | O que mudou                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| 2026-11-04 | Versão inicial                                                                                        |
+| 2026-11-04 | Computador com menu e folha, Entrar com paciente/equipe, Início útil, histórico de buscas da paciente |
