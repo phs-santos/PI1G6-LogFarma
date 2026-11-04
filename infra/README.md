@@ -48,7 +48,7 @@ docker compose down -v              # para tudo e APAGA o banco local
    **Imagem (backend)** / **Imagem (frontend)** publica `ghcr.io/<dono>/<repo>/<app>:latest` e `:<sha curto do commit>`
    (hoje: `ghcr.io/phs-santos/pi1g6-logfarma/backend` e `/frontend`). Nada vai para o ar ainda.
 2. Alguém roda o deploy, manualmente: **Actions → Deploy → Run workflow** (ou `./infra/scripts/deploy.sh`).
-3. O script copia o `compose.prod.yaml` para `~/grupo-pi-6` na VPS, baixa as imagens, sobe os containers,
+3. O script copia o `compose.prod.yaml` para `/opt/apps/grupo-pi-6` na VPS (outra pasta: `REMOTE_DIR`), baixa as imagens, sobe os containers,
    espera ficarem saudáveis e confere `/api/health`.
 
 Para voltar uma versão (rollback), rode o deploy informando o sha curto do commit anterior em `backend_tag` / `frontend_tag`.
@@ -73,9 +73,9 @@ Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repass
     ```
 3. Crie o `.env` de produção na VPS:
     ```bash
-    ssh deploy@SEU_IP 'mkdir -p ~/grupo-pi-6'
-    scp infra/.env.prod.example deploy@SEU_IP:~/grupo-pi-6/.env
-    ssh deploy@SEU_IP 'chmod 600 ~/grupo-pi-6/.env && nano ~/grupo-pi-6/.env'   # preencha DATABASE_URL, PUBLIC_URL, JWT_SECRET e confira o IMAGE_PREFIX
+    ssh root@SEU_IP 'mkdir -p /opt/apps/grupo-pi-6 && chown deploy: /opt/apps/grupo-pi-6'
+    scp infra/.env.prod.example deploy@SEU_IP:/opt/apps/grupo-pi-6/.env
+    ssh deploy@SEU_IP 'chmod 600 /opt/apps/grupo-pi-6/.env && nano /opt/apps/grupo-pi-6/.env'   # preencha DATABASE_URL, PUBLIC_URL, JWT_SECRET e confira o IMAGE_PREFIX
     ```
 
 ### Configurar o GitHub (uma vez)
@@ -120,7 +120,7 @@ Dumps de produção podem ter dados pessoais de pacientes (LGPD): `infra/backups
     # Desenvolvimento (na raiz do monorepo)
     docker compose -f infra/compose.yaml exec backend pnpm db:seed
 
-    # Produção (na VPS, em ~/grupo-pi-6) — feito por uma pessoa do grupo
+    # Produção (na VPS, em /opt/apps/grupo-pi-6) — feito por uma pessoa do grupo
     docker compose exec -e ALLOW_DEMO_SEED=true backend node dist/db/seed.js
     ```
 

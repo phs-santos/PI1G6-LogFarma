@@ -15,7 +15,7 @@ O LogFarma saiu do computador e foi para a rua: está no ar em `logfarma.codexol
 - **Máscaras:** telefone "(16) 99123-4567", Cartão SUS "898 0012 3456 7890" e CEP "15990-020" no cadastro, em Meus dados e em Contas do gestor. A API continua recebendo só os números.
 - **CEP:** no endereço, o CEP vem primeiro; com 8 números o app consulta o **ViaCEP** e preenche rua, bairro, cidade e UF. CEP desconhecido ou sem internet: aviso e preenchimento à mão.
 - **Catálogo (`apps/backend/src/db/catalog-data.ts`):** 18 unidades (Taquaritinga, Matão e Monte Alto: UBS, farmácia municipal, farmácia de especializados e Farmácia Popular) e 296 medicamentos da RENAME (189 básicos, 24 estratégicos, 83 especializados; 31 antimicrobianos, 60 de controle especial, 16 refrigerados, 36 no Farmácia Popular). Script `seed-catalog` que **só acrescenta**: não apaga nada e não duplica se rodar de novo.
-- **Produção na VPS:** containers em `/root/grupo-pi-6`; banco `logfarma` (usuário próprio) no Postgres que já existia na VPS; domínios no Caddy com HTTPS.
+- **Produção na VPS:** containers em `/opt/apps/grupo-pi-6` (até 2026-11-04 em `/root/grupo-pi-6`); banco `logfarma` (usuário próprio) no Postgres que já existia na VPS; domínios no Caddy com HTTPS.
 
 ## Por que
 
@@ -33,8 +33,8 @@ O LogFarma saiu do computador e foi para a rua: está no ar em `logfarma.codexol
 | `apps/frontend/src/lib/masks.ts`                                       | Máscaras de telefone, Cartão SUS e CEP                                      |
 | `apps/frontend/src/api/cep.ts`, `src/pages/paciente/AddressFields.tsx` | Busca de CEP e endereço                                                     |
 | `apps/backend/src/db/catalog-data.ts`, `catalog.ts`, `seed-catalog.ts` | Catálogo e carga sem apagar                                                 |
-| VPS `/root/grupo-pi-6/.env`                                            | `DATABASE_URL`, `JWT_SECRET` e afins (gerados na própria VPS; nunca no git) |
-| VPS `/root/grupo-pi-6/compose.override.yaml`                           | Põe o backend na rede do Postgres da VPS e deixa a porta 8090 só local      |
+| VPS `/opt/apps/grupo-pi-6/.env`                                        | `DATABASE_URL`, `JWT_SECRET` e afins (gerados na própria VPS; nunca no git) |
+| VPS `/opt/apps/grupo-pi-6/compose.override.yaml`                       | Põe o backend na rede do Postgres da VPS e deixa a porta 8090 só local      |
 | VPS `/etc/caddy/sites/logfarma.caddy`                                  | Domínios e HTTPS                                                            |
 
 ## Escolhas feitas
@@ -61,7 +61,7 @@ pnpm --filter @fatec-pi/backend db:catalog        # carrega o catálogo no banco
 Na VPS, depois de publicar a imagem nova:
 
 ```bash
-ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalog.js'
+ssh vps 'cd /opt/apps/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalog.js'
 ```
 
 ## Telas no computador, Início útil e histórico de buscas (alteração)
@@ -81,6 +81,11 @@ ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalo
 - **Backups:** os arquivos antigos ficaram na VPS como `.env.bak-20261104-165231`, `compose.yaml.bak-…` e `compose.override.yaml.bak-…` (permissão só do root). A senha antiga do banco e o JWT antigo guardados ali já não valem.
 - **Conferido:** containers saudáveis, `/api/health` ok de dentro e de fora (HTTPS), `GET /api/pharmacies` lendo do banco, login respondendo pelo banco ("E-mail ou senha incorretos." para conta inexistente) e nenhum erro de conexão no log.
 
+## Projeto movido para `/opt/apps` (alteração)
+
+- **Repositório:** `deploy.sh` e `backup-db.sh` usam `/opt/apps/grupo-pi-6` (configurável por `REMOTE_DIR`); README, comentários e `.env.prod.example` atualizados. O `.env.prod.example` tem as mesmas chaves do `.env` da VPS, com valores de exemplo no lugar das senhas.
+- **VPS (feito à mão por uma pessoa do grupo):** `docker compose down`, apagar os três `*.bak-20261104-165231`, `mv /root/grupo-pi-6 /opt/apps/grupo-pi-6` e `docker compose up -d`. Os nomes dos containers e da rede não mudam, porque o `compose.prod.yaml` fixa o projeto como `name: pi` (`pi-backend-1`, `pi-frontend-1`). O deploy pelo GitHub entra com o usuário `deploy` (grupo `docker`, dono de `/opt/apps/grupo-pi-6`), não com o `root`.
+
 ## Pendências
 
 - O nginx do frontend guarda o endereço do backend; se um deploy recriar só o backend, o site dá 502 até reiniciar o frontend (`docker compose restart frontend`). Correção: resolver o endereço a cada pedido no `nginx.conf`.
@@ -93,3 +98,4 @@ ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalo
 | 2026-11-04 | Versão inicial                                                                                        |
 | 2026-11-04 | Computador com menu e folha, Entrar com paciente/equipe, Início útil, histórico de buscas da paciente |
 | 2026-11-04 | Deploy com um só `DATABASE_URL`; senha do banco `logfarma` e `JWT_SECRET` trocadas na VPS             |
+| 2026-11-04 | Projeto na VPS passa para `/opt/apps/grupo-pi-6`; backups antigos removidos                           |

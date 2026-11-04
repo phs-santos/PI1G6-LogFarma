@@ -1,5 +1,5 @@
 # Produção (VPS). Usa as imagens publicadas pelos workflows imagem-backend/imagem-frontend do monorepo.
-# Fica em ~/grupo-pi-6 na VPS junto com o .env (copiado de .env.prod.example e preenchido lá).
+# Fica em /opt/apps/grupo-pi-6 na VPS junto com o .env (copiado de .env.prod.example e preenchido lá).
 # Quem sobe isso é o scripts/deploy.sh; não é preciso clonar nada na VPS.
 #
 # Banco: o backend usa só o DATABASE_URL do .env.
