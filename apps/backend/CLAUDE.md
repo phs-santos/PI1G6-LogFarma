@@ -11,6 +11,7 @@ pnpm dev          # http://localhost:3333 — teste com: curl localhost:3333/api
 pnpm typecheck    # obrigatório antes de considerar pronto
 pnpm test         # obrigatório: testes com banco real (docker compose -f ../../infra/compose.yaml up -d db)
 pnpm db:seed      # recarrega a demonstração (apaga o banco de dev)
+pnpm db:catalog   # unidades + medicamentos da RENAME; só acrescenta, pode rodar em produção
 pnpm build
 ```
 
