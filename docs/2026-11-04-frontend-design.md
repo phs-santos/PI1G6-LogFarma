@@ -1,6 +1,6 @@
 # Design das telas — LogFarma
 
-- **Implementado em:** — (design aprovado em 2026-11-04; implementação a seguir)
+- **Implementado em:** 2026-11-04 (registro em [2026-11-04-frontend.md](2026-11-04-frontend.md))
 - **Última alteração:** —
 - **Requisitos:** RF01–RF08, RNF03 · depende de [design do backend](2026-11-03-backend-design.md)
 
@@ -228,3 +228,4 @@ Novos (cada um com story e CSS só com tokens):
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-04 | Versão inicial                                                                                                                                                      |
 | 2026-11-04 | Revisão: três leituras novas no backend, horário só no passo atual, "Pedir assim mesmo" pergunta como receber, localização opcional, pacotes aprovados e Playwright |
+| 2026-11-04 | Implementado; desvios e decisões tomadas durante a implementação estão em [2026-11-04-frontend.md](2026-11-04-frontend.md)                                          |

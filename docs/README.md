@@ -59,3 +59,5 @@ Aqui fica registrado **tudo que foi feito** no monorepo: o que mudou, por que, o
 | 2026-11-03 | [Formatação automática com Prettier](2026-11-03-prettier.md)                |
 | 2026-11-03 | [Design do backend — demonstração Dona Maria](2026-11-03-backend-design.md) |
 | 2026-11-03 | [Backend implementado: API, banco e as três cenas](2026-11-03-backend.md)   |
+| 2026-11-04 | [Design das telas](2026-11-04-frontend-design.md)                           |
+| 2026-11-04 | [Telas implementadas](2026-11-04-frontend.md)                               |

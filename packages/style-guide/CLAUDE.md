@@ -9,19 +9,20 @@ pnpm install
 pnpm storybook    # http://localhost:6006
 pnpm typecheck    # obrigatório antes de considerar pronto
 pnpm build        # build do Storybook
+pnpm test         # Vitest + Testing Library + axe (obrigatório)
 ```
 
 ## Estrutura
 
-- `src/tokens/tokens.css` — CSS variables (cores, tipografia, espaçamento, raio, sombra)
+- `src/tokens/tokens.css` — CSS variables da identidade "Receituário e tarja" (tinta, papel, pauta, tarja, ok, atenção, fundo de diálogo; letra Atkinson Hyperlegible; espaços; alvos de toque; foco)
 - `src/tokens/index.ts` — espelho TS dos tokens; mantenha em sincronia com o CSS
-- `src/components/<Nome>/` — `<Nome>.tsx`, `<Nome>.css`, `<Nome>.stories.tsx`
+- `src/components/<Nome>/` — `<Nome>.tsx`, `<Nome>.css`, `<Nome>.stories.tsx`, `<Nome>.test.tsx`; `test/setup.ts` (axe)
 - `src/styles.css` — importa tokens + CSS de cada componente
 - `src/index.ts` — exporta componentes e tipos públicos
 
 ## Checklist de componente novo
 
-1. Pasta `src/components/<Nome>/` com os 3 arquivos.
+1. Pasta `src/components/<Nome>/` com `.tsx`, `.css`, `.stories.tsx` e `.test.tsx` (teste primeiro, com axe).
 2. Classes CSS no padrão BEM com prefixo `sg-`: `.sg-nome`, `.sg-nome__parte`, `.sg-nome--variante`.
 3. CSS usa **somente** tokens `var(--...)`. Precisa de valor novo? Adicione token em `tokens.css` + `tokens/index.ts`.
 4. Props estendem os atributos HTML nativos (`ButtonHTMLAttributes`, etc.) e repassam `...props` e `className`. Se houver conflito de nome (ex.: `title`), use `Omit<>`.
