@@ -1,7 +1,8 @@
 import type { ReactElement } from "react";
 import { render } from "@testing-library/react";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { createMemoryRouter, RouterProvider, type RouteObject } from "react-router";
+import { createMemoryRouter, type RouteObject } from "react-router";
+import { RouterProvider } from "react-router/dom";
 import { createQueryClient } from "../src/app/queryClient";
 import { qk } from "../src/app/queryKeys";
 import { appRoutes } from "../src/app/router";

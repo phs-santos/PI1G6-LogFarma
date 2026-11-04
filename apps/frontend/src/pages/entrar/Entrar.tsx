@@ -26,7 +26,8 @@ export function Entrar() {
         },
     });
 
-    if (user && !mutation.isPending && !mutation.isSuccess) {
+    // Quem já entrou vai para a sua tela (exceto quem chega com a sessão vencida).
+    if (user && !expired && !mutation.isPending && !mutation.isSuccess) {
         return <Navigate to={homeFor(user.role)} replace />;
     }
 

@@ -85,11 +85,12 @@ export function SessionRoot() {
         const onUnauthorized = () => {
             const current = client.getQueryData<Session | null>(qk.me);
             if (!current) return; // ninguém tinha entrado: o próprio guarda manda para Entrar
-            // Navega antes de esquecer a sessão: senão a guarda de perfil redireciona primeiro
-            // (sem o "Sua sessão terminou").
+            // Primeiro Entrar aparece de fato (flushSync: sem transição adiada); só então a
+            // sessão é esquecida. Na ordem inversa a guarda de perfil redirecionaria sozinha,
+            // sem o "Sua sessão terminou".
             const params = new URLSearchParams({ expirou: "1", voltar: here.current });
-            void navigate(`/entrar?${params.toString()}`, { replace: true });
             void client.cancelQueries();
+            void navigate(`/entrar?${params.toString()}`, { replace: true, flushSync: true });
             client.removeQueries({ predicate: (q) => q.queryKey[0] !== qk.me[0] });
             client.setQueryData<Session | null>(qk.me, null);
         };
