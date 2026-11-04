@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
+import { PedidosCompra } from "../pages/fornecedor/PedidosCompra";
 import { EntregaDetalhe } from "../pages/entregador/EntregaDetalhe";
 import { EntregasEntregador } from "../pages/entregador/Entregas";
 import { Compras } from "../pages/farmacia/Compras";
@@ -99,7 +100,7 @@ export const appRoutes: RouteObject[] = [
                         <DesktopLayout />
                     </RequireRole>
                 ),
-                children: [page("/fornecedor", "Pedidos de compra")],
+                children: [{ path: "/fornecedor", element: <PedidosCompra /> }],
             },
             {
                 element: (

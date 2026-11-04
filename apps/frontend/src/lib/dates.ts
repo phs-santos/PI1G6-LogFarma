@@ -29,3 +29,14 @@ export function daysUntil(isoDay: string, now: Date = new Date()): number {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return Math.round((target.getTime() - today.getTime()) / 86_400_000);
 }
+
+/** Hoje como "aaaa-mm-dd" no horário local. */
+export function todayIso(now: Date = new Date()): string {
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
+/** Dias desde a data/hora até hoje: 0 = hoje. */
+export function daysSince(iso: string, now: Date = new Date()): number {
+    return -daysUntil(todayIso(new Date(iso)), now);
+}

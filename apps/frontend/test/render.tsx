@@ -78,3 +78,17 @@ export const sessions = {
         profile: { kind: "courier", fullName: "Carlos Eduardo Lima" },
     },
 } satisfies Record<string, TestSession>;
+
+export const supplierSession: TestSession = {
+    user: { id: "u-forn", role: "supplier_staff" },
+    profile: {
+        kind: "supplier_staff",
+        fullName: "Ricardo Alves",
+        supplier: { id: "s1", name: "Distribuidora Farma Paulista" },
+    },
+};
+
+export const managerSession: TestSession = {
+    user: { id: "u-gestor", role: "manager" },
+    profile: { kind: "manager", fullName: "Gestão da rede" },
+};
