@@ -7,6 +7,8 @@ import { sessionPlugin } from "./auth/session.js";
 import { healthRoutes } from "./routes/health.js";
 import { authRoutes } from "./routes/auth.js";
 import { notificationRoutes } from "./routes/notifications.js";
+import { medicationRoutes } from "./routes/medications.js";
+import { pharmacyListRoutes } from "./routes/pharmacies.js";
 
 export interface AppDeps {
     db: Db;
@@ -50,6 +52,8 @@ export function buildApp(deps: AppDeps) {
     app.register(healthRoutes, { prefix: "/api" });
     app.register(authRoutes, { prefix: "/api" });
     app.register(notificationRoutes, { prefix: "/api" });
+    app.register(medicationRoutes, { prefix: "/api" });
+    app.register(pharmacyListRoutes, { prefix: "/api" });
 
     return app;
 }

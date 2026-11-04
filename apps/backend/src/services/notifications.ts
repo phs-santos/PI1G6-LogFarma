@@ -20,16 +20,14 @@ export async function notify(tx: DbOrTx, input: Message & { userId: string }): P
 
 async function notifyMany(tx: DbOrTx, userIds: string[], msg: Message): Promise<void> {
     if (userIds.length === 0) return;
-    await tx
-        .insert(notifications)
-        .values(
-            userIds.map((userId) => ({
-                userId,
-                title: msg.title,
-                body: msg.body,
-                requestId: msg.requestId ?? null,
-            })),
-        );
+    await tx.insert(notifications).values(
+        userIds.map((userId) => ({
+            userId,
+            title: msg.title,
+            body: msg.body,
+            requestId: msg.requestId ?? null,
+        })),
+    );
 }
 
 export async function notifyPharmacyStaff(
