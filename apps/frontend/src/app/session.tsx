@@ -85,11 +85,13 @@ export function SessionRoot() {
         const onUnauthorized = () => {
             const current = client.getQueryData<Session | null>(qk.me);
             if (!current) return; // ninguém tinha entrado: o próprio guarda manda para Entrar
+            // Navega antes de esquecer a sessão: senão a guarda de perfil redireciona primeiro
+            // (sem o "Sua sessão terminou").
+            const params = new URLSearchParams({ expirou: "1", voltar: here.current });
+            void navigate(`/entrar?${params.toString()}`, { replace: true });
             void client.cancelQueries();
             client.removeQueries({ predicate: (q) => q.queryKey[0] !== qk.me[0] });
             client.setQueryData<Session | null>(qk.me, null);
-            const params = new URLSearchParams({ expirou: "1", voltar: here.current });
-            navigate(`/entrar?${params.toString()}`, { replace: true });
         };
         window.addEventListener(UNAUTHORIZED_EVENT, onUnauthorized);
         return () => window.removeEventListener(UNAUTHORIZED_EVENT, onUnauthorized);

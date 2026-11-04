@@ -100,3 +100,74 @@ export function notification(
         ...over,
     };
 }
+
+import type { CaregiverView, MyPrescription, PatientProfile, RequestView } from "../src/api/types";
+
+/** Pedido da Maria; por padrão acabou de chegar à UBS Centro vindo da Jardim (cena 2). */
+export function requestView(over: Partial<RequestView> = {}): RequestView {
+    return {
+        id: "req-1",
+        status: "arrived",
+        fulfillment: "delivery",
+        quantity: 30,
+        medication: losartana,
+        pharmacy: {
+            id: "ph-centro",
+            name: "UBS Centro",
+            address: "Rua Sete de Setembro, 100, Centro, Taquaritinga",
+            openingHours: "Segunda a sexta, 7h às 17h",
+        },
+        sourcePharmacy: { id: "ph-jardim", name: "UBS Jardim São Sebastião" },
+        expectedAt: null,
+        prescription: null,
+        waitlistPosition: null,
+        delivery: null,
+        createdAt: new Date(2026, 10, 4, 9, 0).toISOString(),
+        updatedAt: new Date(2026, 10, 4, 10, 32).toISOString(),
+        ...over,
+    };
+}
+
+export function patientProfile(over: Partial<PatientProfile> = {}): PatientProfile {
+    return {
+        fullName: "Maria Aparecida da Silva",
+        socialName: null,
+        birthDate: "1951-03-12",
+        cns: "898001234567890",
+        cpf: null,
+        phone: "16991234567",
+        address: {
+            street: "Rua Sete de Setembro",
+            number: "50",
+            district: "Centro",
+            city: "Taquaritinga",
+            state: "SP",
+            zip: "15900000",
+        },
+        latitude: null,
+        longitude: null,
+        referencePharmacy: { id: "ph-centro", name: "UBS Centro" },
+        mobilityLimited: false,
+        priority: null,
+        ...over,
+    };
+}
+
+export const usablePrescription: MyPrescription = {
+    id: "rx-1",
+    type: "simple",
+    issuedAt: "2026-09-01",
+    validUntil: "2027-03-01",
+    prescriberName: "Dra. Helena Prado",
+    checked: true,
+    medicationId: "med-los",
+    usable: true,
+};
+
+export const caregiverJoana: CaregiverView = {
+    id: "cg-1",
+    fullName: "Joana da Silva",
+    document: "12345678900",
+    relationship: "filha",
+    phone: "16998887777",
+};

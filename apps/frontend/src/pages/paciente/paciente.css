@@ -68,3 +68,110 @@
 .app-facts dd {
     margin: 0;
 }
+
+.app-highlight {
+    margin: var(--space-4) 0;
+    padding: var(--space-3) var(--space-4);
+    border-left: var(--space-2) solid var(--color-ink);
+    background: var(--color-ink-soft);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-status {
+    font-weight: var(--font-weight-bold);
+}
+
+.app-row-link {
+    font-size: 1.1em;
+}
+
+.app-notices {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.app-notice {
+    display: grid;
+    gap: var(--space-1);
+    width: 100%;
+    min-height: var(--tap-min-mobile);
+    padding: var(--space-4);
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    font: inherit;
+    color: var(--color-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.app-notice--new {
+    border: var(--border-thick) solid var(--color-ink);
+}
+
+.app-notice__new {
+    justify-self: start;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-notice__title {
+    font-weight: var(--font-weight-bold);
+}
+
+.app-choices {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    border: none;
+}
+
+.app-choices legend {
+    margin-bottom: var(--space-3);
+    font-weight: var(--font-weight-bold);
+    font-size: 1.1em;
+    color: var(--color-ink);
+}
+
+.app-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-height: var(--tap-min-mobile);
+    padding: var(--space-3) var(--space-4);
+    border: var(--border-thin) solid var(--color-text-muted);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.app-choice:has(input:checked) {
+    border: var(--border-thick) solid var(--color-ink);
+    background: var(--color-ink-soft);
+}
+
+.app-choice input {
+    flex: none;
+    width: 1.4em;
+    height: 1.4em;
+    margin: 0.15em 0 0;
+    accent-color: var(--color-ink);
+}
+
+.app-section {
+    margin: var(--space-6) 0;
+}
+
+.app-section h2 {
+    margin-bottom: var(--space-2);
+}
+
+.app-mobile__main .sg-tarja {
+    margin-bottom: var(--space-6);
+}

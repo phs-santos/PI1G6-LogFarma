@@ -3,8 +3,11 @@ import { vi } from "vitest";
 export interface MockReply {
     status?: number;
     body?: unknown;
+    /** Simula queda de internet (o fetch rejeita). */
+    networkError?: boolean;
 }
-export type MockHandler = MockReply | ((req: { body: unknown; url: URL }) => MockReply);
+export type MockHandler =
+    MockReply | ((req: { body: unknown; url: URL }) => MockReply | Promise<MockReply>);
 
 export interface ApiCall {
     method: string;
@@ -32,8 +35,9 @@ export function mockApi(routes: Record<string, MockHandler> = {}) {
                       body: { message: `Sem resposta de teste para ${method} ${url.pathname}` },
                   }
                 : typeof handler === "function"
-                  ? handler({ body, url })
+                  ? await handler({ body, url })
                   : handler;
+        if (reply.networkError) throw new TypeError("Failed to fetch");
         return new Response(reply.body === undefined ? null : JSON.stringify(reply.body), {
             status: reply.status ?? 200,
             headers: { "Content-Type": "application/json" },
