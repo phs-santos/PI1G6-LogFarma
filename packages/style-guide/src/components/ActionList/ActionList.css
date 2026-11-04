@@ -1,0 +1,10 @@
+.sg-action-list {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.sg-action-list > * {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: left;
+}

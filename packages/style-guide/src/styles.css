@@ -3,6 +3,12 @@
 @import "./tokens/tokens.css";
 @import "./components/Button/Button.css";
 @import "./components/Card/Card.css";
+@import "./components/Tarja/Tarja.css";
+@import "./components/Stamp/Stamp.css";
+@import "./components/Notice/Notice.css";
+@import "./components/ActionList/ActionList.css";
+@import "./components/Timeline/Timeline.css";
+@import "./components/States/States.css";
 
 *,
 *::before,

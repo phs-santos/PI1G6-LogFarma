@@ -1,0 +1,61 @@
+.sg-timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sg-timeline__step {
+    position: relative;
+    display: flex;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+}
+
+.sg-timeline__step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: calc(0.6em - 1px);
+    top: 1.4em;
+    bottom: 0;
+    width: var(--border-thin);
+    background: var(--color-rule);
+}
+
+.sg-timeline__dot {
+    flex: none;
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+    border: var(--border-thick) solid var(--color-text-muted);
+    border-radius: 50%;
+    background: var(--color-paper);
+}
+
+.sg-timeline__step--done .sg-timeline__dot {
+    border-color: var(--color-ok);
+    background: var(--color-ok);
+}
+
+.sg-timeline__step--current .sg-timeline__dot {
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 4px var(--color-ink-soft);
+}
+
+.sg-timeline__step--current .sg-timeline__text {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+}
+
+.sg-timeline__step--todo .sg-timeline__text {
+    color: var(--color-text-muted);
+}
+
+.sg-timeline__now {
+    font-weight: var(--font-weight-regular);
+}
+
+.sg-timeline__detail {
+    display: block;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-muted);
+}

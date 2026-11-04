@@ -1,0 +1,19 @@
+.sg-stamp {
+    display: inline-block;
+    padding: 0 var(--space-2);
+    border: var(--border-thick) solid currentColor;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-bold);
+    transform: rotate(-3deg);
+    white-space: nowrap;
+}
+
+.sg-stamp--ok {
+    color: var(--color-ok);
+}
+.sg-stamp--danger {
+    color: var(--color-tarja-red);
+}
+.sg-stamp--neutral {
+    color: var(--color-text-muted);
+}

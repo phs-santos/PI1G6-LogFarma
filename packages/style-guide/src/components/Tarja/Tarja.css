@@ -1,0 +1,23 @@
+.sg-tarja {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: 0.85em;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-muted);
+}
+
+.sg-tarja--red {
+    color: var(--color-tarja-red);
+}
+
+.sg-tarja--black {
+    color: var(--color-tarja-black);
+}
+
+.sg-tarja__band {
+    display: block;
+    height: var(--space-2);
+    border-radius: var(--radius-sm);
+    background: currentColor;
+}

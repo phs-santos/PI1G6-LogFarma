@@ -1,0 +1,39 @@
+.sg-state {
+    padding: var(--space-6) 0;
+}
+
+.sg-state__title {
+    margin: 0 0 var(--space-2);
+    font-weight: var(--font-weight-bold);
+}
+
+.sg-state--error .sg-state__title {
+    color: var(--color-tarja-red);
+}
+
+.sg-state__action {
+    margin-top: var(--space-3);
+}
+
+.sg-spinner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    color: var(--color-text-muted);
+}
+
+.sg-spinner__circle {
+    width: 1.25em;
+    height: 1.25em;
+    border: var(--border-thick) solid var(--color-rule);
+    border-top-color: var(--color-ink);
+    border-radius: 50%;
+    animation: sg-spin 0.9s linear infinite;
+}
+
+@keyframes sg-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
