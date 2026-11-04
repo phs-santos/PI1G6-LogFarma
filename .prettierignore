@@ -5,3 +5,4 @@ storybook-static
 pnpm-lock.yaml
 graphify-out
 infra/backups
+contexto
