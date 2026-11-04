@@ -7,6 +7,10 @@ import { listPharmacyRequests, runCounterAction, type CounterAction } from "../s
 import type { RequestStatus } from "../domain/request-status.js";
 // Import com efeito: registra as ações de balcão "request_transfer" (e, na Task 10, "order_from_supplier").
 import "../services/transfers.js";
+import "../services/purchasing-actions.js";
+import { eq } from "drizzle-orm";
+import { purchaseOrders } from "../db/schema.js";
+import { purchaseOrderViews, receivePurchaseOrder, waitlistView } from "../services/purchasing.js";
 import { listTransfers, runTransferAction, type TransferAction } from "../services/transfers.js";
 
 export const idParams = {
@@ -80,6 +84,54 @@ export const pharmacyRoutes: FastifyPluginAsync = async (app) => {
             const staff = await getStaffByUser(app.db, request.user.id);
             return {
                 transfer: await runTransferAction(app.db, staff, request.params.id, request.body),
+            };
+        },
+    );
+
+    app.get("/pharmacy/purchase-orders", async (request) => {
+        const staff = await getStaffByUser(app.db, request.user.id);
+        return {
+            items: await purchaseOrderViews(
+                app.db,
+                eq(purchaseOrders.pharmacyId, staff.pharmacyId),
+            ),
+        };
+    });
+
+    app.post<{ Params: { id: string }; Body: { action: "receive" } }>(
+        "/pharmacy/purchase-orders/:id/actions",
+        {
+            schema: {
+                params: idParams,
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["action"],
+                    properties: { action: { const: "receive" } },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            return { purchaseOrder: await receivePurchaseOrder(app.db, staff, request.params.id) };
+        },
+    );
+
+    app.get<{ Querystring: { medicationId: string } }>(
+        "/pharmacy/waitlist",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    required: ["medicationId"],
+                    properties: { medicationId: { type: "string", format: "uuid" } },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            return {
+                items: await waitlistView(app.db, staff.pharmacyId, request.query.medicationId),
             };
         },
     );

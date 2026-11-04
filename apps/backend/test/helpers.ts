@@ -257,3 +257,14 @@ export function pharmacyAction(
         payload,
     });
 }
+
+export async function createSupplierStaff(supplierId: string, email = "fornecedor@example.com") {
+    const { userId } = await createAccount(testDb, {
+        role: "supplier_staff",
+        email,
+        password: "senha-forte-1",
+        fullName: "Fernanda Fornecedora",
+        supplierId,
+    });
+    return { id: userId, email };
+}
