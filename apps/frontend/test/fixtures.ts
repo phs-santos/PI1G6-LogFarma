@@ -171,3 +171,75 @@ export const caregiverJoana: CaregiverView = {
     relationship: "filha",
     phone: "16998887777",
 };
+
+import type {
+    MedicationSummary as Med,
+    NetworkItem,
+    PharmacyRequestItem,
+    UnitStockItem,
+} from "../src/api/types";
+
+export const amoxicilina: Med = {
+    id: "med-amox",
+    displayName: "Amoxicilina 500 mg cápsula",
+    activeIngredient: "Amoxicilina",
+    concentration: "500 mg",
+    pharmaceuticalForm: "capsule",
+    component: "basic",
+    prescriptionType: "antimicrobial",
+    storage: "room_temperature",
+};
+
+/** Pedido novo da Maria no balcão da UBS Centro. */
+export function pharmacyItem(over: Partial<RequestView> = {}): PharmacyRequestItem {
+    return {
+        request: requestView({
+            status: "requested",
+            sourcePharmacy: null,
+            fulfillment: "delivery",
+            prescription: {
+                id: "rx-1",
+                type: "simple",
+                issuedAt: "2026-09-01",
+                validUntil: "2027-03-01",
+                prescriberName: "Dra. Helena Prado",
+                checked: true,
+            },
+            ...over,
+        }),
+        patient: {
+            name: "Maria Aparecida da Silva",
+            cns: "898001234567890",
+            age: 75,
+            phone: "16991234567",
+            address: "Rua Sete de Setembro, 50 — Centro, Taquaritinga/SP",
+            caregivers: [{ id: "cg-1", fullName: "Joana da Silva", relationship: "filha" }],
+        },
+    };
+}
+
+export const networkCena2: NetworkItem[] = [
+    { pharmacyId: "ph-jardim", pharmacyName: "UBS Jardim São Sebastião", available: 120 },
+    { pharmacyId: "ph-vila", pharmacyName: "UBS Vila Negri", available: 25 },
+];
+
+export function stockOf(med: Med, available: number): UnitStockItem {
+    return {
+        medication: med,
+        available,
+        reserved: 0,
+        minQuantity: 50,
+        updatedAt: new Date().toISOString(),
+        batches: available
+            ? [
+                  {
+                      id: "b1",
+                      batchNumber: "L-001",
+                      expiryDate: "2027-05-01",
+                      quantity: available,
+                      reserved: 0,
+                  },
+              ]
+            : [],
+    };
+}

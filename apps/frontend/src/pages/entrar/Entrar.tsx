@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Notice, TextField } from "@fatec-pi/style-guide";
 import { login } from "../../api/auth";
@@ -16,6 +16,8 @@ export function Entrar() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const expired = params.get("expirou") === "1";
+    const location = useLocation();
+    const signedOut = (location.state as { signedOut?: boolean } | null)?.signedOut === true;
     const voltar = params.get("voltar");
 
     const mutation = useMutation({
@@ -26,8 +28,8 @@ export function Entrar() {
         },
     });
 
-    // Quem já entrou vai para a sua tela (exceto quem chega com a sessão vencida).
-    if (user && !expired && !mutation.isPending && !mutation.isSuccess) {
+    // Quem já entrou vai para a sua tela (exceto quem acabou de sair ou chega com a sessão vencida).
+    if (user && !expired && !signedOut && !mutation.isPending && !mutation.isSuccess) {
         return <Navigate to={homeFor(user.role)} replace />;
     }
 

@@ -63,9 +63,10 @@ export function useSignOut(): () => Promise<void> {
     const navigate = useNavigate();
     return async () => {
         await logout().catch(() => undefined);
+        // Navega antes de esquecer a sessão (mesma razão do aviso de sessão vencida).
+        void navigate("/entrar", { replace: true, flushSync: true, state: { signedOut: true } });
         client.removeQueries({ predicate: (q) => q.queryKey[0] !== qk.me[0] });
         client.setQueryData<Session | null>(qk.me, null);
-        navigate("/entrar", { replace: true });
     };
 }
 

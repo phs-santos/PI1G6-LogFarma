@@ -70,5 +70,6 @@ describe("Meus dados", () => {
         await waitFor(() => expect(mock.calls.some((c) => c.method === "DELETE")).toBe(true));
         await user.click(screen.getByRole("button", { name: "Sair" }));
         await waitFor(() => expect(router.state.location.pathname).toBe("/entrar"));
+        expect(router.state.location.search).toBe("");
     });
 });

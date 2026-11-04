@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Checkbox, EmptyState, Tarja, TextField } from "@fatec-pi/style-guide";
+import { Button, EmptyState, Tarja, TextField } from "@fatec-pi/style-guide";
 import { getProfile, listCaregivers, listMyPrescriptions } from "../../api/me";
 import { createRequest } from "../../api/requests";
 import type { CreateRequestInput, Fulfillment, PrescriptionInput } from "../../api/types";
@@ -11,17 +11,14 @@ import { formatDate } from "../../lib/dates";
 import { Choice, Choices } from "../../ui/Choices";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
+import {
+    cleanPrescription,
+    EMPTY_PRESCRIPTION,
+    PrescriptionFields,
+    prescriptionProblem,
+} from "../../ui/PrescriptionFields";
 import { useAvailability } from "./queries";
 import "./paciente.css";
-
-const EMPTY_RX: PrescriptionInput = {
-    issuedAt: "",
-    prescriberName: "",
-    prescriberCouncil: "CRM",
-    prescriberNumber: "",
-    prescriberState: "SP",
-    continuousUse: false,
-};
 
 type RxChoice = { kind: "saved"; id: string } | { kind: "new" } | { kind: "counter" };
 
@@ -49,7 +46,7 @@ export function ConfirmarPedido() {
         fulfillmentChoice ?? (profile.data?.mobilityLimited ? "delivery" : "pickup");
     const [quantity, setQuantity] = useState("30");
     const [rxChoice, setRxChoice] = useState<RxChoice | null>(null);
-    const [rx, setRx] = useState<PrescriptionInput>(EMPTY_RX);
+    const [rx, setRx] = useState<PrescriptionInput>(EMPTY_PRESCRIPTION);
     const [formError, setFormError] = useState("");
 
     const usable = (prescriptions.data ?? []).filter((p) => p.usable);
@@ -85,21 +82,12 @@ export function ConfirmarPedido() {
                     if (needsRx && rxSelected.kind === "saved")
                         input.prescriptionId = rxSelected.id;
                     if (needsRx && rxSelected.kind === "new") {
-                        if (
-                            !rx.issuedAt ||
-                            !rx.prescriberName.trim() ||
-                            !rx.prescriberNumber.trim()
-                        ) {
-                            setFormError("Preencha a data, o nome e o número de quem receitou.");
+                        const problem = prescriptionProblem(rx);
+                        if (problem) {
+                            setFormError(problem);
                             return;
                         }
-                        input.prescription = {
-                            ...rx,
-                            prescriberName: rx.prescriberName.trim(),
-                            prescriberCouncil: rx.prescriberCouncil.trim().toUpperCase(),
-                            prescriberNumber: rx.prescriberNumber.trim(),
-                            prescriberState: rx.prescriberState.trim().toUpperCase(),
-                        };
+                        input.prescription = cleanPrescription(rx);
                     }
                     setFormError("");
                     create.run(input);
@@ -178,50 +166,7 @@ export function ConfirmarPedido() {
                         )}
                         {needsRx && rxSelected.kind === "new" && (
                             <div className="app-section">
-                                <TextField
-                                    label="Data da receita"
-                                    type="date"
-                                    value={rx.issuedAt}
-                                    onChange={(e) => setRx({ ...rx, issuedAt: e.target.value })}
-                                />
-                                <TextField
-                                    label="Nome de quem receitou"
-                                    value={rx.prescriberName}
-                                    onChange={(e) =>
-                                        setRx({ ...rx, prescriberName: e.target.value })
-                                    }
-                                />
-                                <TextField
-                                    label="Conselho"
-                                    hint="Está no carimbo da receita: CRM, CRO…"
-                                    value={rx.prescriberCouncil}
-                                    onChange={(e) =>
-                                        setRx({ ...rx, prescriberCouncil: e.target.value })
-                                    }
-                                />
-                                <TextField
-                                    label="Número do conselho"
-                                    inputMode="numeric"
-                                    value={rx.prescriberNumber}
-                                    onChange={(e) =>
-                                        setRx({ ...rx, prescriberNumber: e.target.value })
-                                    }
-                                />
-                                <TextField
-                                    label="Estado do conselho (UF)"
-                                    maxLength={2}
-                                    value={rx.prescriberState}
-                                    onChange={(e) =>
-                                        setRx({ ...rx, prescriberState: e.target.value })
-                                    }
-                                />
-                                <Checkbox
-                                    label="É remédio de uso contínuo"
-                                    checked={rx.continuousUse}
-                                    onChange={(e) =>
-                                        setRx({ ...rx, continuousUse: e.target.checked })
-                                    }
-                                />
+                                <PrescriptionFields value={rx} onChange={setRx} />
                             </div>
                         )}
 

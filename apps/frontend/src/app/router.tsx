@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { Placeholder } from "../pages/comum/Placeholder";
+import { Pedidos } from "../pages/farmacia/Pedidos";
 import { Avisos } from "../pages/paciente/Avisos";
 import { ConfirmarPedido } from "../pages/paciente/ConfirmarPedido";
 import { CriarConta } from "../pages/paciente/CriarConta";
@@ -58,7 +59,7 @@ export const appRoutes: RouteObject[] = [
                 ),
                 children: [
                     { path: "/farmacia", element: <Navigate to="/farmacia/pedidos" replace /> },
-                    page("/farmacia/pedidos/:id?", "Pedidos"),
+                    { path: "/farmacia/pedidos/:id?", element: <Pedidos /> },
                     page("/farmacia/transferencias", "Transferências"),
                     page("/farmacia/compras", "Compras"),
                     page("/farmacia/estoque", "Estoque"),

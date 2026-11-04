@@ -30,3 +30,16 @@ export function formatPhone(phone: string): string {
 export function onlyDigits(value: string): string {
     return value.replace(/\D/g, "");
 }
+
+/** Cartão SUS em grupos: "898 0012 3456 7890". */
+export function formatCns(cns: string): string {
+    const d = onlyDigits(cns);
+    if (d.length !== 15) return cns;
+    return `${d.slice(0, 3)} ${d.slice(3, 7)} ${d.slice(7, 11)} ${d.slice(11)}`;
+}
+
+/** "na A (120) e na B (25)" */
+export function joinUnits(parts: string[]): string {
+    if (parts.length <= 1) return parts.join("");
+    return `${parts.slice(0, -1).join(", ")} e ${parts.at(-1)}`;
+}
