@@ -25,17 +25,17 @@ O LogFarma saiu do computador e foi para a rua: está no ar em `logfarma.codexol
 
 ## Onde
 
-| Caminho                                                                | O que é                                                                                   |
-| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `apps/frontend/src/pages/entrar/`                                      | Tela Entrar e o CSS dela                                                                  |
-| `packages/style-guide/src/components/Logo/`                            | Logo em SVG (componente, story e teste)                                                   |
-| `apps/frontend/public/`                                                | `favicon.svg` e `apple-touch-icon.png`                                                    |
-| `apps/frontend/src/lib/masks.ts`                                       | Máscaras de telefone, Cartão SUS e CEP                                                    |
-| `apps/frontend/src/api/cep.ts`, `src/pages/paciente/AddressFields.tsx` | Busca de CEP e endereço                                                                   |
-| `apps/backend/src/db/catalog-data.ts`, `catalog.ts`, `seed-catalog.ts` | Catálogo e carga sem apagar                                                               |
-| VPS `/root/grupo-pi-6/.env`                                            | Configuração de produção (senhas geradas na própria VPS; nunca no git)                    |
-| VPS `/root/grupo-pi-6/compose.override.yaml`                           | Aponta o backend para o banco `logfarma` do Postgres da VPS e deixa a porta 8090 só local |
-| VPS `/etc/caddy/sites/logfarma.caddy`                                  | Domínios e HTTPS                                                                          |
+| Caminho                                                                | O que é                                                                     |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `apps/frontend/src/pages/entrar/`                                      | Tela Entrar e o CSS dela                                                    |
+| `packages/style-guide/src/components/Logo/`                            | Logo em SVG (componente, story e teste)                                     |
+| `apps/frontend/public/`                                                | `favicon.svg` e `apple-touch-icon.png`                                      |
+| `apps/frontend/src/lib/masks.ts`                                       | Máscaras de telefone, Cartão SUS e CEP                                      |
+| `apps/frontend/src/api/cep.ts`, `src/pages/paciente/AddressFields.tsx` | Busca de CEP e endereço                                                     |
+| `apps/backend/src/db/catalog-data.ts`, `catalog.ts`, `seed-catalog.ts` | Catálogo e carga sem apagar                                                 |
+| VPS `/root/grupo-pi-6/.env`                                            | `DATABASE_URL`, `JWT_SECRET` e afins (gerados na própria VPS; nunca no git) |
+| VPS `/root/grupo-pi-6/compose.override.yaml`                           | Põe o backend na rede do Postgres da VPS e deixa a porta 8090 só local      |
+| VPS `/etc/caddy/sites/logfarma.caddy`                                  | Domínios e HTTPS                                                            |
 
 ## Escolhas feitas
 
@@ -73,6 +73,14 @@ ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalo
 - **Histórico de buscas (backend):** tabela `patient_recent_medications` (migração `0002`), uma linha por paciente e remédio; gravada ao abrir "Onde tem"; `GET /api/me/recent-medications` (só a própria paciente) e `DELETE` para limpar. A tabela `search_events`, que alimenta o painel do gestor, continua anônima (LGPD).
 - **Detalhes:** mais espaço entre os blocos das telas; sem `?voltar=/` quando a origem é o início; sem moldura no título que recebe o foco; rótulo "Unidade" no cadastro.
 
+## Um só `DATABASE_URL` e senhas novas na VPS (alteração)
+
+- **Repositório:** o `compose.prod.yaml` passa a usar só o `DATABASE_URL` do `.env`. O Postgres próprio do compose virou opcional (perfil `banco-proprio`).
+- **VPS:** o `.env` foi reescrito só com o `DATABASE_URL` do banco `logfarma`, sem as variáveis `POSTGRES_*` (sobras do banco próprio) e sem as `LOGFARMA_DB_*`. O `compose.override.yaml` agora só põe o backend na rede `postgres` e deixa a porta 8090 local.
+- **Senhas trocadas:** senha do usuário `logfarma` no Postgres e `JWT_SECRET`, geradas na própria VPS (`openssl rand -hex`) e nunca exibidas. Quem estava logado precisa entrar de novo. `DEMO_PASSWORD` ficou igual: só vale para quem roda o seed da demonstração, e o banco de produção não tem as contas `@demo.logfarma`.
+- **Backups:** os arquivos antigos ficaram na VPS como `.env.bak-20261104-165231`, `compose.yaml.bak-…` e `compose.override.yaml.bak-…` (permissão só do root). A senha antiga do banco e o JWT antigo guardados ali já não valem.
+- **Conferido:** containers saudáveis, `/api/health` ok de dentro e de fora (HTTPS), `GET /api/pharmacies` lendo do banco, login respondendo pelo banco ("E-mail ou senha incorretos." para conta inexistente) e nenhum erro de conexão no log.
+
 ## Pendências
 
 - O nginx do frontend guarda o endereço do backend; se um deploy recriar só o backend, o site dá 502 até reiniciar o frontend (`docker compose restart frontend`). Correção: resolver o endereço a cada pedido no `nginx.conf`.
@@ -84,3 +92,4 @@ ssh vps 'cd ~/grupo-pi-6 && docker compose exec backend node dist/db/seed-catalo
 | ---------- | ----------------------------------------------------------------------------------------------------- |
 | 2026-11-04 | Versão inicial                                                                                        |
 | 2026-11-04 | Computador com menu e folha, Entrar com paciente/equipe, Início útil, histórico de buscas da paciente |
+| 2026-11-04 | Deploy com um só `DATABASE_URL`; senha do banco `logfarma` e `JWT_SECRET` trocadas na VPS             |
