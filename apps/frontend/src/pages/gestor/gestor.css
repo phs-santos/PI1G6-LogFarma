@@ -1,0 +1,23 @@
+.app-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.app-panels {
+    display: grid;
+    gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+    .app-panels {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+    }
+}
+
+.app-account-form {
+    display: grid;
+    max-width: var(--width-text);
+}

@@ -1,8 +1,10 @@
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
-import { Placeholder } from "../pages/comum/Placeholder";
 import { PedidosCompra } from "../pages/fornecedor/PedidosCompra";
+import { Contas } from "../pages/gestor/Contas";
+import { ManagerTabs } from "../pages/gestor/ManagerTabs";
+import { Painel } from "../pages/gestor/Painel";
 import { EntregaDetalhe } from "../pages/entregador/EntregaDetalhe";
 import { EntregasEntregador } from "../pages/entregador/Entregas";
 import { Compras } from "../pages/farmacia/Compras";
@@ -27,11 +29,6 @@ import { DesktopLayout } from "./layouts/DesktopLayout";
 import { PatientLayout } from "./layouts/PatientLayout";
 import { RequireRole } from "./RequireRole";
 import { SessionRoot } from "./session";
-
-const page = (path: string, title: string): RouteObject => ({
-    path,
-    element: <Placeholder title={title} />,
-});
 
 /** Todas as telas, com endereços em português. */
 export const appRoutes: RouteObject[] = [
@@ -109,11 +106,17 @@ export const appRoutes: RouteObject[] = [
                     </RequireRole>
                 ),
                 children: [
-                    page("/gestao", "Painel da rede"),
-                    page("/gestao/contas", "Contas"),
+                    { path: "/gestao", element: <Painel /> },
+                    { path: "/gestao/contas", element: <Contas /> },
                     {
                         path: "/gestao/medicamentos/novo",
-                        element: <NovoMedicamento backTo="/gestao" backLabel="Voltar ao painel" />,
+                        element: (
+                            <NovoMedicamento
+                                backTo="/gestao"
+                                backLabel="Voltar ao painel"
+                                tabs={<ManagerTabs />}
+                            />
+                        ),
                     },
                 ],
             },

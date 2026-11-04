@@ -7,7 +7,15 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { MedicamentoForm } from "./MedicamentoForm";
 
 /** Tela de cadastro de medicamento (farmácia: volta ao Estoque; gestor: ao painel). */
-export function NovoMedicamento({ backTo, backLabel }: { backTo: string; backLabel: string }) {
+export function NovoMedicamento({
+    backTo,
+    backLabel,
+    tabs,
+}: {
+    backTo: string;
+    backLabel: string;
+    tabs?: React.ReactNode;
+}) {
     const [saved, setSaved] = useState("");
     const [formKey, setFormKey] = useState(0);
     const create = useActionMutation(createMedication, {
@@ -19,6 +27,7 @@ export function NovoMedicamento({ backTo, backLabel }: { backTo: string; backLab
     });
     return (
         <>
+            {tabs}
             <p>
                 <Link className="app-link" to={backTo}>
                     {backLabel}
