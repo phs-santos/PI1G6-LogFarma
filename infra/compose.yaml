@@ -1,6 +1,6 @@
 # Ambiente de desenvolvimento: banco + backend + frontend com hot reload.
-# Espera os repos clonados lado a lado:  ../backend  ../frontend  (scripts/setup-dev.sh faz isso)
-# Uso: docker compose up --build
+# Tudo vem deste monorepo (apps/backend, apps/frontend, packages/style-guide).
+# Uso (na raiz):  pnpm docker:dev   ou   docker compose -f infra/compose.yaml up --build
 
 name: pi-dev
 
@@ -23,7 +23,8 @@ services:
 
   backend:
     build:
-      context: ../backend
+      context: ..
+      dockerfile: apps/backend/Dockerfile
       target: dev
     environment:
       PORT: 3333
@@ -33,27 +34,27 @@ services:
     ports:
       - "3333:3333"
     volumes:
-      - ../backend:/app
-      - /app/node_modules # mantém o node_modules da imagem (Linux), não o do seu computador
+      - ../apps/backend:/app/apps/backend
+      - /app/apps/backend/node_modules # mantém o node_modules da imagem (Linux), não o do seu computador
     depends_on:
       db:
         condition: service_healthy
 
   frontend:
     build:
-      context: ../frontend
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
       target: dev
-      # O style-guide é privado: o build usa sua chave SSH do GitHub.
-      # Padrão: o ssh-agent. Sem agent, defina GITHUB_SSH_KEY=~/.ssh/sua-chave no .env.
-      ssh:
-        - default=${GITHUB_SSH_KEY:-${SSH_AUTH_SOCK}}
     environment:
       API_PROXY_TARGET: http://backend:3333
     ports:
       - "5173:5173"
     volumes:
-      - ../frontend:/app
-      - /app/node_modules
+      - ../apps/frontend:/app/apps/frontend
+      - /app/apps/frontend/node_modules
+      # style-guide montado também: editar um componente recarrega a tela na hora
+      - ../packages/style-guide:/app/packages/style-guide
+      - /app/packages/style-guide/node_modules
     depends_on:
       - backend
 

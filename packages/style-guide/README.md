@@ -2,30 +2,11 @@
 
 Design system do projeto — tokens CSS, componentes **React** e **Storybook**.
 
-> Parte do projeto **Localização, Reposição e Entrega de Medicamentos**.
-
-## Sobre o projeto
-
-Sistema que mostra **em tempo real onde um medicamento essencial está disponível** na rede do Farmácia Popular (PFPB) e do SUS, indica a unidade mais próxima com rota e oferece alternativas quando o paciente não pode ir até lá: transferência entre unidades, entrega em casa ou lista de espera com alerta.
-
-Projeto Integrador I — Análise e Desenvolvimento de Sistemas (noturno), **Fatec Taquaritinga**, 2026.
-Orientador: Prof. Gabriel Passatuto Gallo.
-
-## Repositórios
-
-| Repositório | Papel | Porta |
-|---|---|---|
-| [frontend](https://github.com/Grupo-PI-6/frontend) | Telas do paciente e da farmácia (React + Vite) | 5173 |
-| [backend](https://github.com/Grupo-PI-6/backend) | API e regras de negócio (Fastify) | 3333 |
-| [style-guide](https://github.com/Grupo-PI-6/style-guide) | Design system: tokens, componentes e Storybook | 6006 |
-
-```
-style-guide ──(dependência git)──▶ frontend ──(/api via proxy do Vite)──▶ backend
-```
+> Parte do monorepo [PI1G6-LogFarma](../../README.md) — contexto do projeto, como trabalhamos e equipe estão no README da raiz.
 
 ## Começando
 
-Requisitos: Node 20+ e pnpm 10 (`corepack enable`).
+Requisitos: Node 24 e pnpm 10 (`corepack enable`). Rode o `pnpm install` na raiz do monorepo.
 
 ```bash
 pnpm install
@@ -51,10 +32,10 @@ Veja todos com exemplos no Storybook.
 
 ## Como o frontend usa
 
-Não há registry: o frontend instala este repositório direto do GitHub.
+Não há registry: o frontend usa este pacote direto do workspace (`apps/frontend/package.json`):
 
-```bash
-pnpm add "git+ssh://git@github.com/Grupo-PI-6/style-guide.git#main"
+```json
+"@fatec-pi/style-guide": "workspace:*"
 ```
 
 ```ts
@@ -62,7 +43,7 @@ import "@fatec-pi/style-guide/styles.css";
 import { Button, Card } from "@fatec-pi/style-guide";
 ```
 
-O pacote exporta o **código-fonte TypeScript** (sem build). Depois que algo entra na `main` daqui, o frontend atualiza com `pnpm update @fatec-pi/style-guide`.
+O pacote exporta o **código-fonte TypeScript** (sem build). Qualquer mudança aqui aparece no frontend na hora; se quebrar a API de um componente, ajuste o frontend no mesmo PR.
 
 ## Estrutura
 
@@ -86,30 +67,3 @@ src/
 7. Acessibilidade: elemento semântico, foco visível, contraste alto, alvos de toque grandes.
 
 Mudança que quebra a API de um componente? Avise o time do frontend no PR.
-
-## Como trabalhamos
-
-- Tarefas e features ficam no **[projeto da org](https://github.com/orgs/Grupo-PI-6/projects)**. Pegue um card, mova para *Em andamento* e se atribua.
-- Nunca commite direto na `main`. Crie uma branch a partir dela:
-  - `feat/<descricao-curta>` para funcionalidade nova
-  - `fix/<descricao-curta>` para correção
-  - `chore/<descricao-curta>` para configuração, docs e afins
-- Commits em português, no imperativo: `adiciona busca de medicamento`, `corrige rota de estoque`.
-- Abra um Pull Request para a `main`, cite o card/issue e o requisito (ex.: `RF01`), e peça revisão de alguém do grupo.
-- Antes do PR: `pnpm typecheck` e `pnpm build` precisam passar.
-- Feature que atravessa repos segue a ordem **style-guide → backend → frontend**.
-
-## Usando IA (Claude Code / Codex)
-
-O repositório já vem configurado para assistentes de código:
-
-- `CLAUDE.md` / `AGENTS.md` — contexto do projeto, requisitos, glossário e regras deste repo. Leia também se você for humano 🙂
-- `.claude/` — skills e agentes do Claude Code
-- `.agents/` e `.codex/` — skills e agentes do Codex
-
-## Equipe
-
-- Arthur Vinicius Ferreira
-- Bruno Henrique Jacinto
-- Lorena Duarte Malaguti
-- Paulo Henrique de Souza Santos

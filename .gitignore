@@ -5,5 +5,9 @@ storybook-static
 .env
 .env.*
 !.env.example
+!.env.prod.example
 .DS_Store
 .claude/settings.local.json
+
+# Dumps de produção (podem ter dados pessoais — LGPD)
+infra/backups/

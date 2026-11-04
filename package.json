@@ -1,0 +1,16 @@
+{
+  "name": "pi1g6-logfarma",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @fatec-pi/backend --filter @fatec-pi/frontend dev",
+    "dev:backend": "pnpm --filter @fatec-pi/backend dev",
+    "dev:frontend": "pnpm --filter @fatec-pi/frontend dev",
+    "storybook": "pnpm --filter @fatec-pi/style-guide storybook",
+    "typecheck": "pnpm -r typecheck",
+    "build": "pnpm -r build",
+    "docker:dev": "docker compose -f infra/compose.yaml up --build"
+  }
+}

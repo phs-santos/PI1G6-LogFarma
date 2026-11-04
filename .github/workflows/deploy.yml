@@ -40,4 +40,4 @@ jobs:
           FRONTEND_TAG: ${{ inputs.frontend_tag }}
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./scripts/deploy.sh
+        run: ./infra/scripts/deploy.sh

@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // No Docker (repo infra) o backend é http://backend:3333.
+      // No Docker (infra/compose.yaml) o backend é http://backend:3333.
       "/api": process.env.API_PROXY_TARGET ?? "http://localhost:3333",
     },
   },

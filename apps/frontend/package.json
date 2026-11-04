@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.33.2",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
@@ -11,7 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fatec-pi/style-guide": "git+ssh://git@github.com/Grupo-PI-6/style-guide.git#main",
+    "@fatec-pi/style-guide": "workspace:*",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

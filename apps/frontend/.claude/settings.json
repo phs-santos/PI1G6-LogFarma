@@ -5,7 +5,6 @@
       "Bash(pnpm typecheck)",
       "Bash(pnpm build)",
       "Bash(pnpm dev)",
-      "Bash(pnpm update @fatec-pi/style-guide)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)"
