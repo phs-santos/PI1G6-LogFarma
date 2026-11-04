@@ -11,3 +11,6 @@ storybook-static
 
 # Dumps de produção (podem ter dados pessoais — LGPD)
 infra/backups/
+
+# Grafo do graphify (gerado localmente: graphify update .)
+graphify-out/
