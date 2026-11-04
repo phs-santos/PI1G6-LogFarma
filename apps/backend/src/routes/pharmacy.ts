@@ -5,6 +5,9 @@ import { getStaffByUser } from "../services/accounts.js";
 import { checkPrescription } from "../services/requests.js";
 import { listPharmacyRequests, runCounterAction, type CounterAction } from "../services/counter.js";
 import type { RequestStatus } from "../domain/request-status.js";
+// Import com efeito: registra as ações de balcão "request_transfer" (e, na Task 10, "order_from_supplier").
+import "../services/transfers.js";
+import { listTransfers, runTransferAction, type TransferAction } from "../services/transfers.js";
 
 export const idParams = {
     type: "object",
@@ -52,7 +55,60 @@ export const pharmacyRoutes: FastifyPluginAsync = async (app) => {
             };
         },
     );
+
+    app.get<{ Querystring: { direction?: "incoming" | "outgoing" } }>(
+        "/pharmacy/transfers",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: { direction: { type: "string", enum: ["incoming", "outgoing"] } },
+                },
+            },
+        },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            return { items: await listTransfers(app.db, staff, request.query.direction) };
+        },
+    );
+
+    app.post<{ Params: { id: string }; Body: TransferAction }>(
+        "/pharmacy/transfers/:id/actions",
+        { schema: { params: idParams, body: transferActionSchema } },
+        async (request) => {
+            const staff = await getStaffByUser(app.db, request.user.id);
+            return {
+                transfer: await runTransferAction(app.db, staff, request.params.id, request.body),
+            };
+        },
+    );
 };
+
+const transferActionSchema = {
+    type: "object",
+    required: ["action"],
+    oneOf: [
+        {
+            additionalProperties: false,
+            required: ["action"],
+            properties: { action: { const: "ship" } },
+        },
+        {
+            additionalProperties: false,
+            required: ["action"],
+            properties: { action: { const: "receive" } },
+        },
+        {
+            additionalProperties: false,
+            required: ["action", "reason"],
+            properties: {
+                action: { const: "refuse" },
+                reason: { type: "string", minLength: 1, maxLength: 200 },
+            },
+        },
+    ],
+} as const;
 
 const REQUEST_STATUSES = [
     "requested",

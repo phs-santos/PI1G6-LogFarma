@@ -114,6 +114,16 @@ export async function reserve(
     return picks;
 }
 
+/** Reserva num lote específico (ex.: o lote que acabou de chegar por transferência ou compra). */
+export async function reserveOnBatch(
+    tx: DbOrTx,
+    batchId: string,
+    requestId: string,
+    quantity: number,
+): Promise<void> {
+    await tx.insert(stockReservations).values({ batchId, requestId, quantity });
+}
+
 /** Desfaz as reservas do pedido (opcionalmente só as de uma unidade). */
 export async function releaseReservations(
     tx: DbOrTx,
@@ -145,6 +155,7 @@ export async function consumeReservations(
     movementType: ExitMovement,
     staffUserId: string,
     today: string,
+    onlyBatchId?: string,
 ): Promise<{ batchId: string; quantity: number }[]> {
     const reservations = await tx
         .select({
@@ -156,7 +167,14 @@ export async function consumeReservations(
         })
         .from(stockReservations)
         .innerJoin(stockBatches, eq(stockBatches.id, stockReservations.batchId))
-        .where(eq(stockReservations.requestId, requestId))
+        .where(
+            onlyBatchId
+                ? and(
+                      eq(stockReservations.requestId, requestId),
+                      eq(stockReservations.batchId, onlyBatchId),
+                  )
+                : eq(stockReservations.requestId, requestId),
+        )
         .for("update");
     if (reservations.length === 0) {
         throw new ConflictError("Não há remédio separado para este pedido.");
