@@ -4,7 +4,7 @@ import { createDb, type Db } from "../src/db/client.js";
 import type { FastifyInstance } from "fastify";
 import { buildApp } from "../src/app.js";
 import { medications, pharmacies } from "../src/db/schema.js";
-import { normalizeSearchName } from "./normalize.js";
+import { normalizeSearch } from "../src/domain/text.js";
 
 const { db, pool } = createDb(process.env.DATABASE_URL ?? "");
 export const testDb: Db = db;
@@ -70,7 +70,7 @@ export async function createMedication(overrides: Partial<NewMedication> = {}) {
             ...base,
             searchName:
                 overrides.searchName ??
-                normalizeSearchName(base.activeIngredient, base.concentration),
+                normalizeSearch(`${base.activeIngredient} ${base.concentration}`),
         })
         .returning();
     return row!;
