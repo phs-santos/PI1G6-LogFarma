@@ -230,3 +230,30 @@ export async function createSpecializedPharmacy() {
         longitude: -48.51,
     });
 }
+
+export async function createCourier(email = "entregador@example.com") {
+    const { userId } = await createAccount(testDb, {
+        role: "courier",
+        email,
+        password: "senha-forte-1",
+        fullName: "Carlos Entregador",
+        phone: "16988887777",
+        deliveryProgram: "Remédio em Casa — Taquaritinga",
+    });
+    return { id: userId, email };
+}
+
+/** Atalho para POST /api/pharmacy/requests/:id/actions. */
+export function pharmacyAction(
+    app: FastifyInstance,
+    cookie: string,
+    requestId: string,
+    payload: Record<string, unknown>,
+) {
+    return app.inject({
+        method: "POST",
+        url: `/api/pharmacy/requests/${requestId}/actions`,
+        headers: { cookie },
+        payload,
+    });
+}
