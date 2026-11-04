@@ -13,6 +13,7 @@ import { requestRoutes } from "./routes/requests.js";
 import { pharmacyRoutes } from "./routes/pharmacy.js";
 import { supplierRoutes } from "./routes/supplier.js";
 import { courierRoutes } from "./routes/courier.js";
+import { meRoutes } from "./routes/me.js";
 
 export interface AppDeps {
     db: Db;
@@ -62,6 +63,7 @@ export function buildApp(deps: AppDeps) {
     app.register(pharmacyRoutes, { prefix: "/api" });
     app.register(supplierRoutes, { prefix: "/api" });
     app.register(courierRoutes, { prefix: "/api" });
+    app.register(meRoutes, { prefix: "/api" });
 
     return app;
 }
