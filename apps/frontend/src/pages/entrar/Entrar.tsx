@@ -38,7 +38,7 @@ export function Entrar() {
     };
 
     const mutation = useMutation({
-        mutationFn: () => login(email.trim(), password),
+        mutationFn: () => login(email.trim(), password, team ? "team" : "patient"),
         onSuccess: (session) => {
             client.setQueryData<Session | null>(qk.me, session);
             navigate(afterLoginPath(session.user.role, voltar), { replace: true });

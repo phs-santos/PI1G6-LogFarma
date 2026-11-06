@@ -18,6 +18,16 @@ export interface AddressInput {
     zip: string;
 }
 
+/** Aba da tela Entrar: "Sou paciente" (`patient`) ou "Sou da equipe" (`team`). */
+export type LoginAudience = "patient" | "team";
+
+export interface LoginInput {
+    email: string;
+    password: string;
+    /** Quando vem, a conta precisa ser dessa aba; senão a API responde 403. */
+    audience?: LoginAudience;
+}
+
 export interface RegisterPatientInput {
     email: string;
     password: string;

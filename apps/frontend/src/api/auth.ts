@@ -1,8 +1,12 @@
 import { ApiError, apiFetch } from "./client";
-import type { RegisterPatientInput, Session, SessionUser } from "./types";
+import type { LoginAudience, RegisterPatientInput, Session, SessionUser } from "./types";
 
-export function login(email: string, password: string): Promise<Session> {
-    return apiFetch<Session>("/auth/login", { method: "POST", body: { email, password } });
+/** Entra pela aba escolhida; a API recusa (403) conta de paciente na aba da equipe e vice-versa. */
+export function login(email: string, password: string, audience: LoginAudience): Promise<Session> {
+    return apiFetch<Session>("/auth/login", {
+        method: "POST",
+        body: { email, password, audience },
+    });
 }
 
 export async function logout(): Promise<void> {

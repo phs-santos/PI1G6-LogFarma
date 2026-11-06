@@ -51,7 +51,8 @@ export async function loginAs(
         });
     }
     const page = await context.newPage();
-    await page.goto("/entrar");
+    // A conta só entra pela aba certa (paciente ou equipe); nas contas de demonstração só a Maria é paciente.
+    await page.goto(email.startsWith("maria@") ? "/entrar" : "/entrar?perfil=equipe");
     await page.getByLabel("E-mail").fill(email);
     await page.getByLabel("Senha").fill(PASSWORD);
     await page.getByRole("button", { name: "Entrar" }).click();

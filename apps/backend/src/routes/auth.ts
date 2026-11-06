@@ -4,9 +4,9 @@ import { users } from "../db/schema.js";
 import { requireAuth } from "../auth/guards.js";
 import { verifyPassword } from "../auth/password.js";
 import { clearSessionCookie, setSessionCookie } from "../auth/session.js";
-import { UnauthorizedError } from "../domain/errors.js";
+import { ForbiddenError, UnauthorizedError } from "../domain/errors.js";
 import { getSessionProfile, registerPatient } from "../services/accounts.js";
-import type { RegisterPatientInput, SessionUser } from "../contracts.js";
+import type { LoginAudience, LoginInput, RegisterPatientInput, SessionUser } from "../contracts.js";
 
 const addressSchema = {
     type: "object",
@@ -62,6 +62,10 @@ export const registerSchema = {
     },
 } as const;
 
+function audienceOf(role: SessionUser["role"]): LoginAudience {
+    return role === "patient" ? "patient" : "team";
+}
+
 export const authRoutes: FastifyPluginAsync = async (app) => {
     app.post<{ Body: RegisterPatientInput }>(
         "/auth/register",
@@ -74,7 +78,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         },
     );
 
-    app.post<{ Body: { email: string; password: string } }>(
+    app.post<{ Body: LoginInput }>(
         "/auth/login",
         {
             schema: {
@@ -85,6 +89,7 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
                     properties: {
                         email: { type: "string", minLength: 3, maxLength: 160 },
                         password: { type: "string", minLength: 1, maxLength: 128 },
+                        audience: { type: "string", enum: ["patient", "team"] },
                     },
                 },
             },
@@ -100,6 +105,16 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
                 !(await verifyPassword(row.passwordHash, request.body.password))
             ) {
                 throw new UnauthorizedError("E-mail ou senha incorretos.");
+            }
+            // Aba errada na tela Entrar: paciente pela aba da equipe ou equipe pela aba do
+            // paciente. Só avisa depois de conferir a senha, para não revelar quem tem conta.
+            const { audience } = request.body;
+            if (audience && audienceOf(row.role) !== audience) {
+                throw new ForbiddenError(
+                    audience === "patient"
+                        ? 'Esta conta é da equipe. Toque em "Sou da equipe" para entrar.'
+                        : 'Esta conta é de paciente. Toque em "Sou paciente" para entrar.',
+                );
             }
             const user: SessionUser = { id: row.id, role: row.role };
             await setSessionCookie(reply, user);

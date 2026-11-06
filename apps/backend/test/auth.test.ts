@@ -4,7 +4,9 @@ import { users } from "../src/db/schema.js";
 import { requireAuth, requireRole } from "../src/auth/guards.js";
 import {
     buildTestApp,
+    createPatient,
     createPharmacy,
+    createStaff,
     loginAs,
     patientPayload,
     resetDb,
@@ -146,5 +148,55 @@ describe("login e cadastro", () => {
         const res = await app.inject({ method: "POST", url: "/api/auth/logout" });
         expect(res.statusCode).toBe(200);
         expect(String(res.headers["set-cookie"])).toContain("logfarma_session=;");
+    });
+});
+
+describe("login pela aba certa (paciente ou equipe)", () => {
+    beforeEach(() => resetDb());
+
+    async function tryLogin(
+        email: string,
+        audience?: "patient" | "team",
+        password = "senha-forte-1",
+    ) {
+        const app = buildTestApp();
+        return app.inject({
+            method: "POST",
+            url: "/api/auth/login",
+            payload: { email, password, ...(audience ? { audience } : {}) },
+        });
+    }
+
+    it("farmacêutico na aba do paciente responde 403 sem abrir sessão", async () => {
+        const ubs = await createPharmacy();
+        const staff = await createStaff(ubs.id);
+        const res = await tryLogin(staff.email, "patient");
+        expect(res.statusCode).toBe(403);
+        expect(res.json().message).toContain("Sou da equipe");
+        expect(res.headers["set-cookie"]).toBeUndefined();
+    });
+
+    it("paciente na aba da equipe responde 403 sem abrir sessão", async () => {
+        const ubs = await createPharmacy();
+        const patient = await createPatient(ubs.id);
+        const res = await tryLogin(patient.email, "team");
+        expect(res.statusCode).toBe(403);
+        expect(res.json().message).toContain("Sou paciente");
+        expect(res.headers["set-cookie"]).toBeUndefined();
+    });
+
+    it("cada um na sua aba entra normalmente", async () => {
+        const ubs = await createPharmacy();
+        const staff = await createStaff(ubs.id);
+        const patient = await createPatient(ubs.id);
+        expect((await tryLogin(staff.email, "team")).statusCode).toBe(200);
+        expect((await tryLogin(patient.email, "patient")).statusCode).toBe(200);
+    });
+
+    it("senha errada na aba errada continua 401 (não revela de quem é a conta)", async () => {
+        const ubs = await createPharmacy();
+        const staff = await createStaff(ubs.id);
+        const res = await tryLogin(staff.email, "patient", "errada-123");
+        expect(res.statusCode).toBe(401);
     });
 });

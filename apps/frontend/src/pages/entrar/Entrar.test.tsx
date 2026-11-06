@@ -15,13 +15,13 @@ async function fillAndSubmit(email: string, password: string) {
 describe("Entrar", () => {
     it("Entrar leva a farmacêutica para /farmacia/pedidos", async () => {
         const api = mockApi({ "POST /api/auth/login": { body: sessions.ana } });
-        const { router } = renderApp({ route: "/entrar" });
+        const { router } = renderApp({ route: "/entrar?perfil=equipe" });
         await fillAndSubmit("ana@ubscentro.test", "senha-da-ana");
         await waitFor(() => expect(router.state.location.pathname).toBe("/farmacia/pedidos"));
         expect(api.calls[0]).toMatchObject({
             method: "POST",
             path: "/api/auth/login",
-            body: { email: "ana@ubscentro.test", password: "senha-da-ana" },
+            body: { email: "ana@ubscentro.test", password: "senha-da-ana", audience: "team" },
         });
         expect(await screen.findByText("UBS Centro")).toBeInTheDocument();
     });
@@ -36,6 +36,20 @@ describe("Entrar", () => {
         const { router } = renderApp({ route: "/entrar" });
         await fillAndSubmit("maria@exemplo.test", "errada");
         expect(await screen.findByRole("alert")).toHaveTextContent("E-mail ou senha incorretos.");
+        expect(router.state.location.pathname).toBe("/entrar");
+    });
+
+    it("Entrar pela aba do paciente envia audience patient e mostra o aviso de aba errada", async () => {
+        const api = mockApi({
+            "POST /api/auth/login": {
+                status: 403,
+                body: { message: 'Esta conta é da equipe. Toque em "Sou da equipe" para entrar.' },
+            },
+        });
+        const { router } = renderApp({ route: "/entrar" });
+        await fillAndSubmit("ana@ubscentro.test", "senha-da-ana");
+        expect(await screen.findByRole("alert")).toHaveTextContent("Sou da equipe");
+        expect(api.calls[0]).toMatchObject({ body: { audience: "patient" } });
         expect(router.state.location.pathname).toBe("/entrar");
     });
 
