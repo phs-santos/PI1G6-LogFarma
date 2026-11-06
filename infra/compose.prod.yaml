@@ -40,6 +40,10 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       ALLOW_DEMO_SEED: ${ALLOW_DEMO_SEED:-false}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+      # Primeiro gestor (só se ainda não houver nenhum); ver .env.prod.example
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-Administrador}
       # E-mail (recuperar senha) por SMTP; vazio = não envia (ver .env.example)
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-465}

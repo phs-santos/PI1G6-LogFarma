@@ -112,7 +112,7 @@ Dumps de produção podem ter dados pessoais de pacientes (LGPD): `infra/backups
 ## Banco e dados da demonstração
 
 - **Migrações** rodam sozinhas quando o backend inicia (as migrações SQL vão dentro da imagem). Não há passo manual no deploy.
-- **Variáveis do `.env` da VPS** (ver `.env.prod.example`): `DATABASE_URL` e `JWT_SECRET` (obrigatórias; gere o segredo com `openssl rand -hex 32`), `PUBLIC_URL`, `HTTP_HOST`/`HTTP_PORT`, `COOKIE_SECURE`, `ALLOW_DEMO_SEED`, `DEMO_PASSWORD` e, para o e-mail de recuperar senha, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` e `EMAIL_FROM` (qualquer provedor SMTP; sem `SMTP_HOST` o e-mail não sai).
+- **Variáveis do `.env` da VPS** (ver `.env.prod.example`): `DATABASE_URL` e `JWT_SECRET` (obrigatórias; gere o segredo com `openssl rand -hex 32`), `PUBLIC_URL`, `HTTP_HOST`/`HTTP_PORT`, `COOKIE_SECURE`, `ALLOW_DEMO_SEED`, `DEMO_PASSWORD`, o primeiro gestor (`ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME`: criado ao iniciar só se ainda não houver gestor; senha com 12+ caracteres) e, para o e-mail de recuperar senha, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS` e `EMAIL_FROM` (qualquer provedor SMTP; sem `SMTP_HOST` o e-mail não sai).
 - **Catálogo (unidades e medicamentos):** `docker compose exec backend node dist/db/seed-catalog.js` só acrescenta e pode rodar em produção.
 - **Recarregar os dados da demonstração** (Taquaritinga, Dona Maria). **Apaga todos os dados do banco** — só para ensaio e apresentação:
 

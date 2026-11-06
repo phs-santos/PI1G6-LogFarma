@@ -31,17 +31,26 @@ curl localhost:3333/api/health   # {"status":"ok"}
 
 ## Variáveis de ambiente
 
-| Variável            | Padrão                  | Descrição                              |
-| ------------------- | ----------------------- | -------------------------------------- |
-| `PORT`              | `3333`                  | Porta da API                           |
-| `HOST`              | `0.0.0.0`               | Interface de rede                      |
-| `CORS_ORIGIN`       | `http://localhost:5173` | Origem liberada para o frontend        |
-| `DATABASE_URL`      | — (obrigatória)         | Conexão do PostgreSQL                  |
-| `DATABASE_URL_TEST` | `.../pi_test`           | Banco dos testes                       |
-| `JWT_SECRET`        | — (obrigatória)         | Assina o token de sessão               |
-| `COOKIE_SECURE`     | `false`                 | `true` só com HTTPS                    |
-| `ALLOW_DEMO_SEED`   | `false`                 | Libera o seed em produção (apaga tudo) |
-| `DEMO_PASSWORD`     | `demo1234`              | Senha das contas da demonstração       |
+| Variável                  | Padrão                                                | Descrição                                               |
+| ------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
+| `PORT`                    | `3333`                                                | Porta da API                                            |
+| `HOST`                    | `0.0.0.0`                                             | Interface de rede                                       |
+| `CORS_ORIGIN`             | `http://localhost:5173`                               | Origem liberada para o frontend                         |
+| `DATABASE_URL`            | — (obrigatória)                                       | Conexão do PostgreSQL                                   |
+| `DATABASE_URL_TEST`       | `.../pi_test`                                         | Banco dos testes                                        |
+| `JWT_SECRET`              | — (obrigatória)                                       | Assina o token de sessão                                |
+| `COOKIE_SECURE`           | `false`                                               | `true` só com HTTPS                                     |
+| `ALLOW_DEMO_SEED`         | `false`                                               | Libera o seed em produção (apaga tudo)                  |
+| `DEMO_PASSWORD`           | `demo1234`                                            | Senha das contas da demonstração                        |
+| `ADMIN_EMAIL`             | —                                                     | Primeiro gestor, criado ao iniciar se não houver nenhum |
+| `ADMIN_PASSWORD`          | —                                                     | Senha dele (12+ caracteres em produção)                 |
+| `ADMIN_NAME`              | `Administrador`                                       | Nome dele                                               |
+| `SMTP_HOST`               | — (não envia)                                         | Servidor SMTP do e-mail de recuperar senha              |
+| `SMTP_PORT`               | `465`                                                 | Porta (465/2465 SSL; 587/2587 STARTTLS)                 |
+| `SMTP_SECURE`             | `true`                                                | `false` para 587/2587                                   |
+| `SMTP_USER` / `SMTP_PASS` | —                                                     | Login do SMTP (segredo)                                 |
+| `EMAIL_FROM`              | `LogFarma <nao-responda@logfarma.codexolimpo.com.br>` | Remetente                                               |
+| `APP_URL`                 | o `CORS_ORIGIN`                                       | Endereço das telas nos links dos e-mails                |
 
 Toda variável nova entra em `src/env.ts` **e** no [`.env.example`](../../.env.example) da raiz do monorepo.
 

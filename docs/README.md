@@ -68,3 +68,4 @@ Aqui fica registrado **tudo que foi feito** no monorepo: o que mudou, por que, o
 | 2026-11-06 | [Feedback da Malagueta sobre as telas](2026-11-06-feedback-malagueta.md)                       |
 | 2026-11-06 | [Login pela aba certa (paciente ou equipe)](2026-11-06-login-por-aba.md)                       |
 | 2026-11-06 | [Recuperar senha pelo app](2026-11-06-recuperar-senha.md)                                      |
+| 2026-11-06 | [Primeiro gestor pelo `.env`](2026-11-06-primeiro-gestor.md)                                   |

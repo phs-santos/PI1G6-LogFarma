@@ -29,6 +29,12 @@ export const env = {
     cookieSecure: flag("COOKIE_SECURE"),
     allowDemoSeed: flag("ALLOW_DEMO_SEED"),
     demoPassword: process.env.DEMO_PASSWORD || "demo1234",
+    // Primeiro gestor, criado ao iniciar só se ainda não existir nenhum (services/bootstrap-admin.ts).
+    admin: {
+        email: process.env.ADMIN_EMAIL || undefined,
+        password: process.env.ADMIN_PASSWORD || undefined,
+        name: process.env.ADMIN_NAME || "Administrador",
+    },
     // E-mail (recuperar senha) por SMTP — qualquer provedor (Resend, Brevo, Gmail, servidor próprio).
     // Sem SMTP_HOST o backend não envia: em desenvolvimento, escreve o link no log.
     // Usuário e senha são segredo: ficam só no .env e na VPS, nunca no código.
