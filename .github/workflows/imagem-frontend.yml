@@ -1,7 +1,7 @@
 name: Imagem (frontend)
 
 # Publica ghcr.io/<dono>/<repo>/frontend a cada push na main que mexa no frontend.
-# Não faz deploy: o deploy é manual (workflow Deploy).
+# Não faz deploy: o deploy é feito pelo grupo com infra/scripts/deploy.sh.
 on:
   push:
     branches: [main]

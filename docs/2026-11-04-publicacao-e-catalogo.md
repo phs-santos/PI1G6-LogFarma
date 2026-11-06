@@ -1,7 +1,7 @@
 # Publicação na VPS, catálogo de unidades e medicamentos, logo e cadastro mais fácil
 
 - **Implementado em:** 2026-11-04
-- **Última alteração:** 2026-11-04
+- **Última alteração:** 2026-11-06
 - **Requisitos:** RF01–RF03, RNF02, RNF03
 
 ## Em poucas palavras
@@ -93,9 +93,10 @@ ssh vps 'cd /opt/apps/grupo-pi-6 && docker compose exec backend node dist/db/see
 
 ## Histórico de alterações
 
-| Data       | O que mudou                                                                                           |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| 2026-11-04 | Versão inicial                                                                                        |
-| 2026-11-04 | Computador com menu e folha, Entrar com paciente/equipe, Início útil, histórico de buscas da paciente |
-| 2026-11-04 | Deploy com um só `DATABASE_URL`; senha do banco `logfarma` e `JWT_SECRET` trocadas na VPS             |
-| 2026-11-04 | Projeto na VPS passa para `/opt/apps/grupo-pi-6`; backups antigos removidos                           |
+| Data       | O que mudou                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-04 | Versão inicial                                                                                                                                                       |
+| 2026-11-04 | Computador com menu e folha, Entrar com paciente/equipe, Início útil, histórico de buscas da paciente                                                                |
+| 2026-11-04 | Deploy com um só `DATABASE_URL`; senha do banco `logfarma` e `JWT_SECRET` trocadas na VPS                                                                            |
+| 2026-11-04 | Projeto na VPS passa para `/opt/apps/grupo-pi-6`; backups antigos removidos                                                                                          |
+| 2026-11-06 | Workflow **Deploy** do GitHub removido: o deploy é feito pelo grupo com `infra/scripts/deploy.sh`. Os secrets `VPS_*` do environment `producao` deixam de ser usados |

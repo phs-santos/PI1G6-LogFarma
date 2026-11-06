@@ -47,11 +47,12 @@ docker compose down -v              # para tudo e APAGA o banco local
 1. Push na `main` que mexa em `apps/backend` ou em `apps/frontend` (ou no style-guide) → o workflow
    **Imagem (backend)** / **Imagem (frontend)** publica `ghcr.io/<dono>/<repo>/<app>:latest` e `:<sha curto do commit>`
    (hoje: `ghcr.io/phs-santos/pi1g6-logfarma/backend` e `/frontend`). Nada vai para o ar ainda.
-2. Alguém roda o deploy, manualmente: **Actions → Deploy → Run workflow** (ou `./infra/scripts/deploy.sh`).
+2. Alguém do grupo roda o deploy do próprio computador: `./infra/scripts/deploy.sh` (ver "Deploy pelo terminal").
+   Não há deploy pelo GitHub: o grupo decide quando a produção muda.
 3. O script copia o `compose.prod.yaml` para `/opt/apps/grupo-pi-6` na VPS (outra pasta: `REMOTE_DIR`), baixa as imagens, sobe os containers,
    espera ficarem saudáveis e confere `/api/health`.
 
-Para voltar uma versão (rollback), rode o deploy informando o sha curto do commit anterior em `backend_tag` / `frontend_tag`.
+Para voltar uma versão (rollback), rode o deploy com `BACKEND_TAG` / `FRONTEND_TAG` iguais ao sha curto do commit anterior.
 
 Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repassa `/api/` para o backend. O banco não tem porta pública.
 
@@ -78,17 +79,10 @@ Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repass
     ssh deploy@SEU_IP 'chmod 600 /opt/apps/grupo-pi-6/.env && nano /opt/apps/grupo-pi-6/.env'   # preencha DATABASE_URL, PUBLIC_URL, JWT_SECRET e confira o IMAGE_PREFIX
     ```
 
-### Configurar o GitHub (uma vez)
+### Acesso às imagens (uma vez por pessoa)
 
-1. **Secrets do environment `producao`** no repositório do monorepo (Settings → Environments → producao):
-   `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (conteúdo de `deploy_pi`, a chave privada) e, se não for 22, `VPS_PORT`.
-    ```bash
-    gh secret set VPS_HOST -R phs-santos/PI1G6-LogFarma -e producao
-    gh secret set VPS_USER -R phs-santos/PI1G6-LogFarma -e producao
-    gh secret set VPS_SSH_KEY -R phs-santos/PI1G6-LogFarma -e producao < deploy_pi
-    ```
-2. **Acesso às imagens.** Como as imagens são publicadas por este mesmo repositório, o workflow de deploy já tem acesso — não precisa liberar nada.
-   O secret `STYLE_GUIDE_DEPLOY_KEY` dos repositórios antigos não é mais usado.
+As imagens no `ghcr.io` são privadas. Para o deploy baixar, cada pessoa que faz deploy precisa de um token do GitHub com `read:packages`
+(Settings → Developer settings → Personal access tokens) e de acesso SSH à VPS com o usuário de deploy.
 
 ### Deploy pelo terminal
 

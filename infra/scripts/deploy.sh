@@ -12,8 +12,7 @@
 #   BACKEND_TAG, FRONTEND_TAG   tag da imagem: "latest" ou o sha curto do commit (padrão latest)
 #   REGISTRY_USER, REGISTRY_TOKEN
 #                               login no ghcr.io para baixar as imagens privadas.
-#                               Localmente: seu usuário + token com read:packages.
-#                               No GitHub Actions: preenchidos pelo workflow.
+#                               Seu usuário do GitHub + token com read:packages.
 set -euo pipefail
 
 : "${VPS_HOST:?defina VPS_HOST}"
