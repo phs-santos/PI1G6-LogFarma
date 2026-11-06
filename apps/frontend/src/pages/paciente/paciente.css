@@ -200,11 +200,6 @@
     font-size: var(--font-size-lg);
 }
 
-.app-home-card--tips {
-    border-left: var(--space-2) solid var(--color-ok);
-    background: var(--color-ok-soft);
-}
-
 .app-home-list {
     list-style: none;
     margin: 0;
@@ -254,7 +249,108 @@
     }
 }
 
-/* Nas dicas o item é uma frase corrida (o link fica dentro dela). */
-.app-home-card--tips .app-home-list > li {
-    display: block;
+/* ---------- Início: busca na saudação, atalhos, unidade, convite e dicas ---------- */
+.app-home-hero h1 {
+    margin-bottom: var(--space-4);
+}
+
+.app-home-hero .app-home-search__label {
+    color: var(--color-on-ink);
+}
+
+.app-home-hero .app-home-search__input {
+    border-color: var(--color-paper);
+}
+
+.app-home-hero .sg-button--secondary {
+    border-color: var(--color-paper);
+}
+
+/* Atalhos grandes: título forte e uma linha do que tem lá dentro. */
+.app-tiles {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.app-tile {
+    display: grid;
+    gap: var(--space-1);
+    min-height: var(--tap-min-mobile);
+    padding: var(--space-4);
+    border: var(--border-thick) solid var(--color-ink);
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    text-decoration: none;
+}
+
+.app-tile:hover {
+    background: var(--color-ink-soft);
+}
+
+.app-tile__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-tile__info {
+    color: var(--color-text-muted);
+}
+
+.app-tile__badge {
+    display: inline-block;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-tarja-red);
+    color: var(--color-on-ink);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-home-unit {
+    border-left: var(--space-2) solid var(--color-ink);
+}
+
+.app-home-unit p {
+    margin: 0 0 var(--space-2);
+}
+
+.app-home-unit__name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+}
+
+.app-home-unit .app-link-button {
+    margin-top: var(--space-2);
+}
+
+.app-home-invite {
+    background: var(--color-ink-soft);
+    border-color: var(--color-ink-soft);
+}
+
+.app-home-invite p {
+    margin: 0 0 var(--space-4);
+}
+
+/* Dicas: discretas, no fim da tela. */
+.app-home-tips {
+    padding-top: var(--space-4);
+    border-top: var(--border-thin) solid var(--color-rule);
+    color: var(--color-text-muted);
+}
+
+.app-home-tips h2 {
+    font-size: var(--font-size-md);
+    margin-bottom: var(--space-2);
+}
+
+.app-home-tips ul {
+    margin: 0;
+    padding-left: var(--space-6);
+}
+
+@media (min-width: 60rem) {
+    .app-tiles {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }

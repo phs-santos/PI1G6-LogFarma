@@ -44,6 +44,9 @@ describe("Início com o que importa", () => {
             "Pedido recebido",
         );
         expect(screen.getByRole("region", { name: "Bom saber" })).toBeInTheDocument();
+        expect(
+            screen.queryByRole("region", { name: "Nenhum pedido em andamento" }),
+        ).not.toBeInTheDocument();
         await expectNoAxeViolations(container);
     });
 
