@@ -31,21 +31,17 @@ curl localhost:3333/api/health   # {"status":"ok"}
 
 ## Variáveis de ambiente
 
-| Variável                              | Padrão                  | Descrição                                                          |
-| ------------------------------------- | ----------------------- | ------------------------------------------------------------------ |
-| `PORT`                                | `3333`                  | Porta da API                                                       |
-| `HOST`                                | `0.0.0.0`               | Interface de rede                                                  |
-| `CORS_ORIGIN`                         | `http://localhost:5173` | Origem liberada para o frontend                                    |
-| `DATABASE_URL`                        | — (obrigatória)         | Conexão do PostgreSQL                                              |
-| `DATABASE_URL_TEST`                   | `.../pi_test`           | Banco dos testes                                                   |
-| `JWT_SECRET`                          | — (obrigatória)         | Assina o token de sessão                                           |
-| `COOKIE_SECURE`                       | `false`                 | `true` só com HTTPS                                                |
-| `ALLOW_DEMO_SEED`                     | `false`                 | Libera o seed em produção (apaga tudo)                             |
-| `DEMO_PASSWORD`                       | `demo1234`              | Senha das contas da demonstração                                   |
-| `PRESCRIPTION_DAYS_SIMPLE_CONTINUOUS` | `180`                   | Validade de receita simples de uso contínuo (conferir com a norma) |
-| `PRESCRIPTION_DAYS_SIMPLE`            | `30`                    | Receita simples                                                    |
-| `PRESCRIPTION_DAYS_ANTIMICROBIAL`     | `10`                    | Antimicrobiano                                                     |
-| `PRESCRIPTION_DAYS_SPECIAL_CONTROL`   | `30`                    | Controle especial                                                  |
+| Variável            | Padrão                  | Descrição                              |
+| ------------------- | ----------------------- | -------------------------------------- |
+| `PORT`              | `3333`                  | Porta da API                           |
+| `HOST`              | `0.0.0.0`               | Interface de rede                      |
+| `CORS_ORIGIN`       | `http://localhost:5173` | Origem liberada para o frontend        |
+| `DATABASE_URL`      | — (obrigatória)         | Conexão do PostgreSQL                  |
+| `DATABASE_URL_TEST` | `.../pi_test`           | Banco dos testes                       |
+| `JWT_SECRET`        | — (obrigatória)         | Assina o token de sessão               |
+| `COOKIE_SECURE`     | `false`                 | `true` só com HTTPS                    |
+| `ALLOW_DEMO_SEED`   | `false`                 | Libera o seed em produção (apaga tudo) |
+| `DEMO_PASSWORD`     | `demo1234`              | Senha das contas da demonstração       |
 
 Toda variável nova entra em `src/env.ts` **e** no [`.env.example`](../../.env.example) da raiz do monorepo.
 

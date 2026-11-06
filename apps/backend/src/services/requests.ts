@@ -10,7 +10,6 @@ import {
     prescriptions,
     waitlistEntries,
 } from "../db/schema.js";
-import { env } from "../env.js";
 import { BadRequestError, ConflictError, ForbiddenError, NotFoundError } from "../domain/errors.js";
 import { prescriptionValidUntil } from "../domain/prescription.js";
 import { assertTransition, type RequestStatus } from "../domain/request-status.js";
@@ -201,12 +200,7 @@ async function insertPrescription(
             medicationId: medication.id,
             type,
             issuedAt: input.issuedAt,
-            validUntil: prescriptionValidUntil(
-                type,
-                input.continuousUse,
-                input.issuedAt,
-                env.prescriptionDays,
-            ),
+            validUntil: prescriptionValidUntil(type, input.continuousUse, input.issuedAt),
             prescriberName: input.prescriberName,
             prescriberCouncil: input.prescriberCouncil,
             prescriberNumber: input.prescriberNumber,

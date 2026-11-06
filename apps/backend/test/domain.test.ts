@@ -9,7 +9,6 @@ import { assertTransition } from "../src/domain/request-status.js";
 import { ConflictError } from "../src/domain/errors.js";
 
 const today = new Date("2026-11-03T12:00:00Z");
-const days = { simpleContinuous: 180, simple: 30, antimicrobial: 10, specialControl: 30 };
 
 describe("computePriority", () => {
     it("crônica de 72 anos vale 300", () => {
@@ -83,15 +82,13 @@ describe("stockStatus", () => {
 
 describe("prescriptionValidUntil", () => {
     it("receita simples de uso contínuo emitida em 2026-11-01 vale até 2027-04-30", () => {
-        expect(prescriptionValidUntil("simple", true, "2026-11-01", days)).toBe("2027-04-30");
+        expect(prescriptionValidUntil("simple", true, "2026-11-01")).toBe("2027-04-30");
     });
     it("antimicrobiano vale 10 dias", () => {
-        expect(prescriptionValidUntil("antimicrobial", false, "2026-11-01", days)).toBe(
-            "2026-11-11",
-        );
+        expect(prescriptionValidUntil("antimicrobial", false, "2026-11-01")).toBe("2026-11-11");
     });
     it("simples sem uso contínuo vale 30 dias", () => {
-        expect(prescriptionValidUntil("simple", false, "2026-11-01", days)).toBe("2026-12-01");
+        expect(prescriptionValidUntil("simple", false, "2026-11-01")).toBe("2026-12-01");
     });
 });
 
