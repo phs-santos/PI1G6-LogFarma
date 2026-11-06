@@ -68,7 +68,8 @@ describe("Meus dados", () => {
         const user = userEvent.setup();
         await user.click(await screen.findByRole("button", { name: "Remover Joana da Silva" }));
         await waitFor(() => expect(mock.calls.some((c) => c.method === "DELETE")).toBe(true));
-        await user.click(screen.getByRole("button", { name: "Sair" }));
+        // "Sair" aparece no menu lateral e no fim de Meus dados (celular).
+        await user.click(screen.getAllByRole("button", { name: "Sair" })[0]!);
         await waitFor(() => expect(router.state.location.pathname).toBe("/entrar"));
         expect(router.state.location.search).toBe("");
     });

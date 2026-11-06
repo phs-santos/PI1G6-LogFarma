@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useLocation } from "react-router";
-import { Logo } from "@fatec-pi/style-guide";
+import { AppShell, Logo } from "@fatec-pi/style-guide";
+import { SignOutButton } from "../session";
 import { BackButton } from "./BackButton";
 
 const MENU: [string, string][] = [
@@ -11,35 +12,36 @@ const MENU: [string, string][] = [
 ];
 
 /**
- * Telas da paciente. Celular: uma coluna, letra grande, "Voltar" nas telas internas.
- * Computador: topo azul com menu e a tela numa folha branca mais larga.
+ * Telas da paciente. Computador: menu lateral azul e a tela numa folha branca no resto da
+ * largura. Celular: barra azul com "Menu" (abre o menu como gaveta, com "Sair" no fim),
+ * letra grande e "Voltar" nas telas internas.
  */
 export function PatientLayout() {
     const { pathname } = useLocation();
     return (
-        <div className="sg-mobile app-mobile app-patient">
-            <header className="app-top">
-                <div className="app-top__inner">
-                    <NavLink to="/" className="app-top__brand" aria-label="LogFarma, início">
-                        <Logo tone="white" />
-                    </NavLink>
-                    <nav className="app-top__nav" aria-label="Menu principal">
-                        {MENU.map(([to, label]) => (
-                            <NavLink key={to} to={to} end={to === "/"} className="app-top__link">
-                                {label}
-                            </NavLink>
-                        ))}
-                    </nav>
-                </div>
-            </header>
+        <AppShell
+            className="sg-mobile app-patient"
+            brand={
+                <NavLink to="/" className="app-patient__brand" aria-label="LogFarma, início">
+                    <Logo tone="white" />
+                </NavLink>
+            }
+            navLabel="Menu principal"
+            nav={MENU.map(([to, label]) => (
+                <NavLink key={to} to={to} end={to === "/"}>
+                    {label}
+                </NavLink>
+            ))}
+            footer={<SignOutButton variant="secondary" />}
+        >
             {pathname !== "/" && (
                 <nav className="app-mobile__nav app-mobile-only" aria-label="Navegação">
                     <BackButton home="/" />
                 </nav>
             )}
-            <main className="app-mobile__main">
+            <div className="app-mobile__main">
                 <Outlet />
-            </main>
-        </div>
+            </div>
+        </AppShell>
     );
 }
