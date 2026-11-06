@@ -44,19 +44,19 @@ Texto proposto por ela:
 
 | Item                                                                                                                    | Situação                                  |
 | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| No campo CEP: "Não sabe seu CEP?" com link para o **Busca CEP** dos Correios (`https://buscacepinter.correios.com.br/`) | a fazer                                   |
+| No campo CEP: "Não sabe seu CEP?" com link para o **Busca CEP** dos Correios (`https://buscacepinter.correios.com.br/`) | feito (cadastro e Meus dados)             |
 | Seção **"Locomoção e prioridade"** com a caixa "☐ Tenho dificuldade para locomoção"                                     | a fazer (o campo já existe, muda o texto) |
-| Pergunta **"Possui alguma condição listada abaixo?"** antes da lista de prioridades                                     | decidido (ver decisão 4)                  |
+| Pergunta **"Possui alguma condição listada abaixo?"** antes da lista de prioridades                                     | feito em Meus dados (falta no cadastro)   |
 
 ### 4. Textos
 
-| Item                                                                                                    | Situação                 |
-| ------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Enxugar os textos: "o site fala muito para coisinhas pequenas", sobretudo depois do cadastro e da conta | a fazer                  |
-| Trocar **"Procurar remédio"** por **"Buscar medicamento"** (título, menu, botão de Meus pedidos)        | a fazer                  |
-| Bloco **"Bom saber…"** com "Para retirada, leve a receita e documento com foto."                        | a fazer                  |
-| "Ligue para consultar disponibilidade"                                                                  | decidido (ver decisão 3) |
-| Aviso de **"Indisponível?"** com lista de espera e notificação                                          | decidido (ver decisão 2) |
+| Item                                                                                                    | Situação                                                             |
+| ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Enxugar os textos: "o site fala muito para coisinhas pequenas", sobretudo depois do cadastro e da conta | a fazer                                                              |
+| Trocar **"Procurar remédio"** por **"Buscar medicamento"** (título, menu, botão de Meus pedidos)        | a fazer                                                              |
+| Bloco **"Bom saber…"** com "Para retirada, leve a receita e documento com foto."                        | feito no Início (o telefone da unidade está no cartão "Sua unidade") |
+| "Ligue para consultar disponibilidade"                                                                  | decidido (ver decisão 3)                                             |
+| Aviso de **"Indisponível?"** com lista de espera e notificação                                          | decidido (ver decisão 2)                                             |
 
 ### 5. Visual
 
@@ -107,7 +107,8 @@ Ainda não há o que testar nas telas. Cada item "a fazer", quando implementado,
 
 ## Histórico de alterações
 
-| Data       | O que mudou                                                            |
-| ---------- | ---------------------------------------------------------------------- |
-| 2026-11-06 | Versão inicial: feedback agrupado e decisões 1–4                       |
-| 2026-11-06 | Recuperar senha implementada por SMTP genérico (sem prender ao Resend) |
+| Data       | O que mudou                                                                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-06 | Versão inicial: feedback agrupado e decisões 1–4                                                                                                                                          |
+| 2026-11-06 | Recuperar senha implementada por SMTP genérico (sem prender ao Resend)                                                                                                                    |
+| 2026-11-06 | Feitos: link do Busca CEP, pergunta de prioridade com "Não tenho / prefiro não dizer" (Meus dados), "Bom saber" no Início sem "ligue antes" e telefone da unidade no cartão "Sua unidade" |
