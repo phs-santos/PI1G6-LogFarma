@@ -354,3 +354,85 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
+/* ---------- Meus dados: cartões de resumo com "Editar" ---------- */
+.app-profile-grid {
+    display: grid;
+    align-items: start;
+    gap: var(--space-4);
+}
+
+.app-profile-card {
+    padding: var(--space-4) var(--space-6) var(--space-6);
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+}
+
+.app-profile-grid + .app-profile-card {
+    margin-top: var(--space-4);
+}
+
+.app-profile-card__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.app-profile-card__head h2 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+}
+
+.app-profile-card__value {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-profile-card p {
+    margin-top: 0;
+}
+
+.app-profile-card__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.app-profile-card__form {
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: var(--border-thin) solid var(--color-rule);
+}
+
+.app-profile-people {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.app-profile-people > li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--border-thin) solid var(--color-rule);
+}
+
+@media (min-width: 60rem) {
+    .app-profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .app-profile-card--wide {
+        grid-column: 1 / -1;
+    }
+}

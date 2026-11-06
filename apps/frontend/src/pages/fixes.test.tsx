@@ -73,7 +73,8 @@ describe("revisão 2 e 4: Meus dados", () => {
         const { client } = renderApp({ route: "/meus-dados", session: sessions.maria });
         client.setQueryData(qk.availability("med-los"), cena1Availability());
         const user = userEvent.setup();
-        await user.click(await screen.findByRole("button", { name: "Salvar contato e endereço" }));
+        await user.click(await screen.findByRole("button", { name: "Editar contato" }));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
         await waitFor(() =>
             expect(client.getQueryState(qk.availability("med-los"))?.isInvalidated).toBe(true),
         );
@@ -83,8 +84,9 @@ describe("revisão 2 e 4: Meus dados", () => {
         api();
         renderApp({ route: "/meus-dados", session: sessions.maria });
         const user = userEvent.setup();
-        await user.click(await screen.findByRole("button", { name: "Salvar contato e endereço" }));
-        const contato = screen.getByRole("region", { name: "Contato e endereço" });
+        await user.click(await screen.findByRole("button", { name: "Editar contato" }));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
+        const contato = screen.getByRole("region", { name: "Contato" });
         expect(await within(contato).findByText("Dados salvos.")).toBeInTheDocument();
         expect(
             within(
@@ -102,11 +104,12 @@ describe("revisão 2 e 4: Meus dados", () => {
         );
         renderApp({ route: "/meus-dados", session: sessions.maria });
         const user = userEvent.setup();
-        const salvar = await screen.findByRole("button", { name: "Salvar contato e endereço" });
-        await user.click(salvar);
+        await user.click(await screen.findByRole("button", { name: "Editar contato" }));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
         await screen.findByText("Dados salvos.");
         fail = true;
-        await user.click(screen.getByRole("button", { name: "Salvar contato e endereço" }));
+        await user.click(screen.getByRole("button", { name: "Editar contato" }));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
         expect(await screen.findByText("Falhou ao salvar.")).toBeInTheDocument();
         expect(screen.queryByText("Dados salvos.")).not.toBeInTheDocument();
     });

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
@@ -31,14 +31,17 @@ import { SignOutButton } from "../../app/session";
 import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { formatPhone, onlyDigits } from "../../lib/format";
-import { maskPhone } from "../../lib/masks";
+import { maskCep, maskPhone } from "../../lib/masks";
 import { Loaded } from "../../ui/Loaded";
 import { AddressFields, cleanAddress, validateAddress, type AddressErrors } from "./AddressFields";
 import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
 import "./paciente.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
-/** Dados da paciente: contato, endereço, unidade, localização, responsáveis e prioridade. */
+/**
+ * Dados da paciente em cartões curtos: cada um mostra o que está salvo e só abre o formulário
+ * quando a pessoa toca em "Editar" (menos rolagem e menos chance de mudar algo sem querer).
+ */
 export function MeusDados() {
     usePageTitle("Meus dados");
     const query = useQuery({ queryKey: qk.profile, queryFn: getProfile });
@@ -48,7 +51,7 @@ export function MeusDados() {
             <Loaded query={query} what="seus dados">
                 {(profile) => <ProfileSections profile={profile} />}
             </Loaded>
-            <div className="app-section">
+            <div className="app-section app-mobile-only">
                 <SignOutButton variant="secondary" block />
             </div>
         </>
@@ -59,11 +62,14 @@ function ProfileSections({ profile }: { profile: PatientProfile }) {
     return (
         <>
             <p className="app-lead">{profile.socialName ?? profile.fullName}</p>
-            <ContactSection profile={profile} />
-            <UnitSection profile={profile} />
-            <LocationSection profile={profile} />
-            <LocomotionSection profile={profile} />
-            <PrioritySection profile={profile} />
+            <div className="app-profile-grid">
+                <ContactSection profile={profile} />
+                <AddressSection profile={profile} />
+                <UnitSection profile={profile} />
+                <LocomotionSection profile={profile} />
+                <LocationSection profile={profile} />
+                <PrioritySection profile={profile} />
+            </div>
             <CaregiversSection />
         </>
     );
@@ -73,10 +79,40 @@ interface SectionProps {
     profile: PatientProfile;
 }
 
+/** Cartão de um assunto: título, botão de ação à direita e o conteúdo (resumo ou formulário). */
+function ProfileCard(props: {
+    id: string;
+    title: string;
+    action?: ReactNode;
+    wide?: boolean;
+    children: ReactNode;
+}) {
+    return (
+        <section
+            className={`app-profile-card${props.wide ? " app-profile-card--wide" : ""}`}
+            aria-labelledby={props.id}
+        >
+            <div className="app-profile-card__head">
+                <h2 id={props.id}>{props.title}</h2>
+                {props.action}
+            </div>
+            {props.children}
+        </section>
+    );
+}
+
+function EditButton({ label, onClick }: { label: string; onClick: () => void }) {
+    return (
+        <Button variant="secondary" aria-label={label} onClick={onClick}>
+            Editar
+        </Button>
+    );
+}
+
 /**
- * Salvar de uma seção: o retorno ("Dados salvos." ou o erro) aparece dentro dela, perto do
- * botão; cada envio limpa o retorno anterior. Unidade e localização mudam "Onde tem",
- * por isso a disponibilidade também é recarregada.
+ * Salvar de uma seção: o retorno ("Dados salvos." ou o erro) aparece dentro dela; cada envio
+ * limpa o retorno anterior. Unidade e localização mudam "Onde tem", por isso a
+ * disponibilidade também é recarregada.
  */
 function useProfileSave(onDone?: () => void) {
     const client = useQueryClient();
@@ -94,6 +130,10 @@ function useProfileSave(onDone?: () => void) {
         save.reset();
         save.run(patch);
     };
+    const clear = () => {
+        setMessage("");
+        save.reset();
+    };
     const feedback = (
         <div aria-live="polite">
             {message && <Notice tone="success" title={message} />}
@@ -104,64 +144,143 @@ function useProfileSave(onDone?: () => void) {
             )}
         </div>
     );
-    return { run, pending: save.isPending, feedback };
+    return { run, clear, pending: save.isPending, feedback };
 }
 
-function LocomotionSection({ profile }: SectionProps) {
-    const { run, pending, feedback } = useProfileSave();
+/** Cartão com formulário: abrir limpa o retorno anterior; salvar com sucesso fecha. */
+function useEditableSave(onSaved?: () => void) {
+    const [editing, setEditing] = useState(false);
+    const save = useProfileSave(() => {
+        setEditing(false);
+        onSaved?.();
+    });
+    return {
+        ...save,
+        editing,
+        open: () => {
+            save.clear();
+            setEditing(true);
+        },
+        close: () => setEditing(false),
+    };
+}
+
+function FormButtons({ saving, onCancel }: { saving: boolean; onCancel: () => void }) {
     return (
-        <section className="app-section" aria-labelledby="locomocao">
-            <h2 id="locomocao">Locomoção</h2>
-            <Checkbox
-                label="Tenho dificuldade para me locomover"
-                checked={profile.mobilityLimited}
-                disabled={pending}
-                onChange={(e) => run({ mobilityLimited: e.target.checked })}
-            />
-            {feedback}
-        </section>
+        <div className="app-profile-card__buttons">
+            <Button type="submit" loading={saving}>
+                Salvar
+            </Button>
+            <Button variant="ghost" onClick={onCancel}>
+                Cancelar
+            </Button>
+        </div>
     );
 }
 
 function ContactSection({ profile }: SectionProps) {
-    const { run: onSave, pending: saving, feedback } = useProfileSave();
+    const edit = useEditableSave();
+    const { run, pending, feedback } = edit;
     const [phone, setPhone] = useState(formatPhone(profile.phone));
-    const [address, setAddress] = useState<Address>(profile.address);
-    const [errors, setErrors] = useState<AddressErrors>({});
     const [phoneError, setPhoneError] = useState("");
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        const a = validateAddress(address);
         const digits = onlyDigits(phone);
-        const badPhone = digits.length < 10 || digits.length > 11;
-        setErrors(a);
-        setPhoneError(badPhone ? "Digite o telefone com DDD." : "");
-        if (badPhone || Object.keys(a).length > 0) return;
-        onSave({ phone: digits, address: cleanAddress(address) });
+        const bad = digits.length < 10 || digits.length > 11;
+        setPhoneError(bad ? "Digite o telefone com DDD." : "");
+        if (!bad) run({ phone: digits });
     };
     return (
-        <section className="app-section" aria-labelledby="contato">
-            <h2 id="contato">Contato e endereço</h2>
-            <form onSubmit={submit} noValidate>
-                <TextField
-                    label="Telefone com DDD"
-                    type="tel"
-                    value={phone}
-                    error={phoneError || undefined}
-                    onChange={(e) => setPhone(maskPhone(e.target.value))}
-                />
-                <AddressFields value={address} errors={errors} onChange={setAddress} />
-                <Button type="submit" block loading={saving}>
-                    Salvar contato e endereço
-                </Button>
-            </form>
+        <ProfileCard
+            id="contato"
+            title="Contato"
+            action={
+                !edit.editing && (
+                    <EditButton
+                        label="Editar contato"
+                        onClick={() => {
+                            setPhone(formatPhone(profile.phone));
+                            edit.open();
+                        }}
+                    />
+                )
+            }
+        >
+            {edit.editing ? (
+                <form onSubmit={submit} noValidate>
+                    <TextField
+                        label="Telefone com DDD"
+                        type="tel"
+                        value={phone}
+                        error={phoneError || undefined}
+                        onChange={(e) => setPhone(maskPhone(e.target.value))}
+                    />
+                    <FormButtons saving={pending} onCancel={edit.close} />
+                </form>
+            ) : (
+                <p className="app-profile-card__value">{formatPhone(profile.phone)}</p>
+            )}
             {feedback}
-        </section>
+        </ProfileCard>
+    );
+}
+
+function addressLines(a: Address): [string, string] {
+    return [
+        `${a.street}, ${a.number} — ${a.district}`,
+        `${a.city}/${a.state} · CEP ${maskCep(a.zip)}`,
+    ];
+}
+
+function AddressSection({ profile }: SectionProps) {
+    const edit = useEditableSave();
+    const { run, pending, feedback } = edit;
+    const [address, setAddress] = useState<Address>(profile.address);
+    const [errors, setErrors] = useState<AddressErrors>({});
+    const submit = (e: FormEvent) => {
+        e.preventDefault();
+        const found = validateAddress(address);
+        setErrors(found);
+        if (Object.keys(found).length === 0) run({ address: cleanAddress(address) });
+    };
+    const [line1, line2] = addressLines(profile.address);
+    return (
+        <ProfileCard
+            id="endereco"
+            title="Endereço"
+            action={
+                !edit.editing && (
+                    <EditButton
+                        label="Editar endereço"
+                        onClick={() => {
+                            setAddress(profile.address);
+                            setErrors({});
+                            edit.open();
+                        }}
+                    />
+                )
+            }
+        >
+            {edit.editing ? (
+                <form onSubmit={submit} noValidate>
+                    <AddressFields value={address} errors={errors} onChange={setAddress} />
+                    <FormButtons saving={pending} onCancel={edit.close} />
+                </form>
+            ) : (
+                <p className="app-profile-card__value">
+                    {line1}
+                    <br />
+                    <span className="app-unit__fact--muted">{line2}</span>
+                </p>
+            )}
+            {feedback}
+        </ProfileCard>
     );
 }
 
 function UnitSection({ profile }: SectionProps) {
-    const { run: onSave, pending: saving, feedback } = useProfileSave();
+    const edit = useEditableSave();
+    const { run, pending, feedback } = edit;
     const units = useQuery({
         queryKey: qk.pharmacies,
         queryFn: listPharmacies,
@@ -171,30 +290,64 @@ function UnitSection({ profile }: SectionProps) {
     const options = (units.data ?? [])
         .filter((u) => u.kind === "ubs" || u.kind === "municipal_pharmacy")
         .map((u) => ({ value: u.id, label: u.name }));
+    const submit = (e: FormEvent) => {
+        e.preventDefault();
+        if (unit === profile.referencePharmacy.id) edit.close();
+        else run({ referencePharmacyId: unit });
+    };
     return (
-        <section className="app-section" aria-labelledby="unidade">
-            <h2 id="unidade">Sua unidade de saúde</h2>
-            <SelectField
-                label="Unidade"
-                value={unit}
-                onChange={(e) => setUnit(e.target.value)}
-                options={
-                    options.length
-                        ? options
-                        : [{ value: unit, label: profile.referencePharmacy.name }]
-                }
-            />
-            {unit !== profile.referencePharmacy.id && (
-                <Button
-                    block
-                    loading={saving}
-                    onClick={() => onSave({ referencePharmacyId: unit })}
-                >
-                    Salvar unidade
-                </Button>
+        <ProfileCard
+            id="unidade"
+            title="Sua unidade de saúde"
+            action={
+                !edit.editing && (
+                    <Button
+                        variant="secondary"
+                        aria-label="Trocar unidade"
+                        onClick={() => {
+                            setUnit(profile.referencePharmacy.id);
+                            edit.open();
+                        }}
+                    >
+                        Trocar
+                    </Button>
+                )
+            }
+        >
+            {edit.editing ? (
+                <form onSubmit={submit} noValidate>
+                    <SelectField
+                        label="Unidade"
+                        value={unit}
+                        onChange={(e) => setUnit(e.target.value)}
+                        options={
+                            options.length
+                                ? options
+                                : [{ value: unit, label: profile.referencePharmacy.name }]
+                        }
+                    />
+                    <FormButtons saving={pending} onCancel={edit.close} />
+                </form>
+            ) : (
+                <p className="app-profile-card__value">{profile.referencePharmacy.name}</p>
             )}
             {feedback}
-        </section>
+        </ProfileCard>
+    );
+}
+
+function LocomotionSection({ profile }: SectionProps) {
+    const { run, pending, feedback } = useProfileSave();
+    return (
+        <ProfileCard id="locomocao" title="Locomoção">
+            <Checkbox
+                label="Tenho dificuldade para me locomover"
+                checked={profile.mobilityLimited}
+                disabled={pending}
+                onChange={(e) => run({ mobilityLimited: e.target.checked })}
+            />
+            {feedback}
+        </ProfileCard>
     );
 }
 
@@ -211,8 +364,7 @@ function LocationSection({ profile }: SectionProps) {
         if (found) onSave({ latitude: found.latitude, longitude: found.longitude });
     };
     return (
-        <section className="app-section" aria-labelledby="localizacao">
-            <h2 id="localizacao">Localização</h2>
+        <ProfileCard id="localizacao" title="Localização">
             <p>
                 {has
                     ? "Usamos sua localização só para mostrar a distância até as unidades."
@@ -221,10 +373,9 @@ function LocationSection({ profile }: SectionProps) {
             <p role="status">
                 {denied ? "Não foi possível pegar a localização. Seguimos sem ela." : ""}
             </p>
-            <div className="app-steps">
+            <div className="app-profile-card__buttons">
                 <Button
                     variant="secondary"
-                    block
                     loading={asking || saving}
                     onClick={() => void update()}
                 >
@@ -233,34 +384,61 @@ function LocationSection({ profile }: SectionProps) {
                 {has && (
                     <Button
                         variant="ghost"
-                        block
                         onClick={() => onSave({ latitude: null, longitude: null })}
                     >
-                        Remover minha localização
+                        Remover
                     </Button>
                 )}
             </div>
             {feedback}
-        </section>
+        </ProfileCard>
     );
 }
 
+/** Escolha "nenhuma": a pessoa não informa condição (é o padrão). */
+type PriorityChoice = PriorityCategory | "none";
+
 function PrioritySection({ profile }: SectionProps) {
     const [confirming, setConfirming] = useState(false);
-    const { run: onSave, pending: saving, feedback } = useProfileSave(() => setConfirming(false));
-    const [category, setCategory] = useState<PriorityCategory | null>(null);
+    const edit = useEditableSave(() => setConfirming(false));
+    const { run, pending, feedback } = edit;
+    const [choice, setChoice] = useState<PriorityChoice>("none");
     const [consent, setConsent] = useState(false);
     const current = profile.priority;
+    const submit = (e: FormEvent) => {
+        e.preventDefault();
+        if (choice === "none") edit.close();
+        else if (consent) run({ priority: { category: choice, consent: true } });
+    };
     return (
-        <section className="app-section" aria-labelledby="prioridade">
-            <h2 id="prioridade">Prioridade na lista de espera</h2>
+        <ProfileCard
+            id="prioridade"
+            title="Prioridade na lista de espera"
+            wide
+            action={
+                !current &&
+                !edit.editing && (
+                    <Button
+                        variant="secondary"
+                        aria-label="Informar condição de saúde"
+                        onClick={() => {
+                            setChoice("none");
+                            setConsent(false);
+                            edit.open();
+                        }}
+                    >
+                        Informar
+                    </Button>
+                )
+            }
+        >
             {current ? (
                 <>
-                    <p className="app-status">{PRIORITY_TEXT[current.category]}</p>
+                    <p className="app-profile-card__value">{PRIORITY_TEXT[current.category]}</p>
                     <p className="app-unit__fact--muted">
                         Você autorizou em {formatDate(current.consentAt.slice(0, 10))}.
                     </p>
-                    <Button variant="danger" block onClick={() => setConfirming(true)}>
+                    <Button variant="danger" onClick={() => setConfirming(true)}>
                         Retirar consentimento
                     </Button>
                     <ConfirmDialog
@@ -269,9 +447,9 @@ function PrioritySection({ profile }: SectionProps) {
                         confirmLabel="Sim, retirar"
                         cancelLabel="Não, manter"
                         danger
-                        loading={saving}
+                        loading={pending}
                         onConfirm={() => {
-                            onSave({ priority: { revoke: true } });
+                            run({ priority: { revoke: true } });
                         }}
                         onClose={() => setConfirming(false)}
                     >
@@ -282,40 +460,53 @@ function PrioritySection({ profile }: SectionProps) {
                         {confirming && feedback}
                     </ConfirmDialog>
                 </>
-            ) : (
-                <>
-                    <ChoiceGroup legend="Você tem alguma destas condições?">
+            ) : edit.editing ? (
+                <form onSubmit={submit} noValidate>
+                    <ChoiceGroup legend="Possui alguma condição listada abaixo?">
                         {(Object.keys(PRIORITY_TEXT) as PriorityCategory[]).map((c) => (
                             <ChoiceOption
                                 key={c}
                                 name="priority"
                                 label={PRIORITY_TEXT[c]}
-                                checked={category === c}
-                                onChange={() => setCategory(c)}
+                                checked={choice === c}
+                                onChange={() => setChoice(c)}
                             />
                         ))}
+                        <ChoiceOption
+                            name="priority"
+                            label="Não tenho / prefiro não dizer"
+                            checked={choice === "none"}
+                            onChange={() => setChoice("none")}
+                        />
                     </ChoiceGroup>
-                    {category && (
-                        <>
-                            <Checkbox
-                                label={CONSENT_TEXT}
-                                checked={consent}
-                                onChange={(e) => setConsent(e.target.checked)}
-                            />
-                            <Button
-                                block
-                                disabled={!consent}
-                                loading={saving}
-                                onClick={() => onSave({ priority: { category, consent: true } })}
-                            >
-                                Salvar prioridade
-                            </Button>
-                        </>
+                    {choice !== "none" && (
+                        <Checkbox
+                            label={CONSENT_TEXT}
+                            checked={consent}
+                            onChange={(e) => setConsent(e.target.checked)}
+                        />
                     )}
-                </>
+                    <div className="app-profile-card__buttons">
+                        <Button
+                            type="submit"
+                            disabled={choice !== "none" && !consent}
+                            loading={pending}
+                        >
+                            Salvar
+                        </Button>
+                        <Button variant="ghost" onClick={edit.close}>
+                            Cancelar
+                        </Button>
+                    </div>
+                </form>
+            ) : (
+                <p>
+                    Nenhuma condição informada. Pessoas com doença crônica, câncer ou doença rara
+                    têm prioridade na lista de espera.
+                </p>
             )}
             {!confirming && feedback}
-        </section>
+        </ProfileCard>
     );
 }
 
@@ -323,11 +514,15 @@ const EMPTY_CAREGIVER: CaregiverInput = { fullName: "", document: "", relationsh
 
 function CaregiversSection() {
     const query = useQuery({ queryKey: qk.caregivers, queryFn: listCaregivers });
+    const [adding, setAdding] = useState(false);
     const [form, setForm] = useState<CaregiverInput>(EMPTY_CAREGIVER);
     const [error, setError] = useState("");
     const add = useActionMutation(addCaregiver, {
         invalidate: [qk.caregivers],
-        onSuccess: () => setForm(EMPTY_CAREGIVER),
+        onSuccess: () => {
+            setForm(EMPTY_CAREGIVER);
+            setAdding(false);
+        },
     });
     const remove = useActionMutation(removeCaregiver, { invalidate: [qk.caregivers] });
     const submit = (e: FormEvent) => {
@@ -363,22 +558,46 @@ function CaregiversSection() {
         />
     );
     return (
-        <section className="app-section" aria-labelledby="responsaveis">
-            <h2 id="responsaveis">Quem pode retirar ou receber por você</h2>
+        <ProfileCard
+            id="responsaveis"
+            title="Quem pode retirar ou receber por você"
+            wide
+            action={
+                !adding && (
+                    <Button
+                        variant="secondary"
+                        aria-label="Adicionar responsável"
+                        onClick={() => {
+                            setError("");
+                            add.reset();
+                            setAdding(true);
+                        }}
+                    >
+                        Adicionar
+                    </Button>
+                )
+            }
+        >
             <Loaded query={query} what="os responsáveis">
                 {(items) =>
                     items.length === 0 ? (
                         <p>Ninguém cadastrado. Só você pode retirar ou receber.</p>
                     ) : (
-                        <ul className="app-units">
+                        <ul className="app-profile-people">
                             {items.map((c) => (
                                 <li key={c.id}>
-                                    <strong>
-                                        {c.fullName} ({c.relationship})
-                                    </strong>
-                                    <span>{formatPhone(c.phone)}</span>
+                                    <span>
+                                        <strong>
+                                            {c.fullName} ({c.relationship})
+                                        </strong>
+                                        <br />
+                                        <span className="app-unit__fact--muted">
+                                            {formatPhone(c.phone)}
+                                        </span>
+                                    </span>
                                     <Button
                                         variant="ghost"
+                                        size="sm"
                                         aria-label={`Remover ${c.fullName}`}
                                         loading={remove.isPending && remove.variables === c.id}
                                         onClick={() => remove.run(c.id)}
@@ -391,26 +610,33 @@ function CaregiversSection() {
                     )
                 }
             </Loaded>
-            <form onSubmit={submit} noValidate className="app-section">
-                <h3>Adicionar responsável</h3>
-                {field("fullName", "Nome completo")}
-                {field("document", "Documento (RG ou CPF)", { inputMode: "numeric" })}
-                {field("relationship", "Parentesco", { hint: "Por exemplo: filha, vizinho." })}
-                <TextField
-                    label="Telefone do responsável"
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: maskPhone(e.target.value) })}
-                />
-                {(error || add.isError) && (
-                    <p className="sg-field__error" role="alert">
-                        {error || add.error?.message}
-                    </p>
-                )}
-                <Button type="submit" variant="secondary" block loading={add.isPending}>
-                    Adicionar responsável
-                </Button>
-            </form>
-        </section>
+            {adding && (
+                <form onSubmit={submit} noValidate className="app-profile-card__form">
+                    <h3>Novo responsável</h3>
+                    {field("fullName", "Nome completo")}
+                    {field("document", "Documento (RG ou CPF)", { inputMode: "numeric" })}
+                    {field("relationship", "Parentesco", { hint: "Por exemplo: filha, vizinho." })}
+                    <TextField
+                        label="Telefone do responsável"
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) => setForm({ ...form, phone: maskPhone(e.target.value) })}
+                    />
+                    {(error || add.isError) && (
+                        <p className="sg-field__error" role="alert">
+                            {error || add.error?.message}
+                        </p>
+                    )}
+                    <div className="app-profile-card__buttons">
+                        <Button type="submit" loading={add.isPending}>
+                            Salvar responsável
+                        </Button>
+                        <Button variant="ghost" onClick={() => setAdding(false)}>
+                            Cancelar
+                        </Button>
+                    </div>
+                </form>
+            )}
+        </ProfileCard>
     );
 }

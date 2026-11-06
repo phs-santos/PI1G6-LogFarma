@@ -100,6 +100,10 @@
     font-size: var(--font-size-sm);
 }
 
+.app-cep-help {
+    margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+}
+
 .app-cep-status {
     margin: calc(-1 * var(--space-2)) 0 var(--space-4);
     color: var(--color-text-muted);

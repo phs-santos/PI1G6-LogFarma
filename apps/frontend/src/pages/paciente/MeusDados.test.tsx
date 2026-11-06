@@ -50,16 +50,19 @@ describe("Meus dados", () => {
         const mock = api();
         renderApp({ route: "/meus-dados", session: sessions.maria });
         const user = userEvent.setup();
-        const phone = await screen.findByLabelText("Telefone com DDD");
+        await user.click(await screen.findByRole("button", { name: "Editar contato" }));
+        const phone = screen.getByLabelText("Telefone com DDD");
         await user.clear(phone);
         await user.type(phone, "(16) 99000-1111");
-        await user.click(screen.getByRole("button", { name: "Salvar contato e endereço" }));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
         await waitFor(() =>
-            expect(mock.calls.find((c) => c.method === "PATCH")?.body).toMatchObject({
+            expect(mock.calls.find((c) => c.method === "PATCH")?.body).toEqual({
                 phone: "16990001111",
             }),
         );
         expect(await screen.findByText("Dados salvos.")).toBeInTheDocument();
+        // Salvou: o formulário fecha e volta o resumo.
+        expect(screen.queryByLabelText("Telefone com DDD")).not.toBeInTheDocument();
     });
 
     it("remove um responsável e sai", async () => {
@@ -68,9 +71,52 @@ describe("Meus dados", () => {
         const user = userEvent.setup();
         await user.click(await screen.findByRole("button", { name: "Remover Joana da Silva" }));
         await waitFor(() => expect(mock.calls.some((c) => c.method === "DELETE")).toBe(true));
-        // "Sair" aparece no menu lateral e no fim de Meus dados (celular).
+        // "Sair" aparece no topo (computador) e no fim de Meus dados (celular).
         await user.click(screen.getAllByRole("button", { name: "Sair" })[0]!);
         await waitFor(() => expect(router.state.location.pathname).toBe("/entrar"));
         expect(router.state.location.search).toBe("");
+    });
+
+    it("abre com o endereço salvo, sem buscar o CEP no ViaCEP", async () => {
+        const mock = api();
+        renderApp({ route: "/meus-dados", session: sessions.maria });
+        const endereco = await screen.findByRole("region", { name: "Endereço" });
+        expect(await within(endereco).findByText(/Rua Sete de Setembro/)).toBeInTheDocument();
+        await userEvent.setup().click(screen.getByRole("button", { name: "Editar endereço" }));
+        expect(screen.getByLabelText("Rua")).toHaveValue("Rua Sete de Setembro");
+        expect(mock.calls.some((c) => c.path.startsWith("/ws/"))).toBe(false);
+    });
+
+    it("abre como resumo: nenhum campo editável até tocar em Editar", async () => {
+        api();
+        const { container } = renderApp({ route: "/meus-dados", session: sessions.maria });
+        await screen.findByRole("region", { name: "Contato" });
+        expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+        await expectNoAxeViolations(container);
+    });
+
+    it("sem prioridade: Informar mostra a pergunta e exige o consentimento", async () => {
+        const mock = mockApi({
+            "GET /api/me": { body: { profile: patientProfile({ priority: null }) } },
+            "PATCH /api/me": { body: { profile: withPriority } },
+            "GET /api/me/caregivers": { body: { items: [] } },
+            "GET /api/pharmacies": { body: { items: pharmacies } },
+        });
+        renderApp({ route: "/meus-dados", session: sessions.maria });
+        const user = userEvent.setup();
+        await user.click(await screen.findByRole("button", { name: "Informar condição de saúde" }));
+        const group = screen.getByRole("radiogroup", {
+            name: "Possui alguma condição listada abaixo?",
+        });
+        expect(within(group).getByLabelText("Não tenho / prefiro não dizer")).toBeChecked();
+        await user.click(within(group).getByLabelText("Doença crônica"));
+        expect(screen.getByRole("button", { name: "Salvar" })).toBeDisabled();
+        await user.click(screen.getByLabelText(/Autorizo usar essa informação/));
+        await user.click(screen.getByRole("button", { name: "Salvar" }));
+        await waitFor(() =>
+            expect(mock.calls.find((c) => c.method === "PATCH")?.body).toEqual({
+                priority: { category: "chronic", consent: true },
+            }),
+        );
     });
 });

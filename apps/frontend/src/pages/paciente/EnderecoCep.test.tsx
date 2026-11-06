@@ -59,4 +59,14 @@ describe("Endereço pelo CEP", () => {
         ).toBeInTheDocument();
         expect(screen.getByLabelText("Cidade")).toHaveValue("Taquaritinga");
     });
+
+    it("tem o link para quem não sabe o CEP (Busca CEP dos Correios)", async () => {
+        mockApi({ "GET /api/pharmacies": { body: { items: pharmacies } } });
+        renderApp({ route: "/cadastro" });
+        await goToAddress(userEvent.setup());
+        expect(screen.getByRole("link", { name: "Buscar no site dos Correios" })).toHaveAttribute(
+            "href",
+            expect.stringContaining("buscacepinter.correios.com.br"),
+        );
+    });
 });

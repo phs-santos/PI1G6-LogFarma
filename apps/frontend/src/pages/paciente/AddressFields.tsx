@@ -40,6 +40,7 @@ export function cleanAddress(a: Address): Address {
 /**
  * Endereço com o CEP primeiro: ao completar os 8 números, rua, bairro, cidade e UF são
  * preenchidos pelo ViaCEP. Sem internet ou CEP desconhecido, a pessoa preenche à mão.
+ * Só busca quando a pessoa muda o CEP: o endereço que já veio salvo (Meus dados) fica como está.
  */
 export function AddressFields(props: {
     value: Address;
@@ -51,9 +52,11 @@ export function AddressFields(props: {
     const latest = useRef(value);
     latest.current = value;
     const cepDigits = value.zip.replace(/\D/g, "");
+    // CEP com que o formulário abriu (o salvo no banco, ou vazio no cadastro).
+    const initialCep = useRef(cepDigits);
 
     useEffect(() => {
-        if (cepDigits.length !== 8) return;
+        if (cepDigits.length !== 8 || cepDigits === initialCep.current) return;
         let cancelled = false;
         setStatus("Procurando o endereço…");
         lookupCep(cepDigits)
@@ -102,6 +105,17 @@ export function AddressFields(props: {
                 error={errors.zip}
                 onChange={(e) => onChange({ ...value, zip: maskCep(e.target.value) })}
             />
+            <p className="app-cep-help">
+                Não sabe seu CEP?{" "}
+                <a
+                    className="app-link"
+                    href="https://buscacepinter.correios.com.br/app/endereco/index.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Buscar no site dos Correios
+                </a>
+            </p>
             <p className="app-cep-status" role="status">
                 {status}
             </p>
