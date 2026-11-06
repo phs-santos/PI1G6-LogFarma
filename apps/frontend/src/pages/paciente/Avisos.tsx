@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { EmptyState } from "@fatec-pi/style-guide";
+import { EmptyState, PageHeader } from "@fatec-pi/style-guide";
 import { listNotifications, markNotificationRead } from "../../api/notifications";
 import type { NotificationView } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -29,7 +29,7 @@ export function Avisos() {
 
     return (
         <>
-            <h1>Avisos</h1>
+            <PageHeader title="Avisos" />
             <Loaded query={query} what="seus avisos">
                 {(items) =>
                     items.length === 0 ? (

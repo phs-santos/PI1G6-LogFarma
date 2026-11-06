@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { EmptyState } from "@fatec-pi/style-guide";
+import { EmptyState, PageHeader } from "@fatec-pi/style-guide";
 import { listRequests } from "../../api/requests";
 import { qk, REGULAR } from "../../app/queryKeys";
 import { formatDayTime } from "../../lib/dates";
@@ -19,7 +19,7 @@ export function MeusPedidos() {
     });
     return (
         <>
-            <h1>Meus pedidos</h1>
+            <PageHeader title="Meus pedidos" />
             <Loaded query={query} what="seus pedidos">
                 {(items) =>
                     items.length === 0 ? (

@@ -75,69 +75,93 @@ export function MedicamentoForm({ initial, pending, onSubmit }: MedicamentoFormP
 
     return (
         <form className="app-med-form" onSubmit={submit} noValidate>
-            {text("activeIngredient", "Princípio ativo", "Por exemplo: Losartana potássica")}
-            {text("concentration", "Concentração", "Por exemplo: 50 mg")}
-            <SelectField
-                label="Forma"
-                value={m.pharmaceuticalForm}
-                onChange={(e) =>
-                    set(
-                        "pharmaceuticalForm",
-                        e.target.value as MedicationInput["pharmaceuticalForm"],
-                    )
-                }
-                options={optionsOf(FORM_TEXT)}
-            />
-            <SelectField
-                label="Via"
-                value={m.route}
-                onChange={(e) => set("route", e.target.value as MedicationInput["route"])}
-                options={optionsOf(ROUTE_TEXT)}
-            />
-            {text(
-                "dispensingUnit",
-                "Unidade de entrega",
-                "Como é contado na entrega: comprimido, frasco…",
-            )}
-            <SelectField
-                label="Componente do SUS"
-                value={m.component}
-                onChange={(e) => set("component", e.target.value as MedicationInput["component"])}
-                options={optionsOf(COMPONENT_TEXT)}
-            />
-            {text("therapeuticClass", "Classe terapêutica", "Por exemplo: Anti-hipertensivo")}
-            <SelectField
-                label="Tipo de receita"
-                value={m.prescriptionType}
-                onChange={(e) =>
-                    set("prescriptionType", e.target.value as MedicationInput["prescriptionType"])
-                }
-                options={optionsOf(PRESCRIPTION_TEXT)}
-            />
-            <SelectField
-                label="Conservação"
-                value={m.storage}
-                onChange={(e) => set("storage", e.target.value as MedicationInput["storage"])}
-                options={optionsOf(STORAGE_TEXT)}
-            />
-            <TextField
-                label="Código CATMAT (opcional)"
-                value={catmat}
-                onChange={(e) => setCatmat(e.target.value)}
-            />
-            <Checkbox
-                label="Está na RENAME"
-                checked={m.inRename}
-                onChange={(e) => set("inRename", e.target.checked)}
-            />
-            <Checkbox
-                label="Está no Farmácia Popular"
-                checked={m.inFarmaciaPopular}
-                onChange={(e) => set("inFarmaciaPopular", e.target.checked)}
-            />
-            <Button type="submit" size="lg" loading={pending}>
-                Salvar medicamento
-            </Button>
+            <fieldset className="app-med-form__group">
+                <legend>Identificação</legend>
+                <div className="app-med-form__wide">
+                    {text(
+                        "activeIngredient",
+                        "Princípio ativo",
+                        "Por exemplo: Losartana potássica",
+                    )}
+                </div>
+                {text("concentration", "Concentração", "Por exemplo: 50 mg")}
+                <SelectField
+                    label="Forma"
+                    value={m.pharmaceuticalForm}
+                    onChange={(e) =>
+                        set(
+                            "pharmaceuticalForm",
+                            e.target.value as MedicationInput["pharmaceuticalForm"],
+                        )
+                    }
+                    options={optionsOf(FORM_TEXT)}
+                />
+                <SelectField
+                    label="Via"
+                    value={m.route}
+                    onChange={(e) => set("route", e.target.value as MedicationInput["route"])}
+                    options={optionsOf(ROUTE_TEXT)}
+                />
+                {text(
+                    "dispensingUnit",
+                    "Unidade de entrega",
+                    "Como é contado na entrega: comprimido, frasco…",
+                )}
+            </fieldset>
+            <fieldset className="app-med-form__group">
+                <legend>Classificação no SUS</legend>
+                <SelectField
+                    label="Componente do SUS"
+                    value={m.component}
+                    onChange={(e) =>
+                        set("component", e.target.value as MedicationInput["component"])
+                    }
+                    options={optionsOf(COMPONENT_TEXT)}
+                />
+                {text("therapeuticClass", "Classe terapêutica", "Por exemplo: Anti-hipertensivo")}
+                <SelectField
+                    label="Tipo de receita"
+                    value={m.prescriptionType}
+                    onChange={(e) =>
+                        set(
+                            "prescriptionType",
+                            e.target.value as MedicationInput["prescriptionType"],
+                        )
+                    }
+                    options={optionsOf(PRESCRIPTION_TEXT)}
+                />
+                <TextField
+                    label="Código CATMAT (opcional)"
+                    value={catmat}
+                    onChange={(e) => setCatmat(e.target.value)}
+                />
+            </fieldset>
+            <fieldset className="app-med-form__group">
+                <legend>Conservação e programas</legend>
+                <SelectField
+                    label="Conservação"
+                    value={m.storage}
+                    onChange={(e) => set("storage", e.target.value as MedicationInput["storage"])}
+                    options={optionsOf(STORAGE_TEXT)}
+                />
+                <div className="app-med-form__checks">
+                    <Checkbox
+                        label="Está na RENAME"
+                        checked={m.inRename}
+                        onChange={(e) => set("inRename", e.target.checked)}
+                    />
+                    <Checkbox
+                        label="Está no Farmácia Popular"
+                        checked={m.inFarmaciaPopular}
+                        onChange={(e) => set("inFarmaciaPopular", e.target.checked)}
+                    />
+                </div>
+            </fieldset>
+            <div className="app-med-form__actions">
+                <Button type="submit" size="lg" loading={pending}>
+                    Salvar medicamento
+                </Button>
+            </div>
         </form>
     );
 }

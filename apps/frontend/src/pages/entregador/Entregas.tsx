@@ -1,6 +1,6 @@
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, EmptyState, Notice, Stamp, Tabs } from "@fatec-pi/style-guide";
+import { Button, EmptyState, Notice, PageHeader, Stamp, Tabs } from "@fatec-pi/style-guide";
 import { courierAction, listCourierDeliveries } from "../../api/courier";
 import type { DeliveryView } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -36,7 +36,7 @@ export function EntregasEntregador() {
 
     return (
         <>
-            <h1>Entregas</h1>
+            <PageHeader title="Entregas" />
             <Tabs
                 label="Entregas"
                 activeId={tab}

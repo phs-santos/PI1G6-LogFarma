@@ -21,3 +21,37 @@
     display: grid;
     max-width: var(--width-text);
 }
+
+/* ---------- Listas da gestão: filtros, situação e páginas ---------- */
+.app-list-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-3);
+    max-width: var(--width-text);
+}
+
+.app-list-filters > .sg-field {
+    flex: 1 1 16rem;
+    margin-bottom: 0;
+}
+
+.app-muted {
+    color: var(--color-text-muted);
+}
+
+.app-state {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ok);
+}
+
+.app-state--off {
+    color: var(--color-tarja-red);
+}
+
+.app-pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+}

@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { BarList, DataTable, StatTile } from "@fatec-pi/style-guide";
+import { BarList, DataTable, PageHeader, StatTile } from "@fatec-pi/style-guide";
 import { getExpiringStock, getSummary, getUnmetDemand } from "../../api/manager";
 import type { UnmetDemandItem } from "../../api/types";
 import { qk, REGULAR } from "../../app/queryKeys";
 import { daysUntil, formatDate } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
-import { ManagerTabs } from "./ManagerTabs";
 import "./gestor.css";
 import { usePageTitle } from "../../app/usePageTitle";
+import "../farmacia/farmacia.css";
 
 /** Soma as buscas sem estoque de cada remédio em todas as unidades, maior primeiro. */
 export function totalsByMedication(items: UnmetDemandItem[]): { label: string; value: number }[] {
@@ -39,8 +39,7 @@ export function Painel() {
 
     return (
         <>
-            <ManagerTabs />
-            <h1>Painel da rede</h1>
+            <PageHeader title="Painel da rede" />
             <Loaded query={summary} what="os números da rede">
                 {(s) => (
                     <div className="app-stats">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Notice, Tarja, Timeline, ConfirmDialog } from "@fatec-pi/style-guide";
+import { Button, ConfirmDialog, Notice, PageHeader, Tarja, Timeline } from "@fatec-pi/style-guide";
 import { getRequest, updateRequest } from "../../api/requests";
 import { LIVE, qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
@@ -39,10 +39,10 @@ export function SeuPedido() {
                     view.fulfillment === "pickup" && view.status === "ready_for_pickup";
                 return (
                     <>
-                        <h1>Seu pedido</h1>
-                        <p className="app-lead">
-                            {view.medication.displayName}, {view.quantity} unidades
-                        </p>
+                        <PageHeader
+                            title="Seu pedido"
+                            description={`${view.medication.displayName}, ${view.quantity} unidades`}
+                        />
                         <Tarja type={view.medication.prescriptionType} />
                         <p className="sg-visually-hidden" role="status" aria-live="polite">
                             {current ? `Agora: ${current.label}` : ""}

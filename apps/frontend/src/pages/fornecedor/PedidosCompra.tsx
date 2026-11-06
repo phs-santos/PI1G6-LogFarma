@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, DataTable, Notice, TextField } from "@fatec-pi/style-guide";
+import { Button, DataTable, Notice, PageHeader, TextField } from "@fatec-pi/style-guide";
 import { listSupplierOrders, supplierAction } from "../../api/supplier";
 import type { PurchaseOrderView, SupplierAction } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -92,7 +92,7 @@ export function PedidosCompra() {
 
     return (
         <>
-            <h1>Pedidos de compra</h1>
+            <PageHeader title="Pedidos de compra" />
             <div aria-live="polite">{done && <Notice tone="success" title={done} />}</div>
             {act.isError && (
                 <Notice tone="danger" title="Não foi possível concluir.">

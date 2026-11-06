@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { ActionList, EmptyState, Tarja } from "@fatec-pi/style-guide";
+import { ActionList, EmptyState, PageHeader, Tarja } from "@fatec-pi/style-guide";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import { formatKm, telHref, formatPhone } from "../../lib/format";
@@ -40,8 +40,10 @@ export function VouBuscar() {
                 }
                 return (
                     <>
-                        <h1>{item.pharmacyName}</h1>
-                        <p className="app-lead">Para buscar {resp.medication.displayName}</p>
+                        <PageHeader
+                            title={item.pharmacyName}
+                            description={`Para buscar ${resp.medication.displayName}`}
+                        />
                         <Tarja type={resp.medication.prescriptionType} />
                         <dl className="app-facts">
                             <div>

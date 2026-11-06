@@ -3,12 +3,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     Button,
     Checkbox,
-    Notice,
-    SelectField,
-    TextField,
     ChoiceGroup,
     ChoiceOption,
     ConfirmDialog,
+    Notice,
+    PageHeader,
+    SelectField,
+    TextField,
 } from "@fatec-pi/style-guide";
 import {
     addCaregiver,
@@ -47,7 +48,7 @@ export function MeusDados() {
     const query = useQuery({ queryKey: qk.profile, queryFn: getProfile });
     return (
         <>
-            <h1>Meus dados</h1>
+            <PageHeader title="Meus dados" />
             <Loaded query={query} what="seus dados">
                 {(profile) => <ProfileSections profile={profile} />}
             </Loaded>

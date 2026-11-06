@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, DataTable, Notice } from "@fatec-pi/style-guide";
+import { Button, DataTable, Notice, PageHeader } from "@fatec-pi/style-guide";
 import {
     listPharmacyPurchaseOrders,
     listUnitStock,
@@ -13,7 +13,6 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate, formatDayMonth } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
 import { PRIORITY_TEXT } from "../paciente/profileText";
-import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
@@ -51,8 +50,7 @@ export function Compras() {
 
     return (
         <>
-            <PharmacyTabs />
-            <h1>Compras</h1>
+            <PageHeader title="Compras" />
             {receive.isError && (
                 <Notice tone="danger" title="Não foi possível dar entrada.">
                     <p>{receive.error.message}</p>

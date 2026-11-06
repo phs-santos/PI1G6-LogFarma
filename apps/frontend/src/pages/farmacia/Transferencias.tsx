@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, DataTable, Notice } from "@fatec-pi/style-guide";
+import { Button, DataTable, Notice, PageHeader } from "@fatec-pi/style-guide";
 import { listTransfers, transferAction } from "../../api/pharmacy";
 import type { TransferAction, TransferView } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -8,7 +8,6 @@ import { useActionMutation } from "../../app/useActionMutation";
 import { formatDate } from "../../lib/dates";
 import { Loaded } from "../../ui/Loaded";
 import { InlineText } from "../../ui/InlineText";
-import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
@@ -108,8 +107,7 @@ export function Transferencias() {
 
     return (
         <>
-            <PharmacyTabs />
-            <h1>Transferências</h1>
+            <PageHeader title="Transferências" />
             {act.isError && (
                 <Notice tone="danger" title="Não foi possível concluir.">
                     <p>{act.error.message}</p>

@@ -1,3 +1,4 @@
+import { PageHeader } from "@fatec-pi/style-guide";
 import { Link, useParams } from "react-router";
 import { Loaded } from "../../ui/Loaded";
 import { telHref, formatPhone } from "../../lib/format";
@@ -20,8 +21,7 @@ export function OutrasUnidades() {
         <Loaded query={query} what="as unidades">
             {(resp) => (
                 <>
-                    <h1>Outras unidades</h1>
-                    <p className="app-lead">{resp.medication.displayName}</p>
+                    <PageHeader title="Outras unidades" description={resp.medication.displayName} />
                     <ul className="app-units" aria-label="Unidades da rede">
                         {resp.items.map((item) => {
                             const phone = phoneOf(item.pharmacyId);

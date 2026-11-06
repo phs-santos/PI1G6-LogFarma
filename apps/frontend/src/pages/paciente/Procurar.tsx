@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Button, SearchField } from "@fatec-pi/style-guide";
+import { Button, PageHeader, SearchField } from "@fatec-pi/style-guide";
 import { searchMedications } from "../../api/medications";
 import { qk } from "../../app/queryKeys";
 import { RecentMedications } from "./RecentMedications";
@@ -30,8 +30,10 @@ export function Procurar() {
 
     return (
         <>
-            <h1>Procurar remédio</h1>
-            <p className="app-lead">Digite o nome que está na receita ou na caixa do remédio.</p>
+            <PageHeader
+                title="Procurar remédio"
+                description="Digite o nome que está na receita ou na caixa do remédio."
+            />
             <div className="app-search">
                 <SearchField
                     label="Qual remédio você precisa?"

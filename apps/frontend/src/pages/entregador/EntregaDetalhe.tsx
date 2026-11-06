@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ActionList, Button, buttonClassName, EmptyState, Notice } from "@fatec-pi/style-guide";
+import {
+    ActionList,
+    Button,
+    buttonClassName,
+    EmptyState,
+    Notice,
+    PageHeader,
+} from "@fatec-pi/style-guide";
 import { courierAction, listCourierDeliveries } from "../../api/courier";
 import type { CourierAction } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
@@ -43,8 +50,10 @@ export function EntregaDetalhe() {
                 }
                 return (
                     <>
-                        <h1>{d.recipient.name}</h1>
-                        <p className="app-lead">{DELIVERY_STATUS[d.status]}</p>
+                        <PageHeader
+                            title={d.recipient.name}
+                            description={DELIVERY_STATUS[d.status]}
+                        />
                         <dl className="app-facts">
                             <div>
                                 <dt>Endereço</dt>

@@ -104,6 +104,38 @@ export interface CreateAccountInput {
     deliveryProgram?: string;
 }
 
+export type StaffRole = Exclude<UserRole, "patient">;
+
+/** Conta da equipe na lista da gestão (paciente não aparece). */
+export interface StaffAccount {
+    id: string;
+    role: StaffRole;
+    email: string;
+    active: boolean;
+    createdAt: string;
+    name: string;
+    place: string | null;
+    occupation: StaffOccupation | null;
+}
+
+export interface PharmacyInput {
+    name: string;
+    kind: PharmacyKind;
+    network: PharmacyView["network"];
+    address: string;
+    phone: string;
+    openingHours: string;
+    cnes?: string;
+    cnpj?: string;
+}
+
+export interface MedicationPage {
+    items: MedicationSummary[];
+    total: number;
+    page: number;
+    pageSize: number;
+}
+
 export interface MedicationSummary {
     id: string;
     displayName: string;

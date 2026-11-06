@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router";
-import { ActionList, Notice, Stamp, Tarja } from "@fatec-pi/style-guide";
+import { ActionList, Notice, PageHeader, Stamp, Tarja } from "@fatec-pi/style-guide";
 import { Loaded } from "../../ui/Loaded";
 import { LinkButton } from "../../ui/LinkButton";
 import { hasIt, pickRecommendation } from "./recommendation";
@@ -22,7 +22,7 @@ export function OndeTem() {
                 const ownHasIt = reference !== null && hasIt(reference);
                 return (
                     <>
-                        <h1>{resp.medication.displayName}</h1>
+                        <PageHeader title={resp.medication.displayName} />
                         <Tarja type={resp.medication.prescriptionType} />
 
                         {reference && ownHasIt && (

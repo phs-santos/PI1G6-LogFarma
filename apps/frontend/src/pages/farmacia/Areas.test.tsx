@@ -136,12 +136,50 @@ describe("Farmácia — Estoque", () => {
         });
         const { container } = renderApp({ route: "/farmacia/estoque", session: sessions.ana });
         expect(await screen.findByText("Vence em 20 dias")).toBeInTheDocument();
-        expect(screen.getByText("Abaixo do mínimo")).toBeInTheDocument();
-        expect(screen.getByRole("link", { name: "Cadastrar medicamento" })).toHaveAttribute(
-            "href",
-            "/farmacia/estoque/novo-medicamento",
-        );
+        const table = screen.getByRole("table", { name: "Estoque da unidade" });
+        expect(within(table).getByText("Abaixo do mínimo")).toBeInTheDocument();
         await expectNoAxeViolations(container);
+    });
+
+    it("Dar entrada em lote abre num diálogo e envia o lote", async () => {
+        const mock = mockApi({
+            ...base,
+            "GET /api/pharmacy/stock": { body: { items: [stockOf(losartana, 80)] } },
+            "GET /api/pharmacy/transfers": { body: { items: [] } },
+            "POST /api/pharmacy/stock/batches": { status: 201, body: { ok: true } },
+        });
+        renderApp({ route: "/farmacia/estoque", session: sessions.ana });
+        const user = userEvent.setup();
+        await user.click(await screen.findByRole("button", { name: "Dar entrada em lote" }));
+        const dialog = screen.getByRole("dialog", { name: "Dar entrada em lote" });
+        await user.selectOptions(within(dialog).getByLabelText("Remédio"), losartana.id);
+        await user.type(within(dialog).getByLabelText("Lote"), "L-1");
+        await user.type(within(dialog).getByLabelText("Validade"), "2027-01-31");
+        await user.type(within(dialog).getByLabelText("Quantidade"), "50");
+        await user.click(within(dialog).getByRole("button", { name: "Registrar lote" }));
+        await waitFor(() =>
+            expect(mock.calls.find((c) => c.method === "POST")?.body).toEqual({
+                medicationId: losartana.id,
+                batchNumber: "L-1",
+                expiryDate: "2027-01-31",
+                quantity: 50,
+            }),
+        );
+        expect(await screen.findByText("Lote registrado.")).toBeInTheDocument();
+    });
+
+    it("Cadastrar medicamento abre o formulário num diálogo", async () => {
+        mockApi({
+            ...base,
+            "GET /api/pharmacy/stock": { body: { items: [] } },
+            "GET /api/pharmacy/transfers": { body: { items: [] } },
+        });
+        renderApp({ route: "/farmacia/estoque", session: sessions.ana });
+        await userEvent
+            .setup()
+            .click(await screen.findByRole("button", { name: "Cadastrar medicamento" }));
+        const dialog = screen.getByRole("dialog", { name: "Cadastrar medicamento" });
+        expect(within(dialog).getByLabelText("Princípio ativo")).toBeInTheDocument();
     });
 });
 

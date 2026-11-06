@@ -72,14 +72,6 @@
     color: var(--color-text-muted);
 }
 
-.app-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    align-items: end;
-    justify-content: space-between;
-}
-
 .app-block {
     display: block;
 }
@@ -93,9 +85,47 @@
     gap: var(--space-8);
 }
 
+/* Cadastro de medicamento: três blocos; no computador, campos lado a lado (até 3 por linha). */
 .app-med-form {
     display: grid;
-    max-width: var(--width-text);
+    gap: var(--space-6);
+}
+
+.app-med-form__group {
+    display: grid;
+    gap: 0 var(--space-4);
+    margin: 0;
+    padding: var(--space-4) var(--space-4) 0;
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+}
+
+.app-med-form__group legend {
+    padding: 0 var(--space-2);
+    color: var(--color-ink);
+    font-weight: var(--font-weight-bold);
+}
+
+.app-med-form__checks {
+    display: grid;
+    gap: var(--space-2);
+    align-content: center;
+    padding-bottom: var(--space-4);
+}
+
+.app-med-form__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (min-width: 60rem) {
+    .app-med-form__group {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .app-med-form__wide {
+        grid-column: span 2;
+    }
 }
 
 .app-batches {

@@ -41,5 +41,8 @@ export const qk = {
         summary: ["manager", "summary"] as const,
         unmetDemand: ["manager", "unmet-demand"] as const,
         expiring: ["manager", "expiring"] as const,
+        medications: (search: string, page: number, component: string) =>
+            ["manager", "medications", search, page, component] as const,
+        users: (role: string) => ["manager", "users", role] as const,
     },
 };

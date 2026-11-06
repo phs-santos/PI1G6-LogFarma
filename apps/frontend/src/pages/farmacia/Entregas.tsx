@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { DataTable } from "@fatec-pi/style-guide";
+import { DataTable, PageHeader } from "@fatec-pi/style-guide";
 import { listPharmacyDeliveries } from "../../api/pharmacy";
 import type { DeliveryView } from "../../api/types";
 import { LIVE, qk } from "../../app/queryKeys";
 import { Loaded } from "../../ui/Loaded";
-import { PharmacyTabs } from "./PharmacyTabs";
 import "./farmacia.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
@@ -33,8 +32,7 @@ export function Entregas() {
     });
     return (
         <>
-            <PharmacyTabs />
-            <h1>Entregas</h1>
+            <PageHeader title="Entregas" />
             <Loaded query={query} what="as entregas">
                 {(rows) => (
                     <DataTable

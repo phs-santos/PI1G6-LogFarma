@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Notice, SelectField, TextField } from "@fatec-pi/style-guide";
+import { Button, SelectField, TextField } from "@fatec-pi/style-guide";
 import { createAccount } from "../../api/manager";
 import { listPharmacies, listSuppliers } from "../../api/pharmacies";
 import type { CreateAccountInput, StaffOccupation } from "../../api/types";
@@ -8,18 +8,12 @@ import { qk } from "../../app/queryKeys";
 import { useActionMutation } from "../../app/useActionMutation";
 import { onlyDigits } from "../../lib/format";
 import { maskPhone } from "../../lib/masks";
-import { ManagerTabs } from "./ManagerTabs";
 import "./gestor.css";
-import { usePageTitle } from "../../app/usePageTitle";
+import "../farmacia/farmacia.css";
+
+import { ROLE_TEXT } from "./roleText";
 
 type Role = CreateAccountInput["role"];
-
-const ROLE_TEXT: Record<Role, string> = {
-    pharmacy_staff: "Profissional da farmácia",
-    supplier_staff: "Atendente de fornecedor",
-    courier: "Entregador",
-    manager: "Gestor",
-};
 
 const EMPTY = {
     role: "" as Role | "",
@@ -35,12 +29,13 @@ const EMPTY = {
     deliveryProgram: "Programa municipal de entrega",
 };
 
-/** Contas de quem trabalha na rede (o paciente se cadastra sozinho). */
-export function Contas() {
-    usePageTitle("Criar conta de trabalho");
+/**
+ * Formulário de conta de quem trabalha na rede (o paciente se cadastra sozinho). Fica no
+ * diálogo "Criar conta" da lista de usuários; avisa com o nome quando a conta é criada.
+ */
+export function ContaForm({ onCreated }: { onCreated: (name: string) => void }) {
     const [f, setF] = useState(EMPTY);
     const [error, setError] = useState("");
-    const [created, setCreated] = useState("");
     const pharmacies = useQuery({
         queryKey: qk.pharmacies,
         queryFn: listPharmacies,
@@ -52,9 +47,9 @@ export function Contas() {
         staleTime: 60 * 60_000,
     });
     const create = useActionMutation(createAccount, {
-        invalidate: [],
+        invalidate: [["manager", "users"]],
         onSuccess: () => {
-            setCreated(`Conta criada para ${f.fullName.trim()}.`);
+            onCreated(f.fullName.trim());
             setF(EMPTY);
         },
     });
@@ -64,7 +59,6 @@ export function Contas() {
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
-        setCreated("");
         if (!f.role) return setError("Escolha o perfil.");
         if (
             f.fullName.trim().length < 3 ||
@@ -111,13 +105,10 @@ export function Contas() {
 
     return (
         <>
-            <ManagerTabs />
-            <h1>Criar conta</h1>
             <p>
                 Para profissionais da farmácia, fornecedores, entregadores e gestores. Pacientes
                 criam a própria conta pelo celular.
             </p>
-            <div aria-live="polite">{created && <Notice tone="success" title={created} />}</div>
             <form className="app-account-form" onSubmit={submit} noValidate>
                 <SelectField
                     label="Perfil"

@@ -3,12 +3,13 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
     Button,
-    EmptyState,
-    Notice,
-    Tarja,
-    TextField,
     ChoiceGroup,
     ChoiceOption,
+    EmptyState,
+    Notice,
+    PageHeader,
+    Tarja,
+    TextField,
 } from "@fatec-pi/style-guide";
 import { getProfile, listCaregivers, listMyPrescriptions } from "../../api/me";
 import { createRequest } from "../../api/requests";
@@ -125,8 +126,7 @@ export function ConfirmarPedido() {
                 ];
                 return (
                     <form onSubmit={onSubmit} noValidate>
-                        <h1>Confirmar pedido</h1>
-                        <p className="app-lead">{medication.displayName}</p>
+                        <PageHeader title="Confirmar pedido" description={medication.displayName} />
                         <Tarja type={medication.prescriptionType} />
 
                         <div className="app-section">
