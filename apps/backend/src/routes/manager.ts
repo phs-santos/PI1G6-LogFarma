@@ -2,7 +2,13 @@ import type { FastifyPluginAsync } from "fastify";
 import { requireAuth, requireRole } from "../auth/guards.js";
 import { createAccount } from "../services/accounts.js";
 import { expiringStock, managerSummary, unmetDemand } from "../services/reports.js";
-import type { CreateAccountInput } from "../contracts.js";
+import {
+    createPharmacy,
+    listMedicationsPage,
+    listStaffAccounts,
+    setStaffActive,
+} from "../services/admin.js";
+import type { CreateAccountInput, PharmacyInput, StaffRole } from "../contracts.js";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -41,6 +47,107 @@ export const managerRoutes: FastifyPluginAsync = async (app) => {
         async (request, reply) => {
             const { userId } = await createAccount(app.db, request.body);
             return reply.code(201).send({ user: { id: userId, role: request.body.role } });
+        },
+    );
+
+    app.get<{
+        Querystring: {
+            search?: string;
+            page?: number;
+            component?: "basic" | "strategic" | "specialized";
+        };
+    }>(
+        "/manager/medications",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        search: { type: "string", maxLength: 80 },
+                        page: { type: "integer", minimum: 1, maximum: 1000 },
+                        component: {
+                            type: "string",
+                            enum: ["basic", "strategic", "specialized"],
+                        },
+                    },
+                },
+            },
+        },
+        async (request) => listMedicationsPage(app.db, request.query),
+    );
+
+    app.get<{ Querystring: { role?: StaffRole } }>(
+        "/manager/users",
+        {
+            schema: {
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        role: {
+                            type: "string",
+                            enum: ["pharmacy_staff", "supplier_staff", "courier", "manager"],
+                        },
+                    },
+                },
+            },
+        },
+        async (request) => ({ items: await listStaffAccounts(app.db, request.query.role) }),
+    );
+
+    app.patch<{ Params: { id: string }; Body: { active: boolean } }>(
+        "/manager/users/:id",
+        {
+            schema: {
+                params: {
+                    type: "object",
+                    required: ["id"],
+                    properties: { id: { type: "string", format: "uuid" } },
+                },
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["active"],
+                    properties: { active: { type: "boolean" } },
+                },
+            },
+        },
+        async (request) => {
+            await setStaffActive(app.db, request.user.id, request.params.id, request.body.active);
+            return { ok: true };
+        },
+    );
+
+    app.post<{ Body: PharmacyInput }>(
+        "/manager/pharmacies",
+        {
+            schema: {
+                body: {
+                    type: "object",
+                    additionalProperties: false,
+                    required: ["name", "kind", "network", "address", "phone", "openingHours"],
+                    properties: {
+                        name: { type: "string", minLength: 3, maxLength: 160 },
+                        kind: {
+                            type: "string",
+                            enum: ["ubs", "municipal_pharmacy", "specialized_pharmacy", "pfpb"],
+                        },
+                        network: { type: "string", enum: ["municipal", "state", "pfpb"] },
+                        address: { type: "string", minLength: 5, maxLength: 240 },
+                        phone: { type: "string", pattern: "^\\d{10,11}$" },
+                        openingHours: { type: "string", minLength: 3, maxLength: 120 },
+                        cnes: { type: "string", pattern: "^\\d{7}$" },
+                        cnpj: { type: "string", pattern: "^\\d{14}$" },
+                        latitude: { type: "number", minimum: -90, maximum: 90 },
+                        longitude: { type: "number", minimum: -180, maximum: 180 },
+                    },
+                },
+            },
+        },
+        async (request, reply) => {
+            const { id } = await createPharmacy(app.db, request.body);
+            return reply.code(201).send({ pharmacy: { id } });
         },
     );
 

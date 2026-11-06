@@ -28,6 +28,35 @@ export interface LoginInput {
     audience?: LoginAudience;
 }
 
+export type StaffRole = Exclude<UserRole, "patient">;
+
+/** Conta da equipe na lista da gestão (paciente não aparece). */
+export interface StaffAccount {
+    id: string;
+    role: StaffRole;
+    email: string;
+    active: boolean;
+    createdAt: string;
+    name: string;
+    /** Unidade (farmácia) ou fornecedor; `null` para entregador e gestor. */
+    place: string | null;
+    occupation: "pharmacist" | "pharmacy_assistant" | null;
+}
+
+/** Unidade nova cadastrada pela gestão (UBS, farmácia municipal, especializados, Farmácia Popular). */
+export interface PharmacyInput {
+    name: string;
+    kind: "ubs" | "municipal_pharmacy" | "specialized_pharmacy" | "pfpb";
+    network: "municipal" | "state" | "pfpb";
+    address: string;
+    phone: string;
+    openingHours: string;
+    cnes?: string;
+    cnpj?: string;
+    latitude?: number;
+    longitude?: number;
+}
+
 export interface ForgotPasswordInput {
     email: string;
 }
