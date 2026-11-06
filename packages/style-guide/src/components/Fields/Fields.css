@@ -1,7 +1,16 @@
+/*
+ * Rótulo e ajuda em cima, controle embaixo. Em campos lado a lado, se um vizinho tem texto de
+ * ajuda e o outro não, os controles continuam na mesma linha (alinhados pela base).
+ */
 .sg-field {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-1);
     margin-bottom: var(--space-4);
+}
+
+.sg-field > .sg-field__control {
+    margin-top: auto;
 }
 
 .sg-field__label {
@@ -28,6 +37,17 @@
 
 .sg-mobile .sg-field__control {
     min-height: var(--tap-min-mobile);
+}
+
+/* Campo de texto e lista de opções com exatamente a mesma altura. */
+input.sg-field__control,
+select.sg-field__control {
+    height: var(--tap-min-desktop);
+}
+
+.sg-mobile input.sg-field__control,
+.sg-mobile select.sg-field__control {
+    height: var(--tap-min-mobile);
 }
 
 .sg-field--error .sg-field__control {

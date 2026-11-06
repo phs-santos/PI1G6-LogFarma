@@ -1,0 +1,41 @@
+.sg-page-header {
+    --sg-page-gutter: var(--page-gutter, 0px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-6);
+    margin: 0 calc(-1 * var(--sg-page-gutter)) var(--space-6);
+    padding: var(--space-4) var(--sg-page-gutter);
+    border-bottom: var(--border-thin) solid var(--color-rule);
+    background: var(--color-paper);
+}
+
+.sg-page-header__text {
+    min-width: 0;
+    flex: 1 1 20rem;
+}
+
+.sg-page-header__title {
+    margin: 0;
+}
+
+.sg-page-header__description {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text-muted);
+}
+
+.sg-page-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+/* Computador: fica parado no topo ao rolar (no celular a barra do "Menu" já é fixa). */
+@media (min-width: 60rem) {
+    .sg-page-header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}

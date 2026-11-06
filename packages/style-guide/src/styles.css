@@ -17,8 +17,11 @@
 @import "./components/Stats/Stats.css";
 @import "./components/AppHeader/AppHeader.css";
 @import "./components/AppShell/AppShell.css";
+@import "./components/PageHeader/PageHeader.css";
+@import "./components/FilterBar/FilterBar.css";
 @import "./components/ChoiceGroup/ChoiceGroup.css";
 @import "./components/ConfirmDialog/ConfirmDialog.css";
+@import "./components/Dialog/Dialog.css";
 @import "./components/Logo/Logo.css";
 @import "./components/Segmented/Segmented.css";
 

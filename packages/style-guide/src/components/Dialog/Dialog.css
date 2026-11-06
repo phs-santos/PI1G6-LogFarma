@@ -1,0 +1,46 @@
+/* Janela de formulário: usa a base .sg-dialog (ConfirmDialog) e cresce para o conteúdo. */
+.sg-dialog--form {
+    max-height: calc(100vh - 2 * var(--space-6));
+    overflow-y: auto;
+}
+
+.sg-dialog--wide {
+    width: min(100% - 2 * var(--space-4), var(--width-text));
+}
+
+/* Formulário em colunas no computador. */
+.sg-dialog--xl {
+    width: min(100% - 2 * var(--space-4), calc(var(--width-text) * 1.5));
+}
+
+.sg-dialog__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.sg-dialog__head .sg-dialog__title {
+    margin: 0;
+}
+
+.sg-dialog__close {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min-desktop);
+    padding: 0 var(--space-3);
+    border: var(--border-thin) solid var(--color-ink);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+}
+
+.sg-dialog__close:hover {
+    background: var(--color-ink-soft);
+}

@@ -1,0 +1,33 @@
+.sg-filter-bar {
+    margin-bottom: var(--space-6);
+    padding: var(--space-4) var(--space-4) 0;
+    border: var(--border-thin) solid var(--color-rule);
+    border-radius: var(--radius-md);
+    background: var(--color-ink-soft);
+}
+
+/* Campos lado a lado: a busca ganha mais espaço que as listas de opções. */
+.sg-filter-bar__fields {
+    display: grid;
+    gap: 0 var(--space-4);
+}
+
+.sg-filter-bar__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+}
+
+.sg-filter-bar__summary {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+@media (min-width: 48rem) {
+    .sg-filter-bar__fields {
+        grid-template-columns: minmax(0, 2fr) repeat(auto-fit, minmax(10rem, 1fr));
+    }
+}

@@ -1,10 +1,15 @@
 .sg-dialog {
     width: min(100% - 2 * var(--space-4), var(--width-mobile));
-    padding: var(--space-6);
+    /* O espaço interno fica no invólucro: clique no próprio <dialog> é o fundo (fecha). */
+    padding: 0;
     border: var(--border-thick) solid var(--color-ink);
     border-radius: var(--radius-md);
     color: var(--color-text);
     background: var(--color-paper);
+}
+
+.sg-dialog__inner {
+    padding: var(--space-6);
 }
 
 .sg-dialog::backdrop {

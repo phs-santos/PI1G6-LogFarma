@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import { useId, type ReactNode } from "react";
+import { useModalDialog } from "../Dialog/useModalDialog";
 import { Button } from "../Button/Button";
 
 export interface ConfirmDialogProps {
@@ -14,7 +15,7 @@ export interface ConfirmDialogProps {
     onClose: () => void;
 }
 
-/** Pergunta de confirmação no <dialog> nativo: prende o foco, fecha com Esc e devolve o foco. */
+/** Pergunta de confirmação no <dialog> nativo: prende o foco, trava a rolagem de trás, fecha com Esc ou clique fora e devolve o foco. */
 export function ConfirmDialog({
     open,
     title,
@@ -26,47 +27,29 @@ export function ConfirmDialog({
     onConfirm,
     onClose,
 }: ConfirmDialogProps) {
-    const ref = useRef<HTMLDialogElement>(null);
+    const modal = useModalDialog(open, onClose);
     const titleId = useId();
 
-    useEffect(() => {
-        const dialog = ref.current;
-        if (!dialog) return;
-        if (open && !dialog.open) {
-            if (typeof dialog.showModal === "function") dialog.showModal();
-            else dialog.setAttribute("open", "");
-        } else if (!open && dialog.open) {
-            if (typeof dialog.close === "function") dialog.close();
-            else dialog.removeAttribute("open");
-        }
-    }, [open]);
-
     return (
-        <dialog
-            ref={ref}
-            className="sg-dialog"
-            aria-labelledby={titleId}
-            onCancel={(e) => {
-                e.preventDefault();
-                onClose();
-            }}
-        >
-            <h2 id={titleId} className="sg-dialog__title">
-                {title}
-            </h2>
-            {children}
-            <div className="sg-dialog__actions">
-                <Button
-                    variant={danger ? "danger" : "primary"}
-                    block
-                    loading={loading}
-                    onClick={onConfirm}
-                >
-                    {confirmLabel}
-                </Button>
-                <Button variant="secondary" block onClick={onClose}>
-                    {cancelLabel}
-                </Button>
+        <dialog {...modal} className="sg-dialog" aria-labelledby={titleId}>
+            <div className="sg-dialog__inner">
+                <h2 id={titleId} className="sg-dialog__title">
+                    {title}
+                </h2>
+                {children}
+                <div className="sg-dialog__actions">
+                    <Button
+                        variant={danger ? "danger" : "primary"}
+                        block
+                        loading={loading}
+                        onClick={onConfirm}
+                    >
+                        {confirmLabel}
+                    </Button>
+                    <Button variant="secondary" block onClick={onClose}>
+                        {cancelLabel}
+                    </Button>
+                </div>
             </div>
         </dialog>
     );
