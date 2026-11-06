@@ -29,6 +29,8 @@ export { StatTile, BarList } from "./components/Stats/Stats";
 export type { StatTileProps, BarListProps } from "./components/Stats/Stats";
 export { AppHeader } from "./components/AppHeader/AppHeader";
 export type { AppHeaderProps } from "./components/AppHeader/AppHeader";
+export { AppShell } from "./components/AppShell/AppShell";
+export type { AppShellProps } from "./components/AppShell/AppShell";
 export { ChoiceGroup, ChoiceOption } from "./components/ChoiceGroup/ChoiceGroup";
 export type { ChoiceGroupProps, ChoiceOptionProps } from "./components/ChoiceGroup/ChoiceGroup";
 export { ConfirmDialog } from "./components/ConfirmDialog/ConfirmDialog";

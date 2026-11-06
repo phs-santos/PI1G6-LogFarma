@@ -1,0 +1,195 @@
+/*
+ * Moldura do app. Celular: barra azul no topo com "Menu"; o menu é uma gaveta que entra pela
+ * esquerda. Computador (60rem+): menu lateral fixo e o conteúdo ocupa o resto da tela.
+ */
+.sg-app-shell {
+    min-height: 100vh;
+}
+
+.sg-app-shell__bar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    /* Letra muito grande: o "Menu" desce para a linha de baixo em vez de empurrar a tela. */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+}
+
+.sg-app-shell__brand {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.sg-app-shell__brand a {
+    color: inherit;
+}
+
+.sg-app-shell__toggle,
+.sg-app-shell__close {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min-mobile);
+    padding: 0 var(--space-4);
+    border: var(--border-thin) solid var(--color-on-ink);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-on-ink);
+    font: inherit;
+    font-weight: var(--font-weight-bold);
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Três traços (☰) desenhados com bordas, sem imagem. */
+.sg-app-shell__icon {
+    width: var(--space-6);
+    height: var(--space-4);
+    border-block: var(--border-thick) solid currentColor;
+    background: linear-gradient(currentColor, currentColor) center / 100% var(--border-thick)
+        no-repeat;
+}
+
+.sg-app-shell__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    background: var(--color-backdrop);
+}
+
+.sg-app-shell__side {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 4;
+    /* Celular: quase a tela toda (sobra uma faixa do fundo escuro para tocar e fechar). */
+    width: calc(100% - var(--space-12));
+    max-width: var(--width-mobile);
+    padding: var(--space-4);
+    overflow-y: auto;
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    /* Fechada: fora da tela e fora do Tab. */
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+        transform 0.2s ease,
+        visibility 0.2s;
+}
+
+/* Conteúdo do menu: no computador fica parado enquanto a página rola. */
+.sg-app-shell__side-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-height: 100%;
+}
+
+.sg-app-shell--open .sg-app-shell__side {
+    transform: none;
+    visibility: visible;
+}
+
+.sg-app-shell__side-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.sg-app-shell__nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.sg-app-shell__nav a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-min-mobile);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-md);
+    color: var(--color-on-ink);
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+}
+
+.sg-app-shell__nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+}
+
+.sg-app-shell__nav a[aria-current="page"] {
+    background: var(--color-paper);
+    color: var(--color-ink);
+}
+
+.sg-app-shell__footer {
+    margin-top: auto;
+    padding-top: var(--space-4);
+    border-top: var(--border-thin) solid var(--color-rule-on-ink);
+}
+
+.sg-app-shell__footer .sg-button--secondary {
+    width: 100%;
+    border-color: var(--color-on-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sg-app-shell__side {
+        transition: none;
+    }
+}
+
+@media (min-width: 60rem) {
+    .sg-app-shell {
+        display: grid;
+        grid-template-columns: var(--width-sidebar) minmax(0, 1fr);
+    }
+
+    .sg-app-shell__bar,
+    .sg-app-shell__backdrop,
+    .sg-app-shell__close {
+        display: none;
+    }
+
+    /* A coluna azul acompanha a página inteira; o menu dentro dela fica parado. */
+    .sg-app-shell__side {
+        position: static;
+        width: var(--width-sidebar);
+        max-width: none;
+        padding: 0;
+        overflow: visible;
+        transform: none;
+        visibility: visible;
+        transition: none;
+    }
+
+    .sg-app-shell__side-inner {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        min-height: 0;
+        padding: var(--space-6) var(--space-4);
+        overflow-y: auto;
+    }
+
+    .sg-app-shell__side-top {
+        padding: 0 var(--space-2) var(--space-4);
+    }
+
+    .sg-app-shell__nav a {
+        min-height: var(--tap-min-desktop);
+    }
+
+    .sg-app-shell__main {
+        min-width: 0;
+    }
+}

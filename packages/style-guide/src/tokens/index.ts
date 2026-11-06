@@ -37,4 +37,5 @@ export const tokens = {
     tap: { mobile: "3.5rem", desktop: "2.75rem" },
     radius: { sm: "4px", md: "8px" },
     shadow: { sheet: "0 0.75rem 2rem rgb(0 0 0 / 0.18)" },
+    width: { mobile: "35rem", text: "42rem", sidebar: "17rem" },
 } as const;

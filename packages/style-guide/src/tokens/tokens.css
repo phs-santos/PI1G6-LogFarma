@@ -54,4 +54,5 @@
     /* Larguras */
     --width-mobile: 35rem; /* coluna única do celular */
     --width-text: 42rem; /* ~70 caracteres */
+    --width-sidebar: 17rem; /* menu lateral do computador */
 }
