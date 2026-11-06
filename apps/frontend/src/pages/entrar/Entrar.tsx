@@ -23,9 +23,14 @@ export function Entrar() {
     const [showPassword, setShowPassword] = useState(false);
     const expired = params.get("expirou") === "1";
     const location = useLocation();
-    const navState = location.state as { signedOut?: boolean; created?: boolean } | null;
+    const navState = location.state as {
+        signedOut?: boolean;
+        created?: boolean;
+        passwordReset?: boolean;
+    } | null;
     const signedOut = navState?.signedOut === true;
     const created = navState?.created === true;
+    const passwordReset = navState?.passwordReset === true;
     const voltar = params.get("voltar");
     // Paciente é o padrão; vem marcado "equipe" pelo link ?perfil=equipe ou se a tela de volta é da equipe.
     const team =
@@ -140,6 +145,9 @@ export function Entrar() {
                         title="Sua conta foi criada. Entre com seu e-mail e senha."
                     />
                 )}
+                {passwordReset && (
+                    <Notice tone="success" title="Senha nova salva. Entre com ela." />
+                )}
                 <form className="porta__form" onSubmit={onSubmit}>
                     <TextField
                         label="E-mail"
@@ -180,10 +188,17 @@ export function Entrar() {
                 </form>
                 <div className="porta__footer">
                     {team ? (
-                        <p className="porta__help">
-                            As contas da equipe são criadas pelo gestor da rede. Esqueceu a senha?
-                            Fale com o gestor.
-                        </p>
+                        <>
+                            <p>
+                                Esqueceu a senha?{" "}
+                                <Link className="app-link" to="/recuperar-conta">
+                                    Recuperar conta
+                                </Link>
+                            </p>
+                            <p className="porta__help">
+                                As contas da equipe são criadas pelo gestor da rede.
+                            </p>
+                        </>
                     ) : (
                         <>
                             <p>
@@ -192,8 +207,11 @@ export function Entrar() {
                                     Criar conta
                                 </Link>
                             </p>
-                            <p className="porta__help">
-                                Esqueceu a senha? Peça ajuda no balcão da sua unidade de saúde.
+                            <p>
+                                Esqueceu a senha?{" "}
+                                <Link className="app-link" to="/recuperar-conta">
+                                    Recuperar conta
+                                </Link>
                             </p>
                         </>
                     )}

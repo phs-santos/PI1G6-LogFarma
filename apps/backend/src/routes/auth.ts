@@ -6,7 +6,15 @@ import { verifyPassword } from "../auth/password.js";
 import { clearSessionCookie, setSessionCookie } from "../auth/session.js";
 import { ForbiddenError, UnauthorizedError } from "../domain/errors.js";
 import { getSessionProfile, registerPatient } from "../services/accounts.js";
-import type { LoginAudience, LoginInput, RegisterPatientInput, SessionUser } from "../contracts.js";
+import { requestPasswordReset, resetPassword } from "../services/password-reset.js";
+import type {
+    ForgotPasswordInput,
+    LoginAudience,
+    LoginInput,
+    RegisterPatientInput,
+    ResetPasswordInput,
+    SessionUser,
+} from "../contracts.js";
 
 const addressSchema = {
     type: "object",
@@ -119,6 +127,51 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
             const user: SessionUser = { id: row.id, role: row.role };
             await setSessionCookie(reply, user);
             return { user, profile: await getSessionProfile(app.db, user) };
+        },
+    );
+
+    // Recuperar senha: responde sempre igual, tenha o e-mail conta ou não (RNF03).
+    app.post<{ Body: ForgotPasswordInput }>(
+        "/auth/password/forgot",
+        {
+            schema: {
+                body: {
+                    type: "object",
+                    required: ["email"],
+                    additionalProperties: false,
+                    properties: { email: { type: "string", minLength: 3, maxLength: 160 } },
+                },
+            },
+        },
+        async (request) => {
+            try {
+                await requestPasswordReset(app.db, app.mailer, request.body.email);
+            } catch (err) {
+                // Falha no envio não pode revelar se a conta existe; fica só no log técnico.
+                request.log.error({ err }, "falha ao enviar e-mail de recuperação");
+            }
+            return { ok: true };
+        },
+    );
+
+    app.post<{ Body: ResetPasswordInput }>(
+        "/auth/password/reset",
+        {
+            schema: {
+                body: {
+                    type: "object",
+                    required: ["token", "password"],
+                    additionalProperties: false,
+                    properties: {
+                        token: { type: "string", minLength: 10, maxLength: 200 },
+                        password: { type: "string", minLength: 8, maxLength: 128 },
+                    },
+                },
+            },
+        },
+        async (request) => {
+            await resetPassword(app.db, request.body.token, request.body.password);
+            return { ok: true };
         },
     );
 

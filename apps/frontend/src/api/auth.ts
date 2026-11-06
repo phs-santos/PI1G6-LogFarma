@@ -26,3 +26,16 @@ export async function getMe(): Promise<Session | null> {
 export function register(input: RegisterPatientInput): Promise<{ user: SessionUser }> {
     return apiFetch<{ user: SessionUser }>("/auth/register", { method: "POST", body: input });
 }
+
+/** Pede o link de nova senha; a resposta é a mesma exista a conta ou não. */
+export async function forgotPassword(email: string): Promise<void> {
+    await apiFetch<{ ok: true }>("/auth/password/forgot", { method: "POST", body: { email } });
+}
+
+/** Troca a senha com o código do link do e-mail. */
+export async function resetPassword(token: string, password: string): Promise<void> {
+    await apiFetch<{ ok: true }>("/auth/password/reset", {
+        method: "POST",
+        body: { token, password },
+    });
+}

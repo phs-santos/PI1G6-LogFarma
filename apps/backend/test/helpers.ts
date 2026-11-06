@@ -14,6 +14,7 @@ import {
 import { createAccount, registerPatient } from "../src/services/accounts.js";
 import type { RegisterPatientInput } from "../src/contracts.js";
 import { normalizeSearch } from "../src/domain/text.js";
+import type { Email } from "../src/services/mailer.js";
 
 const { db, pool } = createDb(process.env.DATABASE_URL ?? "");
 export const testDb: Db = db;
@@ -33,8 +34,18 @@ export async function resetDb(target: Db = testDb): Promise<void> {
     }
 }
 
+/** E-mails "enviados" pelos apps de teste (carteiro falso). Esvazie no beforeEach. */
+export const outbox: Email[] = [];
+
 export function buildTestApp(): FastifyInstance {
-    return buildApp({ db: testDb });
+    return buildApp({
+        db: testDb,
+        mailer: {
+            async send(email) {
+                outbox.push(email);
+            },
+        },
+    });
 }
 
 type NewPharmacy = typeof pharmacies.$inferInsert;

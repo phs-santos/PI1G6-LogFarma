@@ -1,5 +1,7 @@
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router";
 import { Entrar } from "../pages/entrar/Entrar";
+import { NovaSenha } from "../pages/entrar/NovaSenha";
+import { RecuperarConta } from "../pages/entrar/RecuperarConta";
 import { NaoEncontrada } from "../pages/comum/NaoEncontrada";
 import { PedidosCompra } from "../pages/fornecedor/PedidosCompra";
 import { Contas } from "../pages/gestor/Contas";
@@ -37,6 +39,8 @@ export const appRoutes: RouteObject[] = [
         children: [
             { path: "/entrar", element: <Entrar /> },
             { path: "/cadastro", element: <CriarConta /> },
+            { path: "/recuperar-conta", element: <RecuperarConta /> },
+            { path: "/nova-senha", element: <NovaSenha /> },
             {
                 element: (
                     <RequireRole roles={["patient"]}>

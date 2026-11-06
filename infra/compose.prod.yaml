@@ -40,6 +40,13 @@ services:
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       ALLOW_DEMO_SEED: ${ALLOW_DEMO_SEED:-false}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+      # E-mail (recuperar senha) por SMTP; vazio = não envia (ver .env.example)
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_SECURE: ${SMTP_SECURE:-true}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
     depends_on:
       db:
         condition: service_healthy

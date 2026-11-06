@@ -152,6 +152,18 @@ export const users = pgTable("users", {
     createdAt: createdAt(),
 });
 
+// Recuperar senha: guarda só o hash do código do link; vale 30 min e uma vez só.
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+    id: id(),
+    userId: uuid()
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    tokenHash: text().notNull().unique(),
+    expiresAt: timestamp({ withTimezone: true }).notNull(),
+    usedAt: timestamp({ withTimezone: true }),
+    createdAt: createdAt(),
+});
+
 export interface Address {
     street: string;
     number: string;

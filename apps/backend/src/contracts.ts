@@ -28,6 +28,16 @@ export interface LoginInput {
     audience?: LoginAudience;
 }
 
+export interface ForgotPasswordInput {
+    email: string;
+}
+
+export interface ResetPasswordInput {
+    /** Código que veio no link do e-mail. */
+    token: string;
+    password: string;
+}
+
 export interface RegisterPatientInput {
     email: string;
     password: string;

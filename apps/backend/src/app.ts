@@ -16,14 +16,18 @@ import { courierRoutes } from "./routes/courier.js";
 import { meRoutes } from "./routes/me.js";
 import { managerRoutes } from "./routes/manager.js";
 import { supplierListRoutes } from "./routes/suppliers.js";
+import { createMailer, type Mailer } from "./services/mailer.js";
 
 export interface AppDeps {
     db: Db;
+    /** Carteiro de e-mail; os testes passam um falso. Padrão: SMTP do .env (ou só log). */
+    mailer?: Mailer;
 }
 
 declare module "fastify" {
     interface FastifyInstance {
         db: Db;
+        mailer: Mailer;
     }
 }
 
@@ -34,6 +38,7 @@ export function buildApp(deps: AppDeps) {
     });
 
     app.decorate("db", deps.db);
+    app.decorate("mailer", deps.mailer ?? createMailer(app.log));
 
     app.setErrorHandler((error: FastifyError | AppError, request, reply) => {
         if (error instanceof AppError) {

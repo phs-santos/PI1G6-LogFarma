@@ -22,6 +22,13 @@
             "when": 1793810063148,
             "tag": "0002_patient_recent_medications",
             "breakpoints": true
+        },
+        {
+            "idx": 3,
+            "version": "7",
+            "when": 1793937249887,
+            "tag": "0003_password_reset_tokens",
+            "breakpoints": true
         }
     ]
 }
