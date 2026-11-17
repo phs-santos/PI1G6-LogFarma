@@ -33,7 +33,9 @@ services:
     environment:
       PORT: 3333
       HOST: 0.0.0.0
-      CORS_ORIGIN: ${PUBLIC_URL:?defina no .env}
+      # Sites que podem chamar a API pelo navegador: o próprio PUBLIC_URL e os do
+      # EXTRA_CORS_ORIGINS (separados por vírgula). Os outros recebem 403.
+      CORS_ORIGIN: ${PUBLIC_URL:?defina no .env},${EXTRA_CORS_ORIGINS:-}
       DATABASE_URL: ${DATABASE_URL:?defina no .env}
       JWT_SECRET: ${JWT_SECRET:?defina no .env}
       # true só quando houver HTTPS na frente (ver Pendências no infra/README.md)
