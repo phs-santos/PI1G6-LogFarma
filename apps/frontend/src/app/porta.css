@@ -263,3 +263,21 @@
         display: none;
     }
 }
+
+/* "Aqui você:" (paciente): a lista do que a plataforma faz, no lugar do parágrafo. */
+.porta__lead p {
+    margin: 0;
+}
+
+.porta__lead-title {
+    font-weight: var(--font-weight-bold);
+}
+
+.porta__benefits {
+    margin: var(--space-2) 0 var(--space-4);
+    padding-left: var(--space-6);
+}
+
+.porta__benefits li + li {
+    margin-top: var(--space-1);
+}

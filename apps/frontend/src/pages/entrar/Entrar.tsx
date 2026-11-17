@@ -66,9 +66,7 @@ export function Entrar() {
                 <p className="porta__brand">
                     <Logo tone="white" />
                 </p>
-                <p className="porta__tagline">
-                    Remédios do SUS em Taquaritinga, Matão e Monte Alto
-                </p>
+                <p className="porta__tagline">A plataforma que te conecta com sua saúde</p>
                 {team ? (
                     <>
                         <h2 id="entrar-promessa" className="porta__promise">
@@ -92,12 +90,21 @@ export function Entrar() {
                 ) : (
                     <>
                         <h2 id="entrar-promessa" className="porta__promise">
-                            Saiba onde tem o seu remédio antes de sair de casa.
+                            Acesse e saiba mais
                         </h2>
-                        <p className="porta__lead">
-                            Veja em qual unidade do SUS ele está disponível, peça para retirar ou
-                            para receber em casa, e acompanhe tudo pelo celular.
-                        </p>
+                        <div className="porta__lead">
+                            <p className="porta__lead-title">Aqui você:</p>
+                            <ul className="porta__benefits">
+                                <li>
+                                    verifica a unidade do SUS ou da rede credenciada mais próxima do
+                                    seu endereço;
+                                </li>
+                                <li>checa a disponibilidade do seu medicamento;</li>
+                                <li>solicita a entrega na sua casa;</li>
+                                <li>acompanha tudo pelo celular.</li>
+                            </ul>
+                            <p>Plataforma simples e de fácil acesso.</p>
+                        </div>
                         {/* Exemplo do que a pessoa vê depois de entrar (ilustração). */}
                         <div className="porta__sample" aria-hidden="true">
                             <p className="porta__sample-med">Losartana potássica 50 mg</p>

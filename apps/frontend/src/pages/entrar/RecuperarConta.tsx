@@ -30,16 +30,14 @@ export function RecuperarConta() {
                 {mutation.isSuccess ? (
                     <Notice tone="success" title="Pronto! Veja o seu e-mail.">
                         <p>
-                            Se esse e-mail tiver conta no LogFarma, enviamos um link para criar uma
-                            nova senha. O link vale por 30 minutos. Não chegou? Olhe também a caixa
-                            de spam.
+                            Se esse e-mail tiver conta, mandamos um link para criar a senha nova.
+                            Ele vale 30 minutos. Não chegou? Olhe a caixa de spam.
                         </p>
                     </Notice>
                 ) : (
                     <>
                         <p className="porta__hint">
-                            Digite o e-mail do seu cadastro. Vamos mandar um link para você criar
-                            uma nova senha.
+                            Digite o e-mail do cadastro. Mandamos um link para criar a senha nova.
                         </p>
                         <form className="porta__form" onSubmit={onSubmit}>
                             <TextField
