@@ -24,7 +24,7 @@ Para rodar a tela completa, suba também o backend: `pnpm dev` na raiz sobe os d
     - `test/` — `renderApp`/`renderWithApp`, `mockApi` (fetch falso), fixtures; `e2e/` — Playwright
 - UI **só** via `@fatec-pi/style-guide`. Se faltar um componente genérico (Input, Modal…), **pare** e informe qual componente e props são necessários — ele nasce em `packages/style-guide`, não aqui.
 - Estilo local mínimo: layout (grid/flex/margens) é ok, sempre com tokens `var(--space-*)`. Nada de hex/px soltos.
-- Chamadas à API usam caminho relativo `/api/...`.
+- Chamadas à API usam caminho relativo `/api/...` (o `apiFetch` acrescenta o `VITE_API_URL` quando a API fica em outro domínio e manda o token da sessão em `Authorization`).
 - Trate carregamento, erro e vazio em toda tela que busca dados.
 - Pense no público (idosos, baixa visão, pouca familiaridade com apps): textos claros, poucos passos, contraste alto.
 - Bibliotecas aprovadas: React Router, TanStack Query, Vitest + Testing Library + vitest-axe, Playwright + @axe-core/playwright. Outras, só confirmando com o usuário.

@@ -20,6 +20,36 @@ export interface ApiInit {
     query?: Query;
 }
 
+/**
+ * Onde está a API. Vazio (padrão) = mesmo domínio das telas (`/api`, pelo nginx ou pelo proxy do
+ * Vite). Em outro domínio, o build recebe VITE_API_URL=https://api.logfarma.codexolimpo.com.br.
+ */
+const API_BASE = `${(import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "")}/api`;
+
+/**
+ * Token da sessão, guardado no navegador e mandado em `Authorization: Bearer`. É o que mantém o
+ * login quando a API fica em outro domínio (o cookie entre sites é bloqueado pelo Safari).
+ * O navegador pode recusar o armazenamento (aba anônima); aí vale só o cookie.
+ */
+const TOKEN_KEY = "logfarma_token";
+
+export function setSessionToken(token: string | null): void {
+    try {
+        if (token) localStorage.setItem(TOKEN_KEY, token);
+        else localStorage.removeItem(TOKEN_KEY);
+    } catch {
+        // sem armazenamento: segue só com o cookie
+    }
+}
+
+function sessionToken(): string | null {
+    try {
+        return localStorage.getItem(TOKEN_KEY);
+    } catch {
+        return null;
+    }
+}
+
 const NETWORK_MESSAGE = "Sem conexão com o sistema. Verifique a internet e tente de novo.";
 
 function buildUrl(path: string, query?: Query): string {
@@ -28,7 +58,7 @@ function buildUrl(path: string, query?: Query): string {
         if (value !== undefined) params.set(key, String(value));
     }
     const qs = params.toString();
-    return `/api${path}${qs ? `?${qs}` : ""}`;
+    return `${API_BASE}${path}${qs ? `?${qs}` : ""}`;
 }
 
 function messageOf(body: unknown, status: number): string {
@@ -41,14 +71,18 @@ function messageOf(body: unknown, status: number): string {
         : "Não foi possível concluir. Tente de novo.";
 }
 
-/** Única porta de saída para a API: JSON, cookie de sessão e erro em português. */
+/** Única porta de saída para a API: JSON, sessão (token ou cookie) e erro em português. */
 export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> {
+    const headers: Record<string, string> = {};
+    if (init.body !== undefined) headers["Content-Type"] = "application/json";
+    const token = sessionToken();
+    if (token) headers.Authorization = `Bearer ${token}`;
     let res: Response;
     try {
         res = await fetch(buildUrl(path, init.query), {
             method: init.method ?? "GET",
             credentials: "same-origin",
-            headers: init.body === undefined ? undefined : { "Content-Type": "application/json" },
+            headers,
             body: init.body === undefined ? undefined : JSON.stringify(init.body),
         });
     } catch {
@@ -64,7 +98,11 @@ export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<T> 
         }
     }
     if (!res.ok) {
-        if (res.status === 401) window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+        if (res.status === 401) {
+            // Token vencido ou de conta desativada: esquece para não mandar de novo.
+            if (token) setSessionToken(null);
+            window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
+        }
         throw new ApiError(res.status, messageOf(body, res.status));
     }
     return body as T;

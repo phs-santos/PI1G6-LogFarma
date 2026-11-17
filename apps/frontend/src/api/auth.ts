@@ -1,16 +1,24 @@
-import { ApiError, apiFetch } from "./client";
+import { ApiError, apiFetch, setSessionToken } from "./client";
 import type { LoginAudience, RegisterPatientInput, Session, SessionUser } from "./types";
 
 /** Entra pela aba escolhida; a API recusa (403) conta de paciente na aba da equipe e vice-versa. */
-export function login(email: string, password: string, audience: LoginAudience): Promise<Session> {
-    return apiFetch<Session>("/auth/login", {
+export async function login(
+    email: string,
+    password: string,
+    audience: LoginAudience,
+): Promise<Session> {
+    const { token, ...session } = await apiFetch<Session & { token: string }>("/auth/login", {
         method: "POST",
         body: { email, password, audience },
     });
+    setSessionToken(token);
+    return session;
 }
 
+/** Sai na API (apaga o cookie) e só então esquece o token deste navegador. */
 export async function logout(): Promise<void> {
     await apiFetch<{ ok: true }>("/auth/logout", { method: "POST" });
+    setSessionToken(null);
 }
 
 /** Quem está com a sessão aberta; `null` quando ninguém entrou. */
@@ -23,8 +31,13 @@ export async function getMe(): Promise<Session | null> {
     }
 }
 
-export function register(input: RegisterPatientInput): Promise<{ user: SessionUser }> {
-    return apiFetch<{ user: SessionUser }>("/auth/register", { method: "POST", body: input });
+export async function register(input: RegisterPatientInput): Promise<{ user: SessionUser }> {
+    const { token, user } = await apiFetch<{ user: SessionUser; token: string }>("/auth/register", {
+        method: "POST",
+        body: input,
+    });
+    setSessionToken(token);
+    return { user };
 }
 
 /** Pede o link de nova senha; a resposta é a mesma exista a conta ou não. */
