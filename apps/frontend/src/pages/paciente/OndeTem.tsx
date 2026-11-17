@@ -79,11 +79,11 @@ export function OndeTem() {
                             </>
                         ) : noneInNetwork ? (
                             <>
-                                <Notice tone="attention" title="Este remédio está em falta na rede">
+                                <Notice tone="attention" title="Indisponível no momento">
                                     <p>
-                                        Nenhuma unidade tem agora. Você pode pedir assim mesmo: a
-                                        farmácia coloca você na lista de espera e avisa quando
-                                        chegar.
+                                        Não se preocupe: toque em “Pedir assim mesmo” e você entra
+                                        na lista de espera. Você recebe um aviso em Avisos assim que
+                                        o medicamento chegar.
                                     </p>
                                 </Notice>
                                 <ActionList label="O que fazer">

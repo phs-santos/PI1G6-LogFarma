@@ -52,7 +52,7 @@ describe("Onde tem", () => {
         resp.items = resp.items.map((i) => (i.kind === "pfpb" ? i : { ...i, status: "out" }));
         mockApi({ "GET /api/medications/med-los/availability": { body: resp } });
         const { container } = renderApp({ route, session: sessions.maria });
-        expect(await screen.findByText("Este remédio está em falta na rede")).toBeInTheDocument();
+        expect(await screen.findByText("Indisponível no momento")).toBeInTheDocument();
         expect(screen.getByRole("link", { name: "Pedir assim mesmo" })).toHaveAttribute(
             "href",
             "/pedido/novo?medicationId=med-los&waitlist=1",

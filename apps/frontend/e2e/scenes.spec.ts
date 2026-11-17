@@ -31,7 +31,7 @@ test("Cena 1: Dona Maria descobre onde tem losartana", async ({ browser }) => {
     await expectNoAxe(maria);
     // A busca fica no próprio Início.
     await maria.getByRole("searchbox", { name: "Qual remédio você precisa?" }).fill("losartana");
-    await maria.getByRole("button", { name: "Procurar" }).click();
+    await maria.getByRole("button", { name: "Buscar" }).click();
     await maria.getByRole("option", { name: /Losartana/ }).click();
     await expect(maria.getByText("A UBS Centro está sem")).toBeVisible();
     await expect(maria.getByText("Tem na UBS Jardim São Sebastião")).toBeVisible();
@@ -107,7 +107,7 @@ test("Cena 2: transferência da Jardim e entrega em casa", async ({ browser }) =
 test("Cena 3: adalimumabe em falta, compra ao fornecedor e fila de espera", async ({ browser }) => {
     const maria = await loginAs(browser, "maria@demo.logfarma", { mobile: true });
     await searchAndOpen(maria, "adalim", /Adalimumabe/);
-    await expect(maria.getByText("Este remédio está em falta na rede")).toBeVisible();
+    await expect(maria.getByText("Indisponível no momento")).toBeVisible();
     await maria.getByRole("link", { name: "Pedir assim mesmo" }).click();
     await expect(
         maria.getByRole("radiogroup", { name: "Quando chegar, como você quer receber?" }),
