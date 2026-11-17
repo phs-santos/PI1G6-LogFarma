@@ -1,6 +1,6 @@
 # Feedback da Malagueta sobre as telas
 
-- **Implementado em:** 2026-11-06 (registro do feedback e das decisões; as mudanças nas telas ainda não foram feitas)
+- **Implementado em:** 2026-11-06 (registro do feedback e das decisões; telas ajustadas no mesmo dia, falta só o acabamento visual)
 - **Última alteração:** 2026-11-06
 - **Requisitos:** RF01, RF03, RF05, RF06, RF08, RNF03
 
@@ -14,12 +14,12 @@ Lista do feedback que a Malagueta (Lorena) mandou em 04/11/2026 por áudio e em 
 
 ### 1. Página inicial (topo e apresentação)
 
-| Item                                                                                                                     | Situação   |
-| ------------------------------------------------------------------------------------------------------------------------ | ---------- |
-| Manter a logo à esquerda                                                                                                 | já é assim |
-| Trocar "Remédios do SUS em Taquaritinga, Matão e Monte Alto" pelo slogan **"A plataforma que te conecta com sua saúde"** | a fazer    |
-| Chamada grande no centro: **"Acesse e saiba mais"**                                                                      | a fazer    |
-| Texto pequeno abaixo com o que a plataforma faz (lista abaixo)                                                           | a fazer    |
+| Item                                                                                                                     | Situação                                     |
+| ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| Manter a logo à esquerda                                                                                                 | já é assim                                   |
+| Trocar "Remédios do SUS em Taquaritinga, Matão e Monte Alto" pelo slogan **"A plataforma que te conecta com sua saúde"** | feito (Entrar, Criar conta, Recuperar conta) |
+| Chamada grande no centro: **"Acesse e saiba mais"**                                                                      | feito (aba do paciente, no computador)       |
+| Texto pequeno abaixo com o que a plataforma faz (lista abaixo)                                                           | feito (aba do paciente, no computador)       |
 
 Texto proposto por ela:
 
@@ -42,21 +42,21 @@ Texto proposto por ela:
 
 ### 3. Cadastro
 
-| Item                                                                                                                    | Situação                                  |
-| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| No campo CEP: "Não sabe seu CEP?" com link para o **Busca CEP** dos Correios (`https://buscacepinter.correios.com.br/`) | feito (cadastro e Meus dados)             |
-| Seção **"Locomoção e prioridade"** com a caixa "☐ Tenho dificuldade para locomoção"                                     | a fazer (o campo já existe, muda o texto) |
-| Pergunta **"Possui alguma condição listada abaixo?"** antes da lista de prioridades                                     | feito em Meus dados (falta no cadastro)   |
+| Item                                                                                                                    | Situação                      |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| No campo CEP: "Não sabe seu CEP?" com link para o **Busca CEP** dos Correios (`https://buscacepinter.correios.com.br/`) | feito (cadastro e Meus dados) |
+| Seção **"Locomoção e prioridade"** com a caixa "☐ Tenho dificuldade para locomoção"                                     | feito (cadastro e Meus dados) |
+| Pergunta **"Possui alguma condição listada abaixo?"** antes da lista de prioridades                                     | feito (cadastro e Meus dados) |
 
 ### 4. Textos
 
 | Item                                                                                                    | Situação                                                             |
 | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Enxugar os textos: "o site fala muito para coisinhas pequenas", sobretudo depois do cadastro e da conta | a fazer                                                              |
-| Trocar **"Procurar remédio"** por **"Buscar medicamento"** (título, menu, botão de Meus pedidos)        | a fazer                                                              |
+| Enxugar os textos: "o site fala muito para coisinhas pequenas", sobretudo depois do cadastro e da conta | feito (Início, Meus dados, Recuperar conta, aviso de indisponível)   |
+| Trocar **"Procurar remédio"** por **"Buscar medicamento"** (título, menu, botão de Meus pedidos)        | feito (título, menu, Meus pedidos, Início)                           |
 | Bloco **"Bom saber…"** com "Para retirada, leve a receita e documento com foto."                        | feito no Início (o telefone da unidade está no cartão "Sua unidade") |
 | "Ligue para consultar disponibilidade"                                                                  | decidido (ver decisão 3)                                             |
-| Aviso de **"Indisponível?"** com lista de espera e notificação                                          | decidido (ver decisão 2)                                             |
+| Aviso de **"Indisponível?"** com lista de espera e notificação                                          | feito (ver decisão 2)                                                |
 
 ### 5. Visual
 
@@ -69,7 +69,11 @@ Texto proposto por ela:
 
 1. **Recuperar senha pelo app, com e-mail por SMTP.** Decisão do Paulo. Começou com o Resend; depois ficou SMTP genérico, para não prender o projeto a um provedor (o Resend continua sendo o provedor usado, pelo SMTP dele). **Feito:** [Recuperar senha pelo app](2026-11-06-recuperar-senha.md).
 2. **Lista de espera: o paciente escolhe entrar, com um toque.** O texto da Malagueta dizia "você será inserido na lista de espera". A decisão é manter a escolha com o paciente: o botão "Pedir assim mesmo" (tela Onde tem) é o que coloca o pedido na lista. Motivos: entrar na lista exige um pedido (endereço, receita, retirada ou entrega), a lista é por unidade e quem entra recebe avisos, o que só deve acontecer com o consentimento da pessoa. O aviso fica assim, no tom que ela propôs:
+
     > **Indisponível na sua unidade?** Não se preocupe: toque em "Pedir assim mesmo" e você entra na lista de espera. Ative as notificações do aplicativo; você receberá um aviso assim que o medicamento estiver disponível.
+
+    **Como ficou na tela (Onde tem, quando nenhuma unidade tem):** título "Indisponível no momento" (a tela já diz antes que a unidade dela está sem, e aqui falta na rede toda) e o texto "Não se preocupe: toque em “Pedir assim mesmo” e você entra na lista de espera. Você recebe um aviso em Avisos assim que o medicamento chegar." Saiu o "ative as notificações": o app ainda não manda notificação no celular (push), os avisos aparecem na tela Avisos.
+
 3. **Sem "Ligue para consultar disponibilidade".** Ver se tem o remédio é justamente o que o app faz (RF01/RF02). Mandar ligar desmonta a proposta. Em vez disso, o bloco "Bom saber…" mostra o **telefone e o horário da unidade** (já cadastrados em `Pharmacy.phone` e `Pharmacy.openingHours`) para dúvidas sobre o pedido:
     > **Bom saber…**
     >
@@ -83,13 +87,13 @@ O público principal são idosos e pessoas com pouca familiaridade com apps. Cad
 
 ## Onde
 
-Nada foi alterado nas telas ainda. Quando for implementar:
-
-- `apps/frontend/src/pages/entrar/Entrar.tsx` — slogan, chamada, "Aqui você", Recuperar conta
-- `apps/frontend/src/pages/paciente/CriarConta.tsx` e `MeusDados.tsx` — Busca CEP, "Locomoção e prioridade"
-- `apps/frontend/src/pages/paciente/Procurar.tsx`, `app/layouts/PatientLayout.tsx`, `MeusPedidos.tsx` — "Buscar medicamento"
+- `apps/frontend/src/pages/entrar/Entrar.tsx` + `app/porta.css` — slogan, "Acesse e saiba mais" e a lista "Aqui você:" (no celular a faixa azul mostra só o slogan, para não alongar a rolagem)
+- `apps/frontend/src/pages/paciente/CriarConta.tsx` e `MeusDados.tsx` — Busca CEP, "Tenho dificuldade para locomoção", pergunta de prioridade
+- `apps/frontend/src/pages/paciente/profileText.ts` — `MOBILITY_TEXT`, `PRIORITY_QUESTION`, `NO_PRIORITY_TEXT` (mesmo texto no cadastro e em Meus dados)
+- `apps/frontend/src/pages/paciente/Procurar.tsx`, `app/layouts/PatientLayout.tsx`, `MeusPedidos.tsx`, `ConfirmarPedido.tsx`, `Inicio.tsx` — "Buscar medicamento" (o botão da busca do Início virou "Buscar")
 - `apps/frontend/src/pages/paciente/OndeTem.tsx` — aviso de indisponível
-- `apps/backend/src/routes/auth.ts` + novo serviço de e-mail — recuperação de senha
+- `apps/frontend/src/pages/entrar/RecuperarConta.tsx`, `Inicio.tsx`, `MeusDados.tsx` — textos mais curtos
+- `apps/backend/src/routes/auth.ts` + serviço de e-mail — recuperação de senha
 
 ## Escolhas feitas
 
@@ -103,12 +107,15 @@ Nada foi alterado nas telas ainda. Quando for implementar:
 
 ## Como testar
 
-Ainda não há o que testar nas telas. Cada item "a fazer", quando implementado, entra com teste da tela (`pnpm --filter @fatec-pi/frontend test`) e atualiza este documento.
+- `pnpm --filter @fatec-pi/frontend test` — inclui o teste novo do cadastro: a pergunta "Possui alguma condição listada abaixo?" começa em "Não tenho / prefiro não dizer", escolher uma condição pede a autorização e o pedido vai com `priority`.
+- `pnpm --filter @fatec-pi/frontend e2e` — a Cena 3 confere o aviso "Indisponível no momento".
+- À mão: abra `/entrar` no computador (slogan, "Acesse e saiba mais" e "Aqui você:") e no celular (só o slogan na faixa azul).
 
 ## Histórico de alterações
 
-| Data       | O que mudou                                                                                                                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-11-06 | Versão inicial: feedback agrupado e decisões 1–4                                                                                                                                          |
-| 2026-11-06 | Recuperar senha implementada por SMTP genérico (sem prender ao Resend)                                                                                                                    |
-| 2026-11-06 | Feitos: link do Busca CEP, pergunta de prioridade com "Não tenho / prefiro não dizer" (Meus dados), "Bom saber" no Início sem "ligue antes" e telefone da unidade no cartão "Sua unidade" |
+| Data       | O que mudou                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-06 | Versão inicial: feedback agrupado e decisões 1–4                                                                                                                                                                                       |
+| 2026-11-06 | Recuperar senha implementada por SMTP genérico (sem prender ao Resend)                                                                                                                                                                 |
+| 2026-11-06 | Feitos: link do Busca CEP, pergunta de prioridade com "Não tenho / prefiro não dizer" (Meus dados), "Bom saber" no Início sem "ligue antes" e telefone da unidade no cartão "Sua unidade"                                              |
+| 2026-11-06 | Feitos os itens restantes (menos acabamento visual): slogan, "Acesse e saiba mais" e "Aqui você:" no Entrar; "Buscar medicamento"; aviso "Indisponível no momento"; locomoção e pergunta de prioridade no cadastro; textos mais curtos |
