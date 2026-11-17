@@ -23,10 +23,6 @@ EXPOSE 5173
 CMD ["pnpm", "dev", "--host", "0.0.0.0"]
 
 FROM deps AS build
-# Endereço da API quando ela fica em outro domínio (ex.: https://api-logfarma.codexolimpo.com.br).
-# Vazio (padrão) = mesmo domínio: o nginx abaixo repassa /api para o backend.
-ARG VITE_API_URL=
-ENV VITE_API_URL=$VITE_API_URL
 COPY packages/style-guide packages/style-guide
 COPY apps/frontend apps/frontend
 RUN pnpm --filter @fatec-pi/frontend build

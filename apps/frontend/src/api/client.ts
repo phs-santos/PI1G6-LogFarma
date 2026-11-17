@@ -21,10 +21,11 @@ export interface ApiInit {
 }
 
 /**
- * Onde está a API. Vazio (padrão) = mesmo domínio das telas (`/api`, pelo nginx ou pelo proxy do
- * Vite). Em outro domínio, o build recebe VITE_API_URL=https://api-logfarma.codexolimpo.com.br.
+ * Onde está a API: fixo, sem variável de ambiente. No `pnpm dev` (e nos testes) é `/api`, pelo
+ * proxy do Vite; no build é sempre a API de produção, para qualquer site com as telas (o nosso e o
+ * do professor). Quem pode chamar é decidido no backend (CORS_ORIGIN).
  */
-const API_BASE = `${(import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "")}/api`;
+const API_BASE = import.meta.env.DEV ? "/api" : "https://api-logfarma.codexolimpo.com.br/api";
 
 /**
  * Token da sessão, guardado no navegador e mandado em `Authorization: Bearer`. É o que mantém o

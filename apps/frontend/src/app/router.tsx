@@ -126,6 +126,17 @@ export const appRoutes: RouteObject[] = [
     },
 ];
 
+/**
+ * Subpasta onde as telas estão publicadas, tirada do endereço do próprio arquivo carregado:
+ * `/logfarma/assets/index-….js` → "/logfarma" (site do professor); `/assets/…` → "/" (o nosso).
+ * Assim o mesmo código serve nos dois lugares, sem variável de ambiente.
+ */
+function basePath(): string {
+    const path = new URL(import.meta.url).pathname;
+    const i = path.indexOf("/assets/");
+    return i > 0 ? path.slice(0, i) : "/";
+}
+
 export function createAppRouter() {
-    return createBrowserRouter(appRoutes);
+    return createBrowserRouter(appRoutes, { basename: basePath() });
 }

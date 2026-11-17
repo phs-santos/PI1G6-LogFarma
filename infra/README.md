@@ -78,7 +78,7 @@ Para outras telas (ex.: o site do professor, `https://projetointegrador.app.br/l
     }
     ```
 3. **Sites liberados:** no `.env` da VPS, `EXTRA_CORS_ORIGINS=https://projetointegrador.app.br` (vários: separe por vírgula; só origem, sem caminho). O `PUBLIC_URL` entra sozinho. Chamada de navegador vinda de outro site recebe **403**. Depois de mudar, rode o deploy (ou `docker compose up -d backend`).
-4. **Build das telas do outro site** com o endereço da API: `VITE_API_URL=https://api-logfarma.codexolimpo.com.br pnpm --filter @fatec-pi/frontend build` (na imagem: `--build-arg VITE_API_URL=...`). As nossas telas continuam sem essa variável, chamando `/api` no próprio domínio.
+4. **Telas do outro site:** não há variável de ambiente no front. O build sempre chama `https://api-logfarma.codexolimpo.com.br/api` (no `pnpm dev`, `/api` pelo proxy do Vite), e a subpasta sai do endereço dos arquivos. Para publicar em `/logfarma`: `pnpm --filter @fatec-pi/frontend exec vite build --base=/logfarma/` e copie o `dist/` para a pasta `logfarma` do site, com `/logfarma/*` caindo no `index.html`.
 
 A sessão, nesse caso, vai no cabeçalho `Authorization: Bearer` (o token volta no login e no cadastro e fica guardado no navegador), porque o cookie entre sites diferentes é bloqueado pelo Safari. Conferir: `curl -i -H "Origin: https://projetointegrador.app.br" https://api-logfarma.codexolimpo.com.br/api/health` traz `access-control-allow-origin`; com outro `Origin`, 403.
 
