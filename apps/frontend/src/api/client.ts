@@ -22,7 +22,7 @@ export interface ApiInit {
 
 /**
  * Onde está a API. Vazio (padrão) = mesmo domínio das telas (`/api`, pelo nginx ou pelo proxy do
- * Vite). Em outro domínio, o build recebe VITE_API_URL=https://api.logfarma.codexolimpo.com.br.
+ * Vite). Em outro domínio, o build recebe VITE_API_URL=https://api-logfarma.codexolimpo.com.br.
  */
 const API_BASE = `${(import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "")}/api`;
 

@@ -64,17 +64,23 @@ Na VPS só o frontend (nginx) fica exposto, na porta `HTTP_PORT`. O nginx repass
 
 Para outras telas (ex.: o site do professor, `https://projetointegrador.app.br/logfarma`) usarem esta mesma API e o mesmo banco:
 
-1. **DNS:** `api.logfarma.codexolimpo.com.br` apontando para a VPS.
-2. **Proxy da VPS:** o domínio novo vai para a mesma porta do site (`HTTP_PORT`); o nginx do frontend já repassa `/api/` para o backend. No Caddy:
+1. **DNS:** `api-logfarma.codexolimpo.com.br` apontando para a VPS (já existe; o DNS fica na Hostinger). É com hífen: `api.logfarma...` seria um nível a mais e não tem registro.
+2. **Proxy da VPS** (já feito, em `/etc/caddy/sites/logfarma.caddy`): o domínio vai para a mesma porta do site (`HTTP_PORT`); o nginx do frontend já repassa `/api/` para o backend. Fora de `/api/`, responde 404.
     ```caddy
-    api.logfarma.codexolimpo.com.br {
-        reverse_proxy 127.0.0.1:8090
+    api-logfarma.codexolimpo.com.br {
+        encode zstd gzip
+        handle /api/* {
+            reverse_proxy 127.0.0.1:8090
+        }
+        handle {
+            respond "LogFarma API: use /api/health" 404
+        }
     }
     ```
 3. **Sites liberados:** no `.env` da VPS, `EXTRA_CORS_ORIGINS=https://projetointegrador.app.br` (vários: separe por vírgula; só origem, sem caminho). O `PUBLIC_URL` entra sozinho. Chamada de navegador vinda de outro site recebe **403**. Depois de mudar, rode o deploy (ou `docker compose up -d backend`).
-4. **Build das telas do outro site** com o endereço da API: `VITE_API_URL=https://api.logfarma.codexolimpo.com.br pnpm --filter @fatec-pi/frontend build` (na imagem: `--build-arg VITE_API_URL=...`). As nossas telas continuam sem essa variável, chamando `/api` no próprio domínio.
+4. **Build das telas do outro site** com o endereço da API: `VITE_API_URL=https://api-logfarma.codexolimpo.com.br pnpm --filter @fatec-pi/frontend build` (na imagem: `--build-arg VITE_API_URL=...`). As nossas telas continuam sem essa variável, chamando `/api` no próprio domínio.
 
-A sessão, nesse caso, vai no cabeçalho `Authorization: Bearer` (o token volta no login e no cadastro e fica guardado no navegador), porque o cookie entre sites diferentes é bloqueado pelo Safari. Conferir: `curl -i -H "Origin: https://projetointegrador.app.br" https://api.logfarma.codexolimpo.com.br/api/health` traz `access-control-allow-origin`; com outro `Origin`, 403.
+A sessão, nesse caso, vai no cabeçalho `Authorization: Bearer` (o token volta no login e no cadastro e fica guardado no navegador), porque o cookie entre sites diferentes é bloqueado pelo Safari. Conferir: `curl -i -H "Origin: https://projetointegrador.app.br" https://api-logfarma.codexolimpo.com.br/api/health` traz `access-control-allow-origin`; com outro `Origin`, 403.
 
 ### Preparar a VPS (uma vez)
 

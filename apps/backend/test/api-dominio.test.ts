@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { buildTestApp, createPharmacy, patientPayload, resetDb } from "./helpers.js";
 
-// Telas em outro domínio (ex.: site do professor chamando api.logfarma...): sessão pelo
+// Telas em outro domínio (ex.: site do professor chamando api-logfarma...): sessão pelo
 // cabeçalho Authorization e só os sites do CORS_ORIGIN (nos testes, http://localhost:5173).
 describe("API em domínio próprio", () => {
     beforeEach(() => resetDb());
