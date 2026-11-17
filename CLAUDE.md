@@ -52,13 +52,14 @@ Para adicionar dependência: `pnpm --filter @fatec-pi/<pacote> add <lib>` (nunca
 - Adicionar ou trocar biblioteca (router, estado global, ORM, UI kit, etc.).
 - Decidir algo listado em **Decisões em aberto** (integrações reais, módulos futuros) ou mudar uma **Decisão tomada**.
 - Mexer em `infra/` (compose, scripts de deploy/backup) ou em `.github/workflows/`.
+- Acessar a VPS por SSH, rodar deploy (`infra/scripts/deploy.sh`) ou backup de produção: só quando o usuário pedir, e mexendo só no projeto (`/opt/apps/grupo-pi-6`). Sem exibir o `.env` da VPS.
 - Apagar arquivos ou mudar a API pública de um componente do style-guide ou de uma rota do backend.
 - Qualquer coisa fora do escopo do que foi pedido.
 
 ### Nunca
 
 - Ler, copiar ou exibir `.env`, chaves, tokens ou senhas.
-- Rodar deploy, backup ou restore de produção, ou acessar a VPS.
+- Rodar restore de produção, o seed de demonstração em produção (apaga tudo) ou apagar dados, volumes e containers na VPS.
 - Fazer `push --force`, reescrever histórico da `main` ou apagar branches remotas.
 - Logar ou expor dados pessoais de paciente (LGPD).
 - Silenciar erro de tipo com `any`, `@ts-ignore` ou desligando regra para "passar".
