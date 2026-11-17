@@ -78,7 +78,7 @@ export function Inicio() {
                             onChange={(e) => setText(e.target.value)}
                         />
                         <Button type="submit" size="lg" variant="secondary">
-                            Procurar
+                            Buscar
                         </Button>
                     </div>
                 </form>
@@ -170,12 +170,9 @@ export function Inicio() {
                         aria-labelledby="sem-pedidos"
                     >
                         <h2 id="sem-pedidos">Nenhum pedido em andamento</h2>
-                        <p>
-                            Procure um remédio para saber em qual unidade tem. Você pode retirar ou
-                            pedir para receber em casa.
-                        </p>
+                        <p>Busque o medicamento e veja em qual unidade tem.</p>
                         <LinkButton to="/buscar" block={false}>
-                            Buscar um remédio
+                            Buscar medicamento
                         </LinkButton>
                     </section>
                 )}

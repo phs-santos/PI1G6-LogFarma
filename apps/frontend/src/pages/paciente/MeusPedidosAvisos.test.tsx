@@ -28,7 +28,7 @@ describe("Meus pedidos", () => {
         renderApp({ route: "/pedidos", session: sessions.maria });
         expect(await screen.findByText("Você ainda não fez nenhum pedido.")).toBeInTheDocument();
         expect(
-            within(screen.getByRole("main")).getByRole("link", { name: "Procurar remédio" }),
+            within(screen.getByRole("main")).getByRole("link", { name: "Buscar medicamento" }),
         ).toBeInTheDocument();
     });
 });

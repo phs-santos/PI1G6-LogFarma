@@ -18,10 +18,10 @@ describe("título e foco", () => {
         await waitFor(() => expect(document.title).toBe("Início — LogFarma"));
         await userEvent
             .setup()
-            .click(within(screen.getByRole("main")).getByRole("button", { name: "Procurar" }));
-        const h1 = await screen.findByRole("heading", { level: 1, name: "Procurar remédio" });
+            .click(within(screen.getByRole("main")).getByRole("button", { name: "Buscar" }));
+        const h1 = await screen.findByRole("heading", { level: 1, name: "Buscar medicamento" });
         await waitFor(() => expect(document.activeElement).toBe(h1));
-        expect(document.title).toBe("Procurar remédio — LogFarma");
+        expect(document.title).toBe("Buscar medicamento — LogFarma");
     });
 
     it("nenhuma rota usa Placeholder", () => {

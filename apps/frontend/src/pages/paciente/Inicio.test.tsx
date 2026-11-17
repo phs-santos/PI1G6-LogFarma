@@ -74,7 +74,7 @@ describe("Início", () => {
         mockApi({ "GET /api/requests": { body: { items: [] } } });
         renderApp({ route: "/", session: sessions.maria });
         const convite = await screen.findByRole("region", { name: "Nenhum pedido em andamento" });
-        expect(within(convite).getByRole("link", { name: "Buscar um remédio" })).toHaveAttribute(
+        expect(within(convite).getByRole("link", { name: "Buscar medicamento" })).toHaveAttribute(
             "href",
             "/buscar",
         );

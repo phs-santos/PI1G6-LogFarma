@@ -5,7 +5,7 @@ import { BackButton } from "./BackButton";
 
 const MENU: [string, string][] = [
     ["/", "Início"],
-    ["/buscar", "Procurar remédio"],
+    ["/buscar", "Buscar medicamento"],
     ["/pedidos", "Meus pedidos"],
     ["/avisos", "Avisos"],
     ["/meus-dados", "Meus dados"],

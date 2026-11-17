@@ -58,7 +58,7 @@ describe("Início com o que importa", () => {
             screen.getByRole("searchbox", { name: "Qual remédio você precisa?" }),
             "losartana",
         );
-        await user.click(screen.getByRole("button", { name: "Procurar" }));
+        await user.click(screen.getByRole("button", { name: "Buscar" }));
         await waitFor(() => expect(router.state.location.pathname).toBe("/buscar"));
         expect(screen.getByRole("combobox", { name: "Qual remédio você precisa?" })).toHaveValue(
             "losartana",

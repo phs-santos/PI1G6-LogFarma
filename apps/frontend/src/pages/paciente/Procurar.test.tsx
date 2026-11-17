@@ -6,7 +6,7 @@ import { mockApi } from "../../../test/mockApi";
 import { losartana } from "../../../test/fixtures";
 import { expectNoAxeViolations } from "../../../test/setup";
 
-describe("Procurar remédio", () => {
+describe("Buscar medicamento", () => {
     it("sugere enquanto digita e abre Onde tem", async () => {
         mockApi({
             "GET /api/medications": ({ url }) => ({
@@ -36,7 +36,7 @@ describe("Procurar remédio", () => {
     });
 });
 
-describe("Procurar remédio — mais procurados", () => {
+describe("Buscar medicamento — mais procurados", () => {
     it("um toque em Mais procurados preenche a busca e mostra as sugestões", async () => {
         mockApi({
             "GET /api/medications": ({ url }) => ({

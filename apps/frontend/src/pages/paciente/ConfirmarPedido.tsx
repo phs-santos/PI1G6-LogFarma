@@ -73,7 +73,7 @@ export function ConfirmarPedido() {
         return (
             <EmptyState
                 title="Escolha o remédio primeiro."
-                action={<LinkButton to="/buscar">Procurar remédio</LinkButton>}
+                action={<LinkButton to="/buscar">Buscar medicamento</LinkButton>}
             />
         );
     }

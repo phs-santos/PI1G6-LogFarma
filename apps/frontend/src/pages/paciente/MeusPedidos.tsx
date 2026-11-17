@@ -25,7 +25,7 @@ export function MeusPedidos() {
                     items.length === 0 ? (
                         <EmptyState
                             title="Você ainda não fez nenhum pedido."
-                            action={<LinkButton to="/buscar">Procurar remédio</LinkButton>}
+                            action={<LinkButton to="/buscar">Buscar medicamento</LinkButton>}
                         />
                     ) : (
                         <ul className="app-units" aria-label="Seus pedidos">

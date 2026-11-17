@@ -14,7 +14,7 @@ const QUICK = ["Losartana", "Metformina", "Insulina", "Dipirona", "Sinvastatina"
 
 /** RF01: procurar o remédio pelo nome, com sugestões enquanto digita. */
 export function Procurar() {
-    usePageTitle("Procurar remédio");
+    usePageTitle("Buscar medicamento");
     const navigate = useNavigate();
     const [params] = useSearchParams();
     const [text, setText] = useState(params.get("q") ?? "");
@@ -31,7 +31,7 @@ export function Procurar() {
     return (
         <>
             <PageHeader
-                title="Procurar remédio"
+                title="Buscar medicamento"
                 description="Digite o nome que está na receita ou na caixa do remédio."
             />
             <div className="app-search">
