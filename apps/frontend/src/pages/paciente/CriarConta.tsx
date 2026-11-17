@@ -24,7 +24,13 @@ import {
     validateAddress,
     type AddressErrors,
 } from "./AddressFields";
-import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
+import {
+    CONSENT_TEXT,
+    MOBILITY_TEXT,
+    NO_PRIORITY_TEXT,
+    PRIORITY_QUESTION,
+    PRIORITY_TEXT,
+} from "./profileText";
 import "./paciente.css";
 import "../../app/porta.css";
 import { usePageTitle } from "../../app/usePageTitle";
@@ -204,9 +210,7 @@ export function CriarConta() {
                 <p className="porta__brand">
                     <Logo tone="white" />
                 </p>
-                <p className="porta__tagline">
-                    Remédios do SUS em Taquaritinga, Matão e Monte Alto
-                </p>
+                <p className="porta__tagline">A plataforma que te conecta com sua saúde</p>
                 <h2 id="cadastro-promessa" className="porta__promise">
                     Crie sua conta em poucos passos.
                 </h2>
@@ -324,18 +328,16 @@ export function CriarConta() {
                     {step === 5 && (
                         <>
                             <Checkbox
-                                label="Tenho dificuldade para me locomover"
+                                label={MOBILITY_TEXT}
                                 hint="Assim já sugerimos receber em casa."
                                 checked={f.mobilityLimited}
                                 onChange={(e) => set("mobilityLimited", e.target.checked)}
                             />
-                            <ChoiceGroup legend="Você tem alguma destas condições? Quem tem recebe primeiro quando o remédio chega.">
-                                <ChoiceOption
-                                    name="priority"
-                                    label="Prefiro não informar"
-                                    checked={f.category === null}
-                                    onChange={() => set("category", null)}
-                                />
+                            <p className="app-muted">
+                                Quem tem uma destas condições recebe primeiro quando o remédio
+                                chega.
+                            </p>
+                            <ChoiceGroup legend={PRIORITY_QUESTION}>
                                 {(Object.keys(PRIORITY_TEXT) as PriorityCategory[]).map((c) => (
                                     <ChoiceOption
                                         key={c}
@@ -345,6 +347,12 @@ export function CriarConta() {
                                         onChange={() => set("category", c)}
                                     />
                                 ))}
+                                <ChoiceOption
+                                    name="priority"
+                                    label={NO_PRIORITY_TEXT}
+                                    checked={f.category === null}
+                                    onChange={() => set("category", null)}
+                                />
                             </ChoiceGroup>
                             {f.category && (
                                 <>

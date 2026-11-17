@@ -35,7 +35,13 @@ import { formatPhone, onlyDigits } from "../../lib/format";
 import { maskCep, maskPhone } from "../../lib/masks";
 import { Loaded } from "../../ui/Loaded";
 import { AddressFields, cleanAddress, validateAddress, type AddressErrors } from "./AddressFields";
-import { CONSENT_TEXT, PRIORITY_TEXT } from "./profileText";
+import {
+    CONSENT_TEXT,
+    MOBILITY_TEXT,
+    NO_PRIORITY_TEXT,
+    PRIORITY_QUESTION,
+    PRIORITY_TEXT,
+} from "./profileText";
 import "./paciente.css";
 import { usePageTitle } from "../../app/usePageTitle";
 
@@ -342,7 +348,7 @@ function LocomotionSection({ profile }: SectionProps) {
     return (
         <ProfileCard id="locomocao" title="Locomoção">
             <Checkbox
-                label="Tenho dificuldade para me locomover"
+                label={MOBILITY_TEXT}
                 checked={profile.mobilityLimited}
                 disabled={pending}
                 onChange={(e) => run({ mobilityLimited: e.target.checked })}
@@ -454,16 +460,13 @@ function PrioritySection({ profile }: SectionProps) {
                         }}
                         onClose={() => setConfirming(false)}
                     >
-                        <p>
-                            A informação é apagada e você deixa de ter prioridade na lista de
-                            espera.
-                        </p>
+                        <p>Você deixa de ter prioridade na lista de espera.</p>
                         {confirming && feedback}
                     </ConfirmDialog>
                 </>
             ) : edit.editing ? (
                 <form onSubmit={submit} noValidate>
-                    <ChoiceGroup legend="Possui alguma condição listada abaixo?">
+                    <ChoiceGroup legend={PRIORITY_QUESTION}>
                         {(Object.keys(PRIORITY_TEXT) as PriorityCategory[]).map((c) => (
                             <ChoiceOption
                                 key={c}
@@ -475,7 +478,7 @@ function PrioritySection({ profile }: SectionProps) {
                         ))}
                         <ChoiceOption
                             name="priority"
-                            label="Não tenho / prefiro não dizer"
+                            label={NO_PRIORITY_TEXT}
                             checked={choice === "none"}
                             onChange={() => setChoice("none")}
                         />
@@ -501,10 +504,7 @@ function PrioritySection({ profile }: SectionProps) {
                     </div>
                 </form>
             ) : (
-                <p>
-                    Nenhuma condição informada. Pessoas com doença crônica, câncer ou doença rara
-                    têm prioridade na lista de espera.
-                </p>
+                <p>Nenhuma condição informada.</p>
             )}
             {!confirming && feedback}
         </ProfileCard>

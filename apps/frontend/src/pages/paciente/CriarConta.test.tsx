@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderApp, sessions } from "../../../test/render";
 import { mockApi } from "../../../test/mockApi";
@@ -41,7 +41,7 @@ async function fillUntilLocation(user: ReturnType<typeof userEvent.setup>) {
 async function finish(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole("button", { name: "Continuar" }));
     expect(screen.getByText("Passo 5 de 6")).toBeInTheDocument();
-    await user.click(screen.getByRole("checkbox", { name: "Tenho dificuldade para me locomover" }));
+    await user.click(screen.getByRole("checkbox", { name: "Tenho dificuldade para locomoção" }));
     await user.click(screen.getByRole("button", { name: "Continuar" }));
     expect(screen.getByText("Passo 6 de 6")).toBeInTheDocument();
     await user.type(screen.getByLabelText("E-mail"), "maria@exemplo.test");
@@ -147,5 +147,33 @@ describe("Criar conta", () => {
         await finish(user);
         expect(await screen.findByText("Já existe uma conta com este e-mail.")).toBeInTheDocument();
         expect(screen.getByText("Passo 6 de 6")).toBeInTheDocument();
+    });
+
+    it("pergunta a condição de prioridade e só segue com a autorização", async () => {
+        vi.stubGlobal("navigator", { ...navigator, geolocation: undefined });
+        const mock = api();
+        const { container } = renderApp({ route: "/cadastro" });
+        const user = userEvent.setup();
+        await fillUntilLocation(user);
+        await user.click(screen.getByRole("button", { name: "Continuar" }));
+        const group = screen.getByRole("radiogroup", {
+            name: "Possui alguma condição listada abaixo?",
+        });
+        expect(within(group).getByLabelText("Não tenho / prefiro não dizer")).toBeChecked();
+        await user.click(within(group).getByLabelText("Doença crônica"));
+        await user.click(screen.getByRole("button", { name: "Continuar" }));
+        expect(screen.getByText("Para ter prioridade, marque a autorização.")).toBeInTheDocument();
+        await user.click(screen.getByRole("checkbox", { name: /Autorizo usar essa informação/ }));
+        await expectNoAxeViolations(container);
+        await user.click(screen.getByRole("button", { name: "Continuar" }));
+        await user.type(screen.getByLabelText("E-mail"), "maria@exemplo.test");
+        await user.type(screen.getByLabelText("Senha"), "uma-senha-boa");
+        await user.click(screen.getByRole("button", { name: "Criar conta" }));
+        await waitFor(() =>
+            expect(mock.calls.some((c) => c.path === "/api/auth/register")).toBe(true),
+        );
+        expect(mock.calls.find((c) => c.path === "/api/auth/register")?.body).toMatchObject({
+            priority: { category: "chronic", consent: true },
+        });
     });
 });
