@@ -10,6 +10,14 @@ function required(name: string): string {
     return value;
 }
 
+/** Lista separada por vírgula ("https://a.com, https://b.com"), sem itens vazios e sem "/" no fim. */
+function list(value: string): string[] {
+    return value
+        .split(",")
+        .map((item) => item.trim().replace(/\/$/, ""))
+        .filter(Boolean);
+}
+
 function flag(name: string): boolean {
     return process.env[name] === "true";
 }
@@ -18,9 +26,11 @@ export const env = {
     nodeEnv: process.env.NODE_ENV ?? "development",
     port: Number(process.env.PORT ?? 3333),
     host: process.env.HOST ?? "0.0.0.0",
-    corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
-    // Endereço das telas, usado nos links dos e-mails. Sem ele, usa o CORS_ORIGIN.
-    appUrl: process.env.APP_URL || process.env.CORS_ORIGIN || "http://localhost:5173",
+    // Sites (origens) que podem chamar a API pelo navegador. Os outros recebem 403.
+    corsOrigins: list(process.env.CORS_ORIGIN || "http://localhost:5173"),
+    // Endereço das telas, usado nos links dos e-mails. Sem ele, usa o primeiro do CORS_ORIGIN.
+    appUrl:
+        process.env.APP_URL || list(process.env.CORS_ORIGIN || "")[0] || "http://localhost:5173",
     databaseUrl: required("DATABASE_URL"),
     jwtSecret:
         process.env.NODE_ENV === "test"

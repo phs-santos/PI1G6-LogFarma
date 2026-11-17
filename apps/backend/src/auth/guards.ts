@@ -6,11 +6,12 @@ import type { UserRole } from "../contracts.js";
 
 /**
  * preHandler: exige sessão válida e preenche request.user. A conta precisa continuar ativa:
- * desativar uma conta na gestão corta o acesso na hora, sem esperar o cookie vencer.
+ * desativar uma conta na gestão corta o acesso na hora, sem esperar a sessão vencer.
  */
 export async function requireAuth(request: FastifyRequest): Promise<void> {
     try {
-        await request.jwtVerify({ onlyCookie: true });
+        // Cabeçalho Authorization: Bearer primeiro; sem ele, o cookie da sessão.
+        await request.jwtVerify();
     } catch {
         throw new UnauthorizedError();
     }

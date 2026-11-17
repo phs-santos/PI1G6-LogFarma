@@ -81,8 +81,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
         async (request, reply) => {
             const { userId } = await registerPatient(app.db, request.body);
             const user: SessionUser = { id: userId, role: "patient" };
-            await setSessionCookie(reply, user);
-            return reply.code(201).send({ user });
+            const token = await setSessionCookie(reply, user);
+            return reply.code(201).send({ user, token });
         },
     );
 
@@ -125,8 +125,8 @@ export const authRoutes: FastifyPluginAsync = async (app) => {
                 );
             }
             const user: SessionUser = { id: row.id, role: row.role };
-            await setSessionCookie(reply, user);
-            return { user, profile: await getSessionProfile(app.db, user) };
+            const token = await setSessionCookie(reply, user);
+            return { user, token, profile: await getSessionProfile(app.db, user) };
         },
     );
 

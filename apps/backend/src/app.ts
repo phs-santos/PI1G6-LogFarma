@@ -31,6 +31,16 @@ declare module "fastify" {
     }
 }
 
+/** A origem está liberada no CORS_ORIGIN ou é o próprio domínio que recebeu a chamada. */
+export function isAllowedOrigin(origin: string, host: string | undefined): boolean {
+    if (env.corsOrigins.includes(origin)) return true;
+    try {
+        return host !== undefined && new URL(origin).host === host;
+    } catch {
+        return false;
+    }
+}
+
 export function buildApp(deps: AppDeps) {
     const app = Fastify({
         logger: env.nodeEnv === "test" ? false : { level: "info" },
@@ -59,7 +69,15 @@ export function buildApp(deps: AppDeps) {
         return reply.code(status).send({ message: error.message });
     });
 
-    app.register(cors, { origin: env.corsOrigin, credentials: true });
+    // Só os sites do CORS_ORIGIN chamam a API pelo navegador. A própria tela, servida no mesmo
+    // domínio (nginx ou proxy do Vite), passa sempre. Chamada sem Origin (curl, healthcheck)
+    // não vem de site nenhum e segue; quem protege os dados é o login.
+    app.addHook("onRequest", async (request, reply) => {
+        const { origin } = request.headers;
+        if (!origin || isAllowedOrigin(origin, request.headers.host)) return;
+        return reply.code(403).send({ message: "Este site não tem permissão para usar a API." });
+    });
+    app.register(cors, { origin: env.corsOrigins, credentials: true });
     app.register(sessionPlugin);
     app.register(healthRoutes, { prefix: "/api" });
     app.register(authRoutes, { prefix: "/api" });

@@ -15,7 +15,11 @@ declare module "@fastify/jwt" {
     }
 }
 
-/** Cookie + JWT. A sessão vive num cookie httpOnly; não há token no corpo das respostas. */
+/**
+ * Cookie + JWT. A sessão vai em dois lugares: num cookie httpOnly (telas no mesmo domínio da API)
+ * e no corpo da resposta de login/cadastro, para as telas em outro domínio mandarem no cabeçalho
+ * `Authorization: Bearer` (cookie entre sites é bloqueado pelo Safari e pode ser pelo Chrome).
+ */
 export const sessionPlugin = fp(async (app) => {
     await app.register(cookie);
     await app.register(jwt, {
@@ -26,7 +30,8 @@ export const sessionPlugin = fp(async (app) => {
     });
 });
 
-export async function setSessionCookie(reply: FastifyReply, user: SessionUser): Promise<void> {
+/** Abre a sessão: grava o cookie e devolve o mesmo token para ir no corpo da resposta. */
+export async function setSessionCookie(reply: FastifyReply, user: SessionUser): Promise<string> {
     const token = await reply.jwtSign({ sub: user.id, role: user.role });
     reply.setCookie(SESSION_COOKIE, token, {
         httpOnly: true,
@@ -35,6 +40,7 @@ export async function setSessionCookie(reply: FastifyReply, user: SessionUser): 
         path: "/",
         maxAge: SESSION_SECONDS,
     });
+    return token;
 }
 
 export function clearSessionCookie(reply: FastifyReply): void {
