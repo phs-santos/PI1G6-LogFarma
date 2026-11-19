@@ -12,7 +12,8 @@
         "db:generate": "drizzle-kit generate",
         "db:migrate": "tsx --env-file-if-exists=../../.env src/db/migrate.ts",
         "db:seed": "tsx --env-file-if-exists=../../.env src/db/seed.ts",
-        "db:catalog": "tsx --env-file-if-exists=../../.env src/db/seed-catalog.ts"
+        "db:catalog": "tsx --env-file-if-exists=../../.env src/db/seed-catalog.ts",
+        "db:presentation": "tsx --env-file-if-exists=../../.env src/db/seed-presentation.ts"
     },
     "dependencies": {
         "@fastify/cookie": "^11.1.5",
