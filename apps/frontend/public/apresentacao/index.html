@@ -1,0 +1,2172 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>LogFarma — Apresentação do PI</title>
+        <meta
+            name="description"
+            content="Apresentação do Projeto Integrador LogFarma — Fatec Taquaritinga 2026"
+        />
+        <link rel="icon" href="logo.svg" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap"
+        />
+        <style>
+            /* Base: o formato do Slides não tem margens padrão */
+            * {
+                margin: 0;
+            }
+            html,
+            body {
+                height: 100%;
+                background: #0d1a3f;
+                overflow: hidden;
+            }
+            #stage {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                transform-origin: 0 0;
+            }
+            #stage > section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                overflow: hidden;
+                display: none;
+            }
+            #stage > section.on {
+                display: flex;
+            }
+            aside,
+            x-connector {
+                display: none;
+            }
+            svg.wires {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1920px;
+                height: 1080px;
+                pointer-events: none;
+            }
+            table.tb {
+                border-collapse: collapse;
+            }
+            table.tb th,
+            table.tb td {
+                padding: 0.35em 0.6em;
+                text-align: left;
+                vertical-align: top;
+                border-bottom: 2px solid #d6e0f3;
+            }
+            #bar {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 4px;
+                background: #ffffff22;
+            }
+            #bar i {
+                display: block;
+                height: 100%;
+                background: #9fb6ec;
+                width: 0;
+                transition: width 0.3s;
+            }
+            #notes {
+                position: fixed;
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-height: 40vh;
+                overflow: auto;
+                display: none;
+                background: #fbfcffee;
+                color: #172036;
+                font:
+                    18px/1.5 "Atkinson Hyperlegible",
+                    Verdana,
+                    sans-serif;
+                padding: 16px 20px;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px #0006;
+            }
+            #notes.on {
+                display: block;
+            }
+            #help {
+                position: fixed;
+                right: 16px;
+                top: 12px;
+                color: #c3d0f0;
+                font:
+                    14px "Atkinson Hyperlegible",
+                    sans-serif;
+                opacity: 0.7;
+            }
+            @media (max-width: 700px) {
+                #help {
+                    display: none;
+                }
+            }
+            #auto {
+                position: fixed;
+                left: 16px;
+                top: 12px;
+                display: none;
+                color: #c3d0f0;
+                background: #0d1a3fcc;
+                font:
+                    14px "Atkinson Hyperlegible",
+                    sans-serif;
+                padding: 4px 10px;
+                border-radius: 999px;
+                opacity: 0.8;
+            }
+            #auto.on {
+                display: block;
+            }
+            body.auto,
+            body.auto * {
+                cursor: none;
+            }
+            body.auto #help {
+                display: none;
+            }
+        </style>
+        <style>
+            /* LogFarma — "receita": papel claro, tinta azul, tarja vermelha só para destaque. */
+            section {
+                --ink: #1f3f8f;
+                --ink-deep: #14275e;
+                --ink-soft: #eef2fb;
+                --rule: #d6e0f3;
+                --paper: #fbfcff;
+                --paper-2: #f2f5fb;
+                --text: #172036;
+                --muted: #46506a;
+                --ok: #1e7a46;
+                --ok-soft: #e8f5ec;
+                --red: #c8102e;
+                --amber-bg: #fff4d6;
+                --amber: #8a6100;
+                --on-ink: #f6f8fe;
+                --on-ink-muted: #c3d0f0;
+                counter-increment: page;
+                padding: 128px 128px 160px;
+                background: var(--paper);
+                color: var(--text);
+                font-family: "Atkinson Hyperlegible", Verdana, sans-serif;
+                font-size: 30px;
+                display: flex;
+                flex-direction: column;
+                box-sizing: border-box;
+            }
+            section.alt {
+                background: var(--paper-2);
+            }
+            section.dark {
+                background: var(--ink-deep);
+                color: var(--on-ink);
+            }
+
+            /* Cabeçalho de slide */
+            .eyebrow {
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: 3px;
+                color: var(--ink);
+                margin: 0 0 16px;
+            }
+            .dark .eyebrow {
+                color: var(--on-ink-muted);
+            }
+            .title {
+                font-size: 64px;
+                font-weight: 700;
+                line-height: 1.1;
+                color: var(--ink-deep);
+                margin: 0 0 24px;
+            }
+            .dark .title {
+                color: var(--on-ink);
+            }
+            .lead {
+                font-size: 30px;
+                line-height: 1.4;
+                color: var(--muted);
+                margin: 0 0 40px;
+            }
+            .dark .lead {
+                color: var(--on-ink-muted);
+            }
+
+            /* Rodapé: um só, fixo */
+            .foot {
+                position: absolute;
+                left: 128px;
+                bottom: 64px;
+                width: 1200px;
+                font-size: 24px;
+                color: #6b7590;
+                margin: 0;
+            }
+            .pg {
+                position: absolute;
+                right: 128px;
+                bottom: 64px;
+                width: 120px;
+                text-align: right;
+                font-size: 24px;
+                color: #6b7590;
+                margin: 0;
+            }
+            .pg::before {
+                content: counter(page);
+            }
+            .dark .foot,
+            .dark .pg {
+                color: var(--on-ink-muted);
+            }
+
+            /* Cartões */
+            .cards {
+                display: grid;
+                gap: 32px;
+            }
+            .c2 {
+                grid-template-columns: 1fr 1fr;
+            }
+            .c3 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .c4 {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+            .card {
+                background: #ffffff;
+                border: 2px solid var(--rule);
+                border-radius: 16px;
+                padding: 32px 36px;
+                box-sizing: border-box;
+            }
+            .card .k {
+                font-size: 40px;
+                font-weight: 700;
+                color: var(--ink);
+                line-height: 1.15;
+                margin: 0 0 12px;
+            }
+            .card .t {
+                font-size: 26px;
+                line-height: 1.4;
+                color: var(--muted);
+                margin: 0;
+            }
+            .card .tag {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--ink);
+                margin: 0 0 12px;
+            }
+
+            /* Números grandes */
+            .big {
+                font-size: 200px;
+                font-weight: 700;
+                line-height: 1;
+                margin: 0;
+            }
+            .num {
+                font-size: 96px;
+                font-weight: 700;
+                line-height: 1;
+                color: var(--ink);
+                margin: 0 0 12px;
+            }
+
+            /* Tabelas */
+            table.tb {
+                width: 100%;
+                font-size: 26px;
+                color: var(--text);
+            }
+            table.tb th {
+                text-align: left;
+                color: var(--ink);
+                font-weight: 700;
+            }
+            .mono {
+                font-family: "JetBrains Mono", "Courier New", monospace;
+            }
+
+            /* Diagramas: caixas fixas na tela */
+            .box {
+                position: absolute;
+                box-sizing: border-box;
+                border-radius: 12px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 14px 20px;
+            }
+            .step {
+                background: var(--ink);
+                color: var(--on-ink);
+            }
+            .step .bt {
+                font-size: 28px;
+                font-weight: 700;
+                line-height: 1.2;
+                margin: 0;
+            }
+            .out {
+                background: #ffffff;
+                border: 2px solid var(--rule);
+            }
+            .out .bt {
+                font-size: 24px;
+                line-height: 1.35;
+                color: var(--text);
+                margin: 0;
+            }
+            .dash {
+                background: var(--amber-bg);
+                border: 2px dashed var(--amber);
+            }
+            .tbl {
+                background: #ffffff;
+                border: 2px solid var(--ink);
+            }
+            .tbl .n {
+                font-family: "JetBrains Mono", "Courier New", monospace;
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--ink);
+                margin: 0 0 4px;
+            }
+            .tbl .d {
+                font-size: 24px;
+                line-height: 1.3;
+                color: var(--muted);
+                margin: 0;
+            }
+            .tbl.hub {
+                background: var(--ink);
+            }
+            .tbl.hub .n,
+            .tbl.hub .d {
+                color: var(--on-ink);
+            }
+            .tbl.soft {
+                border: 2px solid var(--rule);
+            }
+            .st {
+                background: var(--ink-soft);
+                border: 2px solid var(--ink);
+            }
+            .st .bt {
+                font-size: 26px;
+                font-weight: 700;
+                line-height: 1.2;
+                color: var(--ink-deep);
+                margin: 0;
+            }
+            .st.end {
+                background: var(--ok-soft);
+                border: 2px solid var(--ok);
+            }
+            .st.end .bt {
+                color: #145a33;
+            }
+            .lbl {
+                position: absolute;
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--red);
+                text-align: center;
+                margin: 0;
+            }
+            x-connector {
+                color: #7d8bb0;
+                border-width: 3px;
+            }
+            .cap {
+                font-size: 24px;
+                line-height: 1.4;
+                color: var(--muted);
+                margin: 0;
+            }
+
+            /* Prints das telas */
+            .figs {
+                display: flex;
+                justify-content: space-around;
+                align-items: flex-start;
+                margin-top: 16px;
+            }
+            .fig {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                width: 440px;
+            }
+            .shot {
+                border: 2px solid var(--rule);
+                border-radius: 28px;
+                box-shadow: 0 16px 40px rgba(20, 39, 94, 0.18);
+                object-fit: cover;
+                background: #ffffff;
+            }
+            .capt {
+                font-size: 26px;
+                line-height: 1.35;
+                color: var(--muted);
+                text-align: center;
+                margin: 0;
+            }
+            .capt b {
+                color: var(--ink-deep);
+            }
+
+            /* Chegada */
+            @keyframes sobe {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px);
+                }
+            }
+            @keyframes aparece {
+                from {
+                    opacity: 0;
+                }
+            }
+            .rise {
+                animation: sobe 600ms ease-out both;
+                animation-delay: calc(var(--i, 0) * 110ms);
+            }
+            .fade {
+                animation: aparece 500ms ease-out both;
+                animation-delay: calc(var(--i, 0) * 110ms);
+            }
+
+            .pg::before {
+                content: attr(data-n);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="stage">
+            <section
+                id="cover"
+                class="dark"
+                data-transition="fade"
+                style="justify-content: space-between"
+            >
+                <div style="display: flex; align-items: center; gap: 32px">
+                    <img
+                        src="logo.svg"
+                        alt="Símbolo do LogFarma: alfinete de mapa com a taça da farmácia"
+                        style="width: 120px; height: 120px; object-fit: contain"
+                    />
+                    <p style="font-size: 44px; font-weight: 700; margin: 0; color: var(--on-ink)">
+                        LogFarma
+                    </p>
+                </div>
+                <div>
+                    <h1
+                        class="rise"
+                        style="
+                            font-size: 112px;
+                            font-weight: 700;
+                            line-height: 1.05;
+                            margin: 0 0 32px;
+                            color: var(--on-ink);
+                            --i: 1;
+                        "
+                    >
+                        Onde tem o remédio,<br />agora.
+                    </h1>
+                    <p
+                        class="rise"
+                        style="
+                            font-size: 40px;
+                            line-height: 1.35;
+                            color: var(--on-ink-muted);
+                            margin: 0;
+                            width: 1400px;
+                            --i: 2;
+                        "
+                    >
+                        Localização, reposição e entrega de medicamentos na rede pública de saúde
+                    </p>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end">
+                    <p
+                        style="
+                            font-size: 26px;
+                            line-height: 1.5;
+                            color: var(--on-ink-muted);
+                            margin: 0;
+                            width: 1100px;
+                        "
+                    >
+                        Arthur Vinicius Ferreira · Bruno Henrique Jacinto · Lorena Duarte Malaguti ·
+                        Paulo Henrique de Souza Santos
+                    </p>
+                    <p
+                        style="
+                            font-size: 26px;
+                            line-height: 1.5;
+                            color: var(--on-ink-muted);
+                            margin: 0;
+                            width: 520px;
+                            text-align: right;
+                        "
+                    >
+                        Projeto Integrador I · ADS<br />Fatec Taquaritinga · 2026
+                    </p>
+                </div>
+                <aside>
+                    Boa noite. Somos o grupo 6 e vamos apresentar o LogFarma, um sistema que mostra
+                    em tempo real onde um medicamento essencial está disponível na rede pública e
+                    ajuda o paciente a conseguir o remédio mesmo quando ele não pode ir até a
+                    unidade. Orientador: Prof. Gabriel Passatuto Gallo.
+                </aside>
+            </section>
+            <section id="maria">
+                <p class="eyebrow">CONHEÇA A DONA MARIA</p>
+                <h2 class="title">72 anos, pressão alta, e a losartana acabou</h2>
+                <p class="lead" style="width: 1500px">
+                    Ela mora no Centro de Taquaritinga, anda com dificuldade e depende do remédio
+                    todo dia.
+                </p>
+                <div class="cards c2" style="gap: 48px">
+                    <div
+                        class="card rise"
+                        style="--i: 1; border-color: #e9b9c1; background: #fdf3f4"
+                    >
+                        <p class="tag" style="color: var(--red)">HOJE</p>
+                        <p class="t" style="font-size: 30px; line-height: 1.5; color: var(--text)">
+                            1. Pega ônibus até a UBS Centro<br />2. No balcão: “a losartana está em
+                            falta”<br />3. Não sabe onde tem, volta para casa<br />4. Fica dias sem
+                            tomar o remédio
+                        </p>
+                    </div>
+                    <div
+                        class="card rise"
+                        style="--i: 2; border-color: #9fd1b3; background: var(--ok-soft)"
+                    >
+                        <p class="tag" style="color: var(--ok)">COM O LOGFARMA</p>
+                        <p class="t" style="font-size: 30px; line-height: 1.5; color: var(--text)">
+                            1. Procura no celular, com a filha<br />2. Vê onde tem, perto de casa<br />3.
+                            A UBS dela pede a transferência<br />4. O remédio chega em casa
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Começar pela história, devagar. A Dona Maria é uma personagem: Maria Aparecida,
+                    72 anos, hipertensa, mora no Centro de Taquaritinga e anda com dificuldade.
+                    Hoje, ela só descobre que a losartana acabou quando chega ao balcão, e volta
+                    para casa sem saber onde procurar. Com o LogFarma, ela (ou a filha, Ana Paula)
+                    vê no celular onde tem, perto de casa; a UBS dela pede o remédio por
+                    transferência e, como ela tem dificuldade de locomoção, ele chega em casa pelo
+                    programa municipal. Vamos ver essa mesma história funcionando ao vivo no fim. E
+                    a Dona Maria não está sozinha: próximo slide.
+                </aside>
+            </section>
+            <section id="problema" class="dark">
+                <p class="eyebrow">O PROBLEMA</p>
+                <div style="display: flex; gap: 96px; align-items: center; flex: 1">
+                    <div style="width: 700px">
+                        <p class="big rise" style="color: var(--on-ink); --i: 1">82%</p>
+                        <p
+                            class="rise"
+                            style="
+                                font-size: 36px;
+                                line-height: 1.35;
+                                color: var(--on-ink-muted);
+                                margin: 16px 0 0;
+                                --i: 2;
+                            "
+                        >
+                            dos municípios enfrentam desabastecimento de medicamentos (CNM)
+                        </p>
+                    </div>
+                    <div style="flex: 1">
+                        <h2 class="title rise" style="--i: 3">
+                            O paciente só descobre que o remédio está em falta quando chega ao
+                            balcão.
+                        </h2>
+                        <p class="lead rise" style="margin: 0; --i: 4">
+                            Sem saber onde tem, ele volta para casa sem o remédio, e muitas vezes
+                            interrompe o tratamento.
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Dado da Confederação Nacional de Municípios: 82% dos municípios relatam
+                    desabastecimento. O ponto central é a informação: hoje o paciente só sabe que
+                    não tem quando já está no balcão. Para quem tem pouca mobilidade, essa viagem
+                    perdida pode significar ficar sem o remédio.
+                </aside>
+            </section>
+            <section id="publico">
+                <p class="eyebrow">PARA QUEM</p>
+                <h2 class="title">Pensado para quem tem mais dificuldade</h2>
+                <p class="lead" style="width: 1500px">
+                    Pessoas idosas, de baixa renda ou com pouca mobilidade. A referência negativa
+                    foi o app AquiTemRemédio, nota 1,4 nas lojas.
+                </p>
+                <div class="cards c3">
+                    <div class="card rise" style="--i: 1">
+                        <p class="k">Letra que se lê</p>
+                        <p class="t">
+                            Fonte Atkinson Hyperlegible, criada para pessoas com baixa visão, em
+                            tamanho grande.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="k">Alto contraste</p>
+                        <p class="t">
+                            Cores com contraste alto e texto simples, sem termos técnicos para o
+                            paciente.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="k">Poucos passos</p>
+                        <p class="t">
+                            Um assunto por tela, menu lateral em toda área logada e a próxima ação
+                            sempre à vista.
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    O público orientou as decisões de interface. Escolhemos a fonte Atkinson
+                    Hyperlegible, do Braille Institute, feita para leitura com baixa visão. O visual
+                    imita uma receita: papel claro e tinta azul. O AquiTemRemédio foi nossa
+                    referência do que não fazer.
+                </aside>
+            </section>
+            <section id="solucao" class="alt">
+                <p class="eyebrow">A SOLUÇÃO</p>
+                <h2 class="title">Mostrar onde tem e levar o remédio até o paciente</h2>
+                <div class="cards c4" style="margin-top: 24px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="tag">RF01 · RF02 · RF03</p>
+                        <p class="k">Onde tem</p>
+                        <p class="t">
+                            Estoque de toda a rede em tempo real e a unidade mais próxima, com rota.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="tag">RF07</p>
+                        <p class="k">Transferência</p>
+                        <p class="t">Uma unidade pede o remédio à outra, mais perto do paciente.</p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="tag">RF08</p>
+                        <p class="k">Entrega em casa</p>
+                        <p class="t">Para quem não pode ir, pelo programa municipal de entrega.</p>
+                    </div>
+                    <div class="card rise" style="--i: 4">
+                        <p class="tag">RF04 · RF05 · RF06</p>
+                        <p class="k">Lista de espera</p>
+                        <p class="t">
+                            Pedido ao fornecedor e aviso automático, com prioridade clínica.
+                        </p>
+                    </div>
+                </div>
+                <p class="cap" style="margin-top: 48px; font-size: 26px">
+                    <b>Fora do escopo:</b> não vende remédio, não substitui a receita nem a
+                    avaliação clínica, não cobre farmácia privada fora do Farmácia Popular e não
+                    resolve a causa do desabastecimento.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Quatro pilares, cada um ligado a requisitos. A rede coberta é a municipal do SUS
+                    (UBS e farmácia municipal) mais a farmácia estadual de especializados. O
+                    Farmácia Popular aparece só para consulta. Deixar claro o que está fora do
+                    escopo: não somos um Consulta Remédios.
+                </aside>
+            </section>
+            <section id="atores">
+                <p class="eyebrow">QUEM USA</p>
+                <h2 class="title">Cinco perfis, cada um faz só o seu papel</h2>
+                <table class="tb fade" style="margin-top: 24px">
+                    <tr>
+                        <th style="width: 24%">Perfil</th>
+                        <th style="width: 44%">O que faz</th>
+                        <th style="width: 32%">Telas</th>
+                    </tr>
+                    <tr>
+                        <td>Paciente</td>
+                        <td>Procura o remédio, faz o pedido, escolhe retirar ou receber em casa</td>
+                        <td>Procurar, Onde tem, Meus pedidos, Avisos</td>
+                    </tr>
+                    <tr>
+                        <td>Farmácia (farmacêutico ou auxiliar)</td>
+                        <td>
+                            Atende no balcão, confere receita, cuida do estoque, pede transferência
+                            e compra
+                        </td>
+                        <td>Pedidos, Estoque, Transferências, Compras, Entregas</td>
+                    </tr>
+                    <tr>
+                        <td>Fornecedor</td>
+                        <td>Confirma o prazo ou envia o lote de um pedido de compra</td>
+                        <td>Pedidos de compra</td>
+                    </tr>
+                    <tr>
+                        <td>Entregador</td>
+                        <td>Aceita, retira e entrega o remédio em casa</td>
+                        <td>Entregas</td>
+                    </tr>
+                    <tr>
+                        <td>Gestor</td>
+                        <td>Acompanha a demanda e cadastra unidades, remédios e usuários</td>
+                        <td>Painel, Unidades, Medicamentos, Usuários</td>
+                    </tr>
+                </table>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Cada login tem um perfil só. O servidor garante que cada um age apenas no que é
+                    seu: a farmácia só na própria unidade, o fornecedor só nos pedidos dele, o
+                    entregador só nas entregas dele. O auxiliar não pode liberar antibiótico nem
+                    remédio controlado; isso fica com o farmacêutico.
+                </aside>
+            </section>
+            <section id="fluxo" class="alt">
+                <p class="eyebrow">FLUXO PRINCIPAL</p>
+                <h2 class="title">Do “não tem” até o remédio na mão</h2>
+                <div
+                    class="box step fade"
+                    style="left: 128px; top: 330px; width: 280px; height: 140px; --i: 0"
+                >
+                    <p class="bt">1. Paciente busca</p>
+                </div>
+                <div
+                    class="box step fade"
+                    style="left: 474px; top: 330px; width: 280px; height: 140px; --i: 1"
+                >
+                    <p class="bt">2. Tem na unidade?</p>
+                </div>
+                <div
+                    class="box step fade"
+                    style="left: 820px; top: 330px; width: 280px; height: 140px; --i: 2"
+                >
+                    <p class="bt">3. Tem na rede?</p>
+                </div>
+                <div
+                    class="box step fade"
+                    style="left: 1166px; top: 330px; width: 280px; height: 140px; --i: 3"
+                >
+                    <p class="bt">4. Pede ao fornecedor</p>
+                </div>
+                <div
+                    class="box step fade"
+                    style="left: 1512px; top: 330px; width: 280px; height: 140px; --i: 4"
+                >
+                    <p class="bt">5. Remédio chegou</p>
+                </div>
+                <x-connector x1="408" y1="400" x2="474" y2="400" head="end"></x-connector>
+                <x-connector x1="754" y1="400" x2="820" y2="400" head="end"></x-connector>
+                <x-connector x1="1100" y1="400" x2="1166" y2="400" head="end"></x-connector>
+                <x-connector x1="1446" y1="400" x2="1512" y2="400" head="end"></x-connector>
+                <p class="lbl" style="left: 744px; top: 300px; width: 86px">não</p>
+                <p class="lbl" style="left: 1090px; top: 300px; width: 86px">não</p>
+                <x-connector
+                    x1="268"
+                    y1="470"
+                    x2="268"
+                    y2="600"
+                    head="end"
+                    style="border-style: dashed"
+                ></x-connector>
+                <x-connector x1="614" y1="470" x2="614" y2="600" head="end"></x-connector>
+                <x-connector x1="960" y1="470" x2="960" y2="600" head="end"></x-connector>
+                <x-connector x1="1306" y1="470" x2="1306" y2="600" head="end"></x-connector>
+                <x-connector x1="1652" y1="470" x2="1652" y2="600" head="end"></x-connector>
+                <div
+                    class="box out dash fade"
+                    style="
+                        left: 128px;
+                        top: 600px;
+                        width: 280px;
+                        height: 200px;
+                        justify-content: flex-start;
+                        --i: 5;
+                    "
+                >
+                    <p class="bt"><b>Em paralelo:</b> abaixo do mínimo, a unidade repõe sozinha</p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 474px;
+                        top: 600px;
+                        width: 280px;
+                        height: 200px;
+                        justify-content: flex-start;
+                        --i: 6;
+                    "
+                >
+                    <p class="bt"><b>Sim:</b> separa e entrega no balcão</p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 820px;
+                        top: 600px;
+                        width: 280px;
+                        height: 200px;
+                        justify-content: flex-start;
+                        --i: 7;
+                    "
+                >
+                    <p class="bt"><b>Sim:</b> rota até a mais próxima ou transferência</p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 1166px;
+                        top: 600px;
+                        width: 280px;
+                        height: 200px;
+                        justify-content: flex-start;
+                        --i: 8;
+                    "
+                >
+                    <p class="bt">
+                        <b>Com prazo:</b> avisa o paciente. <b>Sem prazo:</b> lista de espera
+                    </p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 1512px;
+                        top: 600px;
+                        width: 280px;
+                        height: 200px;
+                        justify-content: flex-start;
+                        --i: 9;
+                    "
+                >
+                    <p class="bt"><b>Pode ir:</b> retira. <b>Não pode:</b> entrega em casa</p>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Este é o fluxo do documento do PI. Se a unidade do paciente tem, dispensa no
+                    balcão. Se não tem, o sistema procura na rede; ao mesmo tempo, se o estoque caiu
+                    abaixo do mínimo, dispara a reposição sem travar o atendimento. Se outra unidade
+                    tem, mostramos a mais próxima com rota, ou pedimos transferência. Se ninguém
+                    tem, vai um pedido de compra ao fornecedor: com prazo, o paciente é avisado; sem
+                    prazo, entra na lista de espera com prioridade para crônicos, oncológicos e
+                    doenças raras. Quando o remédio chega, ele retira ou recebe em casa.
+                </aside>
+            </section>
+            <section id="requisitos">
+                <p class="eyebrow">REQUISITOS</p>
+                <h2 class="title">Os oito requisitos funcionais estão no sistema</h2>
+                <table class="tb fade" style="margin-top: 16px; font-size: 26px">
+                    <tr>
+                        <th style="width: 9%">Código</th>
+                        <th style="width: 36%">Requisito</th>
+                        <th style="width: 55%">Como aparece no sistema</th>
+                    </tr>
+                    <tr>
+                        <td>RF01</td>
+                        <td>Consultar estoque local</td>
+                        <td>Paciente procura o remédio; farmácia vê o estoque por lote</td>
+                    </tr>
+                    <tr>
+                        <td>RF02</td>
+                        <td>Disponibilidade na rede</td>
+                        <td>“Onde tem”: todas as unidades com tem, pouco ou em falta</td>
+                    </tr>
+                    <tr>
+                        <td>RF03</td>
+                        <td>Unidade mais próxima e rota</td>
+                        <td>Distância pela localização e botão de rota no mapa</td>
+                    </tr>
+                    <tr>
+                        <td>RF04</td>
+                        <td>Pedido de compra</td>
+                        <td>Pedido ao fornecedor no balcão ou automático pelo mínimo</td>
+                    </tr>
+                    <tr>
+                        <td>RF05</td>
+                        <td>Notificar o paciente</td>
+                        <td>Aviso a cada mudança do pedido: prazo, chegada, entrega</td>
+                    </tr>
+                    <tr>
+                        <td>RF06</td>
+                        <td>Lista de espera</td>
+                        <td>Fila com prioridade clínica e por idade, com alerta</td>
+                    </tr>
+                    <tr>
+                        <td>RF07</td>
+                        <td>Transferência entre unidades</td>
+                        <td>Pedir, enviar ou recusar, e receber na unidade</td>
+                    </tr>
+                    <tr>
+                        <td>RF08</td>
+                        <td>Entrega em casa</td>
+                        <td>Agendar e acompanhar: aceitou, saiu, entregou</td>
+                    </tr>
+                </table>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Os oito requisitos funcionais estão implementados. Sobre a rota (RF03):
+                    calculamos a distância e abrimos a rota no mapa; integração real com serviço de
+                    mapas e logística é decisão em aberto. Não funcionais: consulta em menos de 10
+                    segundos (RNF01), disponibilidade em horário de atendimento (RNF02), LGPD
+                    (RNF03) e escalável para outras redes (RNF04): já temos três cidades
+                    cadastradas.
+                </aside>
+            </section>
+            <section id="telas-paciente" class="alt">
+                <p class="eyebrow">AS TELAS · PACIENTE</p>
+                <h2 class="title">No celular da Dona Maria</h2>
+                <div class="figs">
+                    <div class="fig rise" style="--i: 1">
+                        <img
+                            class="shot"
+                            src="telas/p-inicio.webp"
+                            alt="Tela inicial do paciente: busca de remédio e pedido em andamento"
+                            style="width: 259px; height: 560px"
+                        />
+                        <p class="capt"><b>Início:</b> a busca em destaque e o que está andando</p>
+                    </div>
+                    <div class="fig rise" style="--i: 2">
+                        <img
+                            class="shot"
+                            src="telas/p-onde-tem.webp"
+                            alt="Tela Onde tem: a UBS Centro está sem losartana e a Farmácia Municipal tem, a 0,5 km"
+                            style="width: 259px; height: 560px"
+                        />
+                        <p class="capt"><b>Onde tem:</b> em falta aqui, tem a 0,5 km</p>
+                    </div>
+                    <div class="fig rise" style="--i: 3">
+                        <img
+                            class="shot"
+                            src="telas/p-pedido.webp"
+                            alt="Tela Seu pedido: linha do tempo da losartana, pedida à UBS Jardim"
+                            style="width: 259px; height: 560px"
+                        />
+                        <p class="capt"><b>Seu pedido:</b> cada etapa, sem precisar ligar</p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Telas reais do sistema, com os dados da demonstração. Letra grande, um assunto
+                    por tela e a próxima ação sempre visível. Em “Onde tem”, o selo diz em palavras
+                    se tem ou não, além da cor. Em “Seu pedido”, a linha do tempo mostra onde o
+                    remédio está: pedido recebido, pedido à outra unidade, chegada, entrega.
+                </aside>
+            </section>
+            <section id="telas-farmacia">
+                <p class="eyebrow">AS TELAS · FARMÁCIA</p>
+                <h2 class="title">No computador da farmácia</h2>
+                <div class="figs">
+                    <div class="fig rise" style="--i: 1; width: 800px">
+                        <img
+                            class="shot"
+                            src="telas/f-estoque.webp"
+                            alt="Tela Estoque da UBS Centro: remédios com disponível, reservado, mínimo e lotes com validade"
+                            style="width: 800px; height: 500px; border-radius: 16px"
+                        />
+                        <p class="capt">
+                            <b>Estoque:</b> disponível, reservado, mínimo e cada lote com validade
+                        </p>
+                    </div>
+                    <div class="fig rise" style="--i: 2; width: 800px">
+                        <img
+                            class="shot"
+                            src="telas/f-transferencias.webp"
+                            alt="Tela Transferências da UBS Jardim: pedido de losartana da UBS Centro com botões Enviar e Recusar"
+                            style="width: 800px; height: 500px; border-radius: 16px"
+                        />
+                        <p class="capt">
+                            <b>Transferências:</b> a UBS Jardim envia ou recusa o pedido do Centro
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    A equipe da farmácia usa o computador, com menu lateral: Pedidos,
+                    Transferências, Compras, Estoque e Entregas. No estoque, o que está abaixo do
+                    mínimo aparece escrito em vermelho, e cada lote mostra a validade. Em
+                    Transferências, a unidade que tem o remédio decide enviar ou recusar; ao enviar,
+                    o lote sai do estoque dela e entra no da outra quando chega.
+                </aside>
+            </section>
+            <section id="telas-equipe" class="alt">
+                <p class="eyebrow">AS TELAS · FORNECEDOR, GESTOR E ENTREGADOR</p>
+                <h2 class="title">Cada perfil vê só o que é dele</h2>
+                <div class="figs" style="justify-content: space-between">
+                    <div class="fig rise" style="--i: 1; width: 640px">
+                        <img
+                            class="shot"
+                            src="telas/fornecedor.webp"
+                            alt="Tela do fornecedor: pedido de compra de adalimumabe com dois pacientes na fila e botões Confirmar prazo, Ainda sem prazo e Enviar"
+                            style="width: 640px; height: 400px; border-radius: 16px"
+                        />
+                        <p class="capt"><b>Fornecedor:</b> confirma prazo ou envia o lote</p>
+                    </div>
+                    <div class="fig rise" style="--i: 2; width: 640px">
+                        <img
+                            class="shot"
+                            src="telas/gestor.webp"
+                            alt="Painel do gestor: buscas sem estoque, lotes vencendo, pacientes na fila e remédios mais procurados"
+                            style="width: 640px; height: 400px; border-radius: 16px"
+                        />
+                        <p class="capt"><b>Gestor:</b> onde falta, o que vence e quem espera</p>
+                    </div>
+                    <div class="fig rise" style="--i: 3; width: 260px">
+                        <img
+                            class="shot"
+                            src="telas/entregador.webp"
+                            alt="Tela do entregador no celular: entrega para Rafael Souza Lima"
+                            style="width: 231px; height: 500px"
+                        />
+                        <p class="capt"><b>Entregador:</b> as entregas dele</p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    O fornecedor só vê os pedidos de compra da empresa dele e mostra quantos
+                    pacientes esperam por aquele remédio. O painel do gestor junta as buscas que não
+                    encontraram estoque (anônimas), os lotes perto de vencer e o tamanho da fila de
+                    espera. O entregador usa o celular e só vê as entregas dele ou as disponíveis
+                    para aceitar.
+                </aside>
+            </section>
+            <section id="arquitetura">
+                <p class="eyebrow">ARQUITETURA</p>
+                <h2 class="title">Um repositório, três pacotes e um banco</h2>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 128px;
+                        top: 330px;
+                        width: 380px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 0;
+                    "
+                >
+                    <p
+                        class="bt"
+                        style="
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: var(--ink);
+                            margin: 0 0 8px;
+                        "
+                    >
+                        Navegador
+                    </p>
+                    <p class="bt">Paciente no celular, equipe no computador</p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 556px;
+                        top: 330px;
+                        width: 380px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 1;
+                    "
+                >
+                    <p
+                        class="bt"
+                        style="
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: var(--ink);
+                            margin: 0 0 8px;
+                        "
+                    >
+                        Frontend
+                    </p>
+                    <p class="bt">React 19, Vite e TypeScript, servido por nginx</p>
+                </div>
+                <div
+                    class="box step fade"
+                    style="
+                        left: 984px;
+                        top: 330px;
+                        width: 380px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 2;
+                    "
+                >
+                    <p class="bt" style="font-size: 32px; margin: 0 0 8px">Backend (API)</p>
+                    <p style="font-size: 24px; line-height: 1.35; margin: 0; color: var(--on-ink)">
+                        Node, Fastify 5 e TypeScript; 55 rotas em /api
+                    </p>
+                </div>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 1412px;
+                        top: 330px;
+                        width: 380px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 3;
+                    "
+                >
+                    <p
+                        class="bt"
+                        style="
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: var(--ink);
+                            margin: 0 0 8px;
+                        "
+                    >
+                        Banco
+                    </p>
+                    <p class="bt">PostgreSQL com Drizzle ORM; migrações ao iniciar</p>
+                </div>
+                <x-connector x1="508" y1="425" x2="556" y2="425" head="end"></x-connector>
+                <x-connector x1="936" y1="425" x2="984" y2="425" head="end"></x-connector>
+                <x-connector x1="1364" y1="425" x2="1412" y2="425" head="end"></x-connector>
+                <div
+                    class="box out fade"
+                    style="
+                        left: 556px;
+                        top: 620px;
+                        width: 380px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 4;
+                    "
+                >
+                    <p
+                        class="bt"
+                        style="
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: var(--ink);
+                            margin: 0 0 8px;
+                        "
+                    >
+                        Design system
+                    </p>
+                    <p class="bt">Tokens, 23 componentes e Storybook, usados pelo frontend</p>
+                </div>
+                <div
+                    class="box dash fade"
+                    style="
+                        left: 984px;
+                        top: 620px;
+                        width: 808px;
+                        height: 190px;
+                        justify-content: flex-start;
+                        --i: 5;
+                    "
+                >
+                    <p
+                        class="bt"
+                        style="
+                            font-size: 32px;
+                            font-weight: 700;
+                            color: var(--amber);
+                            margin: 0 0 8px;
+                        "
+                    >
+                        Infraestrutura
+                    </p>
+                    <p class="bt">
+                        GitHub Actions gera as imagens Docker; o deploy sobe na VPS do grupo com
+                        HTTPS (Caddy). Banco com backup por script.
+                    </p>
+                </div>
+                <x-connector x1="746" y1="620" x2="746" y2="520" head="end"></x-connector>
+                <x-connector
+                    x1="1174"
+                    y1="620"
+                    x2="1174"
+                    y2="520"
+                    head="end"
+                    style="border-style: dashed"
+                ></x-connector>
+                <x-connector
+                    x1="1602"
+                    y1="620"
+                    x2="1602"
+                    y2="520"
+                    head="end"
+                    style="border-style: dashed"
+                ></x-connector>
+                <p class="cap" style="position: absolute; left: 128px; top: 620px; width: 380px">
+                    Monorepo pnpm com um lockfile só. O frontend chama a API por HTTPS (JSON); a API
+                    fala SQL com o banco.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Tudo vive num único repositório: apps/backend, apps/frontend,
+                    packages/style-guide e infra. O design system é consumido pelo frontend direto
+                    do workspace, então uma mudança de botão aparece na hora. Produção:
+                    logfarma.codexolimpo.com.br para as telas e api-logfarma.codexolimpo.com.br para
+                    a API. O site do professor, projetointegrador.app.br, usa a mesma API e o mesmo
+                    banco.
+                </aside>
+            </section>
+            <section id="banco-mapa" class="alt">
+                <p class="eyebrow">BANCO DE DADOS</p>
+                <h2 class="title">25 tabelas em cinco grupos</h2>
+                <p class="lead">
+                    Nomes em inglês, seguindo o glossário do projeto; quatro migrações versionadas.
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1.15fr 1fr 1fr; gap: 24px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="k" style="font-size: 32px">Pessoas e acesso</p>
+                        <p class="tag">8 tabelas</p>
+                        <p
+                            class="mono"
+                            style="font-size: 24px; line-height: 1.5; margin: 0; color: var(--text)"
+                        >
+                            users<br />patients<br />patient_priorities<br />caregivers<br />pharmacy_staff<br />supplier_staff<br />couriers<br />password_reset_tokens
+                        </p>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 24px">
+                        <div class="card rise" style="--i: 2">
+                            <p class="k" style="font-size: 32px">Rede</p>
+                            <p class="tag">2 tabelas</p>
+                            <p
+                                class="mono"
+                                style="
+                                    font-size: 24px;
+                                    line-height: 1.5;
+                                    margin: 0;
+                                    color: var(--text);
+                                "
+                            >
+                                pharmacies<br />suppliers
+                            </p>
+                        </div>
+                        <div class="card rise" style="--i: 3">
+                            <p class="k" style="font-size: 32px">Rastros anônimos</p>
+                            <p class="tag">2 tabelas</p>
+                            <p
+                                class="mono"
+                                style="
+                                    font-size: 24px;
+                                    line-height: 1.5;
+                                    margin: 0;
+                                    color: var(--text);
+                                "
+                            >
+                                search_events<br />patient_recent_medications
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card rise" style="--i: 4">
+                        <p class="k" style="font-size: 32px">Remédio e estoque</p>
+                        <p class="tag">5 tabelas</p>
+                        <p
+                            class="mono"
+                            style="font-size: 24px; line-height: 1.5; margin: 0; color: var(--text)"
+                        >
+                            medications<br />stock_items<br />stock_batches<br />stock_movements<br />stock_reservations
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 5">
+                        <p class="k" style="font-size: 32px">Atendimento</p>
+                        <p class="tag">8 tabelas</p>
+                        <p
+                            class="mono"
+                            style="font-size: 24px; line-height: 1.5; margin: 0; color: var(--text)"
+                        >
+                            medication_requests<br />prescriptions<br />dispensations<br />transfers<br />deliveries<br />waitlist_entries<br />purchase_orders<br />notifications
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Visão geral do banco antes de entrar nas ligações. São 25 tabelas no PostgreSQL.
+                    Os três slides seguintes mostram as ligações: pessoas, estoque e o pedido do
+                    paciente, que é o centro de tudo. search_events não guarda quem buscou: é
+                    anônima e serve só para o painel do gestor. patient_recent_medications é o
+                    histórico da própria paciente, que só ela vê e pode apagar.
+                </aside>
+            </section>
+            <section id="banco-pessoas">
+                <p class="eyebrow">BANCO · PESSOAS</p>
+                <h2 class="title">Um login, um perfil</h2>
+                <div
+                    class="box tbl hub fade"
+                    style="left: 128px; top: 480px; width: 280px; height: 180px; --i: 0"
+                >
+                    <p class="n">users</p>
+                    <p class="d">e-mail, senha (argon2), perfil, ativo</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 560px; top: 300px; width: 340px; height: 125px; --i: 1"
+                >
+                    <p class="n">patients</p>
+                    <p class="d">CNS, endereço, unidade de referência</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 560px; top: 458px; width: 340px; height: 125px; --i: 2"
+                >
+                    <p class="n">pharmacy_staff</p>
+                    <p class="d">farmacêutico ou auxiliar, CRF</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 560px; top: 616px; width: 340px; height: 125px; --i: 3"
+                >
+                    <p class="n">supplier_staff</p>
+                    <p class="d">atendente do fornecedor</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 560px; top: 774px; width: 340px; height: 125px; --i: 4"
+                >
+                    <p class="n">couriers</p>
+                    <p class="d">programa municipal de entrega</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1060px; top: 520px; width: 320px; height: 140px; --i: 5"
+                >
+                    <p class="n">pharmacies</p>
+                    <p class="d">unidades da rede</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1060px; top: 720px; width: 320px; height: 110px; --i: 6"
+                >
+                    <p class="n">suppliers</p>
+                    <p class="d">distribuidoras</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1470px; top: 290px; width: 322px; height: 150px; --i: 7"
+                >
+                    <p class="n">patient_priorities</p>
+                    <p class="d">crônico, oncológico ou doença rara, com consentimento</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1470px; top: 470px; width: 322px; height: 100px; --i: 8"
+                >
+                    <p class="n">caregivers</p>
+                    <p class="d">quem retira por ele</p>
+                </div>
+                <x-connector x1="560" y1="362" x2="408" y2="540" head="end"></x-connector>
+                <x-connector x1="560" y1="520" x2="408" y2="560" head="end"></x-connector>
+                <x-connector x1="560" y1="678" x2="408" y2="590" head="end"></x-connector>
+                <x-connector x1="560" y1="836" x2="408" y2="620" head="end"></x-connector>
+                <x-connector x1="1470" y1="365" x2="900" y2="340" head="end"></x-connector>
+                <x-connector x1="1470" y1="520" x2="900" y2="395" head="end"></x-connector>
+                <x-connector x1="900" y1="412" x2="1060" y2="555" head="end"></x-connector>
+                <x-connector x1="900" y1="535" x2="1060" y2="590" head="end"></x-connector>
+                <x-connector x1="900" y1="690" x2="1060" y2="775" head="end"></x-connector>
+                <p class="cap" style="position: absolute; left: 128px; top: 700px; width: 380px">
+                    A seta aponta para a tabela referenciada (chave estrangeira). Cada perfil liga
+                    1:1 a <span class="mono">users</span> pelo <span class="mono">user_id</span>.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    A tabela users guarda só o que é de login: e-mail, hash da senha com argon2, o
+                    perfil e se está ativo. Os dados de cada tipo de pessoa ficam na tabela do
+                    perfil, ligada um para um pelo user_id. O paciente tem uma unidade de referência
+                    (UBS ou farmácia municipal). A prioridade clínica é um dado sensível pela LGPD,
+                    então fica numa tabela separada, com data de consentimento e de revogação. O
+                    responsável (caregiver) é quem pode retirar o remédio no lugar do paciente.
+                </aside>
+            </section>
+            <section id="banco-estoque" class="alt">
+                <p class="eyebrow">BANCO · ESTOQUE</p>
+                <h2 class="title">Estoque por lote, com cada movimento registrado</h2>
+                <p class="lead">
+                    Disponível = soma dos lotes dentro da validade − o que já está separado para
+                    pedidos.
+                </p>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 128px; top: 380px; width: 320px; height: 110px; --i: 0"
+                >
+                    <p class="n">pharmacies</p>
+                    <p class="d">a unidade</p>
+                </div>
+                <div
+                    class="box tbl hub fade"
+                    style="left: 800px; top: 380px; width: 320px; height: 110px; --i: 1"
+                >
+                    <p class="n">stock_items</p>
+                    <p class="d">mínimo por unidade</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1472px; top: 380px; width: 320px; height: 110px; --i: 2"
+                >
+                    <p class="n">medications</p>
+                    <p class="d">o remédio</p>
+                </div>
+                <div
+                    class="box tbl hub fade"
+                    style="left: 800px; top: 540px; width: 320px; height: 110px; --i: 3"
+                >
+                    <p class="n">stock_batches</p>
+                    <p class="d">lote, validade, quantidade</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 380px; top: 700px; width: 360px; height: 110px; --i: 4"
+                >
+                    <p class="n">stock_movements</p>
+                    <p class="d">entrada, saída, perda, ajuste</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 1180px; top: 700px; width: 360px; height: 110px; --i: 5"
+                >
+                    <p class="n">stock_reservations</p>
+                    <p class="d">separado para um pedido</p>
+                </div>
+                <x-connector x1="800" y1="435" x2="448" y2="435" head="end"></x-connector>
+                <x-connector x1="1120" y1="435" x2="1472" y2="435" head="end"></x-connector>
+                <x-connector
+                    x1="800"
+                    y1="595"
+                    x2="288"
+                    y2="490"
+                    head="end"
+                    route="hv"
+                ></x-connector>
+                <x-connector
+                    x1="1120"
+                    y1="595"
+                    x2="1632"
+                    y2="490"
+                    head="end"
+                    route="hv"
+                ></x-connector>
+                <x-connector x1="560" y1="700" x2="880" y2="650" head="end"></x-connector>
+                <x-connector x1="1360" y1="700" x2="1040" y2="650" head="end"></x-connector>
+                <div
+                    class="fade"
+                    style="
+                        position: absolute;
+                        left: 128px;
+                        top: 850px;
+                        width: 1664px;
+                        display: flex;
+                        gap: 24px;
+                        --i: 6;
+                    "
+                >
+                    <p
+                        style="
+                            font-size: 24px;
+                            font-weight: 700;
+                            margin: 0;
+                            padding: 10px 22px;
+                            border-radius: 999px;
+                            background: var(--ink-soft);
+                            color: var(--ink-deep);
+                        "
+                    >
+                        FEFO: vence antes, sai antes
+                    </p>
+                    <p
+                        style="
+                            font-size: 24px;
+                            font-weight: 700;
+                            margin: 0;
+                            padding: 10px 22px;
+                            border-radius: 999px;
+                            background: var(--ink-soft);
+                            color: var(--ink-deep);
+                        "
+                    >
+                        Lote vencido não é dispensado
+                    </p>
+                    <p
+                        style="
+                            font-size: 24px;
+                            font-weight: 700;
+                            margin: 0;
+                            padding: 10px 22px;
+                            border-radius: 999px;
+                            background: var(--amber-bg);
+                            color: var(--amber);
+                        "
+                    >
+                        Abaixo do mínimo: reposição automática
+                    </p>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    stock_items é o resumo de um remédio numa unidade, com o estoque mínimo. A
+                    quantidade real está nos lotes (stock_batches), cada um com número e validade.
+                    Toda entrada e saída vira uma linha em stock_movements, então dá para auditar.
+                    Quando um pedido é preparado, a quantidade fica reservada num lote
+                    (stock_reservations) e some do disponível, sem ainda sair da prateleira. A saída
+                    segue FEFO: primeiro o lote que vence antes. Hoje a produção tem cerca de 2.450
+                    lotes nas 18 unidades.
+                </aside>
+            </section>
+            <section id="banco-pedido">
+                <p class="eyebrow">BANCO · ATENDIMENTO</p>
+                <h2 class="title">O pedido do paciente é o centro de tudo</h2>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 128px; top: 300px; width: 320px; height: 100px; --i: 0"
+                >
+                    <p class="n">patients</p>
+                    <p class="d">quem pediu</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 560px; top: 300px; width: 320px; height: 100px; --i: 0"
+                >
+                    <p class="n">prescriptions</p>
+                    <p class="d">receita conferida</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1040px; top: 300px; width: 320px; height: 100px; --i: 0"
+                >
+                    <p class="n">medications</p>
+                    <p class="d">qual remédio</p>
+                </div>
+                <div
+                    class="box tbl soft fade"
+                    style="left: 1472px; top: 300px; width: 320px; height: 100px; --i: 0"
+                >
+                    <p class="n">pharmacies</p>
+                    <p class="d">unidade responsável</p>
+                </div>
+                <div
+                    class="box tbl hub fade"
+                    style="left: 760px; top: 480px; width: 400px; height: 130px; --i: 1"
+                >
+                    <p class="n">medication_requests</p>
+                    <p class="d">situação, retirada ou entrega</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 128px; top: 485px; width: 320px; height: 120px; --i: 2"
+                >
+                    <p class="n">notifications</p>
+                    <p class="d">avisos ao paciente</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 1472px; top: 485px; width: 320px; height: 120px; --i: 3"
+                >
+                    <p class="n">purchase_orders</p>
+                    <p class="d">compra ao fornecedor</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 128px; top: 740px; width: 320px; height: 110px; --i: 4"
+                >
+                    <p class="n">dispensations</p>
+                    <p class="d">retirada no balcão</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 576px; top: 740px; width: 320px; height: 110px; --i: 4"
+                >
+                    <p class="n">transfers</p>
+                    <p class="d">entre unidades</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 1024px; top: 740px; width: 320px; height: 110px; --i: 4"
+                >
+                    <p class="n">deliveries</p>
+                    <p class="d">entrega em casa</p>
+                </div>
+                <div
+                    class="box tbl fade"
+                    style="left: 1472px; top: 740px; width: 320px; height: 110px; --i: 4"
+                >
+                    <p class="n">waitlist_entries</p>
+                    <p class="d">fila por prioridade</p>
+                </div>
+                <x-connector x1="820" y1="480" x2="288" y2="400" head="end"></x-connector>
+                <x-connector x1="900" y1="480" x2="720" y2="400" head="end"></x-connector>
+                <x-connector x1="1020" y1="480" x2="1200" y2="400" head="end"></x-connector>
+                <x-connector x1="1100" y1="480" x2="1632" y2="400" head="end"></x-connector>
+                <x-connector x1="448" y1="545" x2="760" y2="545" head="end"></x-connector>
+                <x-connector x1="288" y1="740" x2="860" y2="610" head="end"></x-connector>
+                <x-connector x1="736" y1="740" x2="920" y2="610" head="end"></x-connector>
+                <x-connector x1="1184" y1="740" x2="1000" y2="610" head="end"></x-connector>
+                <x-connector x1="1560" y1="740" x2="1100" y2="610" head="end"></x-connector>
+                <x-connector x1="1700" y1="740" x2="1700" y2="605" head="end"></x-connector>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Toda a operação gira em torno de medication_requests, o pedido do paciente. Ele
+                    aponta para quem pediu, qual remédio, qual receita e qual unidade é a
+                    responsável. Dependendo do caminho, ele ganha uma dispensação (retirou no
+                    balcão), uma transferência entre unidades, uma entrega em casa ou uma entrada na
+                    lista de espera. A entrada da lista de espera aponta para o pedido de compra ao
+                    fornecedor; quando o lote chega, a fila é atendida pela prioridade. Cada mudança
+                    gera um aviso em notifications.
+                </aside>
+            </section>
+            <section id="status" class="alt">
+                <p class="eyebrow">SITUAÇÕES DO PEDIDO</p>
+                <h2 class="title">O pedido só anda pelos caminhos permitidos</h2>
+                <div
+                    class="box st fade"
+                    style="left: 128px; top: 480px; width: 260px; height: 110px; --i: 0"
+                >
+                    <p class="bt">Aguardando a farmácia</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 479px; top: 300px; width: 260px; height: 110px; --i: 1"
+                >
+                    <p class="bt">Em transferência</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 479px; top: 660px; width: 260px; height: 110px; --i: 1"
+                >
+                    <p class="bt">Na lista de espera</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 830px; top: 480px; width: 260px; height: 110px; --i: 2"
+                >
+                    <p class="bt">Chegou na unidade</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 1181px; top: 300px; width: 260px; height: 110px; --i: 3"
+                >
+                    <p class="bt">Pronto para retirada</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 1181px; top: 660px; width: 260px; height: 110px; --i: 3"
+                >
+                    <p class="bt">Entrega agendada</p>
+                </div>
+                <div
+                    class="box st end fade"
+                    style="left: 1532px; top: 300px; width: 260px; height: 110px; --i: 4"
+                >
+                    <p class="bt">Retirado (fim)</p>
+                </div>
+                <div
+                    class="box st end fade"
+                    style="left: 1532px; top: 480px; width: 260px; height: 110px; --i: 5"
+                >
+                    <p class="bt">Entregue (fim)</p>
+                </div>
+                <div
+                    class="box st fade"
+                    style="left: 1532px; top: 660px; width: 260px; height: 110px; --i: 4"
+                >
+                    <p class="bt">Saiu para entrega</p>
+                </div>
+                <x-connector x1="388" y1="505" x2="479" y2="370" head="end"></x-connector>
+                <x-connector x1="388" y1="565" x2="479" y2="700" head="end"></x-connector>
+                <x-connector x1="388" y1="535" x2="1181" y2="340" head="end"></x-connector>
+                <x-connector x1="739" y1="370" x2="830" y2="505" head="end"></x-connector>
+                <x-connector x1="739" y1="700" x2="830" y2="565" head="end"></x-connector>
+                <x-connector x1="1090" y1="505" x2="1181" y2="395" head="end"></x-connector>
+                <x-connector x1="1090" y1="565" x2="1181" y2="700" head="end"></x-connector>
+                <x-connector x1="1441" y1="355" x2="1532" y2="355" head="end"></x-connector>
+                <x-connector x1="1311" y1="410" x2="1311" y2="660" head="end"></x-connector>
+                <x-connector x1="1441" y1="715" x2="1532" y2="715" head="end"></x-connector>
+                <x-connector x1="1662" y1="660" x2="1662" y2="590" head="end"></x-connector>
+                <p class="cap" style="position: absolute; left: 128px; top: 820px; width: 1664px">
+                    Transferência recusada volta para “aguardando”; entrega que falha volta para
+                    “chegou”. Antes de concluir, o pedido pode ser cancelado. Toda mudança passa por
+                    uma única função, que barra saltos inválidos.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    No banco, as situações são um enum: requested, in_transfer, waitlisted, arrived,
+                    ready_for_pickup, delivery_scheduled, out_for_delivery, picked_up, delivered e
+                    cancelled. A função setStatus consulta uma tabela de transições permitidas
+                    (assertTransition) e devolve erro 409 se alguém tentar pular etapa, por exemplo
+                    um segundo clique em “dispensar”. Isso evita entregar o mesmo remédio duas
+                    vezes.
+                </aside>
+            </section>
+            <section id="regras">
+                <p class="eyebrow">REGRAS DE NEGÓCIO</p>
+                <h2 class="title">Regras que o servidor garante</h2>
+                <div class="cards c3" style="margin-top: 24px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="k">Prioridade na fila</p>
+                        <p class="t">
+                            Oncológico ou doença rara primeiro, depois crônico, 80+ e 60+ anos.
+                            Empate: quem chegou antes.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="k">Lote certo</p>
+                        <p class="t">
+                            Sai primeiro o lote que vence antes (FEFO). Lote vencido nunca é
+                            dispensado.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="k">Receita</p>
+                        <p class="t">
+                            Conferida e válida antes de entregar. Antibiótico e controlado: só o
+                            farmacêutico.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 4">
+                        <p class="k">Estoque mínimo</p>
+                        <p class="t">
+                            Abaixo do mínimo, a unidade pede reposição sem travar o atendimento.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 5">
+                        <p class="k">Unidade certa</p>
+                        <p class="t">
+                            Alto custo vai para a Farmácia de Especializados; o resto, para a UBS de
+                            referência.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 6">
+                        <p class="k">Rede pública</p>
+                        <p class="t">
+                            Transferência só entre unidades do SUS; o Farmácia Popular aparece só
+                            para consulta.
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    As regras puras ficam em src/domain e são testadas sem banco. Prioridade em
+                    números: oncológico ou doença rara 400, crônico 300, 80 anos ou mais 200, 60
+                    anos ou mais 100 (Estatuto da Pessoa Idosa), demais 0. A prioridade clínica só
+                    vale com consentimento do paciente. Antimicrobianos seguem a RDC 471/2021 e
+                    controlados a Portaria 344/1998.
+                </aside>
+            </section>
+            <section id="seguranca" class="alt">
+                <p class="eyebrow">SEGURANÇA E LGPD · RNF03</p>
+                <h2 class="title">Quem protege os dados é o login</h2>
+                <div class="cards c3" style="margin-top: 24px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="k">Senhas</p>
+                        <p class="t">
+                            Guardadas com argon2, nunca em texto. Recuperação por link de uso único,
+                            válido 30 min.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="k">Sessão</p>
+                        <p class="t">
+                            Token JWT em cookie httpOnly, ou no cabeçalho Bearer para o site do
+                            professor.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="k">Perfis no servidor</p>
+                        <p class="t">
+                            Farmácia só na própria unidade; fornecedor e entregador só no que é
+                            deles.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 4">
+                        <p class="k">Dado sensível</p>
+                        <p class="t">
+                            Prioridade clínica só com consentimento, que pode ser revogado. Nada
+                            pessoal nos logs.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 5">
+                        <p class="k">Painel anônimo</p>
+                        <p class="t">As buscas que o gestor vê não guardam quem buscou.</p>
+                    </div>
+                    <div class="card rise" style="--i: 6">
+                        <p class="k">Lista de sites</p>
+                        <p class="t">
+                            Só nossos sites chamam a API pelo navegador. Isso protege o usuário de
+                            sites maliciosos, não substitui o login.
+                        </p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Sobre a lista de sites liberados (CORS): o cabeçalho Origin é declarado por quem
+                    chama, então dá para forjá-lo com curl ou mudando o DNS local. Ela não é
+                    controle de acesso; impede que um site malicioso aberto em outra aba use a
+                    sessão de um usuário logado. Quem forja o Origin no próprio computador continua
+                    precisando de e-mail e senha e só vê o que o perfil dele permite. A API responde
+                    403 a sites não liberados.
+                </aside>
+            </section>
+            <section id="qualidade">
+                <p class="eyebrow">QUALIDADE</p>
+                <h2 class="title">Números do projeto</h2>
+                <div class="cards c4" style="margin-top: 40px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="num">323</p>
+                        <p class="t">
+                            testes automáticos (144 da API, com banco real, e 179 das telas)
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="num">296</p>
+                        <p class="t">medicamentos da RENAME no catálogo</p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="num">18</p>
+                        <p class="t">unidades em Taquaritinga, Matão e Monte Alto</p>
+                    </div>
+                    <div class="card rise" style="--i: 4">
+                        <p class="num">18</p>
+                        <p class="t">registros no diário de bordo, em docs/</p>
+                    </div>
+                </div>
+                <p class="lead fade" style="margin-top: 56px; --i: 5">
+                    <b>Como trabalhamos:</b> TypeScript estrito, formatação automática (Prettier),
+                    main protegida, verificação de tipos antes de cada entrega e tudo documentado em
+                    docs/: o que, por que, onde e as escolhas feitas.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Os testes da API rodam contra um PostgreSQL de verdade, não um banco falso: cada
+                    regra nova chega com um teste que falhou antes. O diário de bordo em docs
+                    registra cada entrega com data, para quem chega depois entender as decisões sem
+                    adivinhar pelo código. Para a demonstração, a produção tem cerca de 2.000 itens
+                    de estoque e 2.450 lotes.
+                </aside>
+            </section>
+            <section id="demo" class="alt">
+                <p class="eyebrow">DEMONSTRAÇÃO AO VIVO · LOGFARMA.CODEXOLIMPO.COM.BR</p>
+                <h2 class="title">A história da Dona Maria, em seis passos</h2>
+                <table class="tb fade" style="margin-top: 24px; font-size: 30px">
+                    <tr>
+                        <th style="width: 6%">#</th>
+                        <th style="width: 30%">Conta (@demo.logfarma)</th>
+                        <th style="width: 64%">O que mostrar</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>maria</td>
+                        <td>
+                            Procura losartana: em falta na UBS Centro, tem perto dela. Vê os pedidos
+                            e avisos
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>farmaceutico.jardim</td>
+                        <td>Transferências: envia a losartana pedida pelo Centro</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>farmaceutico.centro</td>
+                        <td>
+                            Recebe a losartana e agenda a entrega; entrega a metformina no balcão
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>entregador1</td>
+                        <td>Aceita, retira e entrega a dipirona do Rafael</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>fornecedor</td>
+                        <td>Confirma o prazo do adalimumabe: a lista de espera recebe o aviso</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>gestor</td>
+                        <td>Painel: buscas não atendidas, unidades, remédios e usuários</td>
+                    </tr>
+                </table>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Paciente entra pela aba de paciente; as outras contas pela aba da equipe. Extra:
+                    no passo 1, a Maria pode pedir adalimumabe ao vivo; ela entra em 2º na fila,
+                    atrás do José (oncológico) e à frente do Rafael (sem prioridade), mesmo tendo
+                    chegado depois. Contas extras: auxiliar.centro (mostra que o auxiliar não libera
+                    antibiótico), farmaceutico.especializados (fila do adalimumabe), fornecedor2,
+                    entregador2, jose e rafael.
+                </aside>
+            </section>
+            <section id="proximos">
+                <p class="eyebrow">PRÓXIMOS PASSOS</p>
+                <h2 class="title">O que vem depois do MVP</h2>
+                <div class="cards c3" style="margin-top: 24px">
+                    <div class="card rise" style="--i: 1">
+                        <p class="tag">INTEGRAÇÃO</p>
+                        <p class="k">Estoque oficial</p>
+                        <p class="t">
+                            Ler o estoque direto do BNAFAR/Hórus, em vez de cadastrar à mão. O banco
+                            já guarda os campos.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 2">
+                        <p class="tag">INTEGRAÇÃO</p>
+                        <p class="k">Mapas e logística</p>
+                        <p class="t">
+                            Rota e tempo reais por um serviço de mapas e roteiro de entregas para o
+                            programa municipal.
+                        </p>
+                    </div>
+                    <div class="card rise" style="--i: 3">
+                        <p class="tag">NOVOS MÓDULOS</p>
+                        <p class="k">Adesão e voluntários</p>
+                        <p class="t">
+                            Lembrete de tratamento e programa de entrega voluntária, previstos para
+                            depois do MVP.
+                        </p>
+                    </div>
+                </div>
+                <p class="lead fade" style="margin-top: 48px; --i: 4">
+                    Escala (RNF04): uma nova cidade é só cadastrar unidades. O catálogo já cobre
+                    Taquaritinga, Matão e Monte Alto.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Estas são as decisões em aberto do projeto: nada é integrado de verdade ainda,
+                    mas o modelo de dados já tem os campos (CNES, CATMAT, CNPJ do fabricante,
+                    registro Anvisa). O próximo passo natural é o estoque oficial, que acaba com o
+                    cadastro manual.
+                </aside>
+            </section>
+            <section id="fim" class="dark" style="justify-content: center">
+                <img
+                    class="fade"
+                    src="logo.svg"
+                    alt="Símbolo do LogFarma"
+                    style="width: 140px; height: 140px; object-fit: contain; margin: 0 0 48px"
+                />
+                <h2
+                    class="rise"
+                    style="
+                        font-size: 112px;
+                        font-weight: 700;
+                        line-height: 1.05;
+                        margin: 0 0 32px;
+                        color: var(--on-ink);
+                        --i: 1;
+                    "
+                >
+                    Obrigado!
+                </h2>
+                <p
+                    class="rise"
+                    style="
+                        font-size: 40px;
+                        line-height: 1.35;
+                        color: var(--on-ink-muted);
+                        margin: 0 0 64px;
+                        --i: 2;
+                    "
+                >
+                    Perguntas?
+                </p>
+                <p
+                    class="rise"
+                    style="
+                        font-size: 26px;
+                        line-height: 1.5;
+                        color: var(--on-ink-muted);
+                        margin: 0;
+                        width: 1500px;
+                        --i: 3;
+                    "
+                >
+                    Arthur Vinicius Ferreira · Bruno Henrique Jacinto · Lorena Duarte Malaguti ·
+                    Paulo Henrique de Souza Santos<br />Orientador: Prof. Gabriel Passatuto Gallo ·
+                    Fatec Taquaritinga · 2026
+                </p>
+                <aside>
+                    Agradecer ao professor orientador e abrir para perguntas. Se perguntarem sobre
+                    segurança do domínio, voltar ao slide de Segurança e LGPD.
+                </aside>
+            </section>
+        </div>
+        <div id="bar"><i></i></div>
+        <div id="notes"></div>
+        <p id="help">← → passar · F tela cheia · N notas · P automático</p>
+        <p id="auto"></p>
+        <script>
+            (() => {
+                const stage = document.getElementById("stage");
+                const slides = [...stage.querySelectorAll(":scope > section")];
+                const NS = "http://www.w3.org/2000/svg";
+                // Conectores do Slides viram linhas SVG com seta.
+                slides.forEach((s, i) => {
+                    s.querySelectorAll(".pg").forEach((p) => (p.dataset.n = String(i + 1)));
+                    const wires = [...s.querySelectorAll("x-connector")];
+                    if (!wires.length) return;
+                    const svg = document.createElementNS(NS, "svg");
+                    svg.setAttribute("class", "wires");
+                    svg.setAttribute("viewBox", "0 0 1920 1080");
+                    svg.innerHTML =
+                        '<defs><marker id="m' +
+                        i +
+                        '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7d8bb0"/></marker></defs>';
+                    for (const w of wires) {
+                        const [x1, y1, x2, y2] = ["x1", "y1", "x2", "y2"].map(
+                            (k) => +w.getAttribute(k),
+                        );
+                        const route = w.getAttribute("route");
+                        const pts =
+                            route === "hv"
+                                ? [
+                                      [x1, y1],
+                                      [x2, y1],
+                                      [x2, y2],
+                                  ]
+                                : route === "vh"
+                                  ? [
+                                        [x1, y1],
+                                        [x1, y2],
+                                        [x2, y2],
+                                    ]
+                                  : [
+                                        [x1, y1],
+                                        [x2, y2],
+                                    ];
+                        const line = document.createElementNS(NS, "polyline");
+                        line.setAttribute("points", pts.map((p) => p.join(",")).join(" "));
+                        line.setAttribute("fill", "none");
+                        line.setAttribute("stroke", "#7d8bb0");
+                        line.setAttribute("stroke-width", "3");
+                        if ((w.getAttribute("style") || "").includes("dashed"))
+                            line.setAttribute("stroke-dasharray", "10 8");
+                        if (w.getAttribute("head") !== "none")
+                            line.setAttribute("marker-end", "url(#m" + i + ")");
+                        svg.appendChild(line);
+                    }
+                    s.insertBefore(svg, s.firstChild);
+                });
+                const notes = document.getElementById("notes");
+                const bar = document.querySelector("#bar i");
+                const autoTag = document.getElementById("auto");
+                // Modo telão: ?auto=15 passa sozinho a cada 15 s e volta ao início no fim. P pausa/retoma.
+                const params = new URLSearchParams(location.search);
+                let autoSec = params.has("auto") ? parseInt(params.get("auto"), 10) || 15 : 0;
+                let lastSec = autoSec || 15;
+                let timer = null;
+                function schedule() {
+                    clearTimeout(timer);
+                    document.body.classList.toggle("auto", autoSec > 0);
+                    autoTag.textContent = autoSec
+                        ? "▶ automático · " + autoSec + " s (P pausa)"
+                        : "❚❚ pausado (P retoma)";
+                    autoTag.classList.toggle("on", params.has("auto"));
+                    if (autoSec)
+                        timer = setTimeout(
+                            () => show(cur + 1 >= slides.length ? 0 : cur + 1),
+                            autoSec * 1000,
+                        );
+                }
+                let cur = 0;
+                function show(n) {
+                    cur = Math.max(0, Math.min(slides.length - 1, n));
+                    schedule();
+                    slides.forEach((s, i) => s.classList.toggle("on", i === cur));
+                    const aside = slides[cur].querySelector("aside");
+                    notes.textContent = aside ? aside.textContent : "Sem notas neste slide.";
+                    bar.style.width = ((cur + 1) / slides.length) * 100 + "%";
+                    history.replaceState(null, "", "#" + (cur + 1));
+                }
+                function fit() {
+                    const k = Math.min(innerWidth / 1920, innerHeight / 1080);
+                    stage.style.transform =
+                        "translate(" +
+                        (innerWidth - 1920 * k) / 2 +
+                        "px," +
+                        (innerHeight - 1080 * k) / 2 +
+                        "px) scale(" +
+                        k +
+                        ")";
+                }
+                addEventListener("resize", fit);
+                addEventListener("keydown", (e) => {
+                    if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) show(cur + 1);
+                    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) show(cur - 1);
+                    else if (e.key === "Home") show(0);
+                    else if (e.key === "End") show(slides.length - 1);
+                    else if (e.key === "n" || e.key === "N") notes.classList.toggle("on");
+                    else if (e.key === "p" || e.key === "P") {
+                        if (autoSec) {
+                            lastSec = autoSec;
+                            autoSec = 0;
+                        } else autoSec = lastSec;
+                        params.set("auto", String(lastSec));
+                        schedule();
+                    } else if (e.key === "f" || e.key === "F")
+                        document.fullscreenElement
+                            ? document.exitFullscreen()
+                            : document.documentElement.requestFullscreen();
+                    else return;
+                    e.preventDefault();
+                });
+                addEventListener("click", (e) => {
+                    if (!notes.contains(e.target))
+                        show(cur + (e.clientX > innerWidth / 3 ? 1 : -1));
+                });
+                let tx = null;
+                addEventListener("touchstart", (e) => (tx = e.touches[0].clientX), {
+                    passive: true,
+                });
+                addEventListener("touchend", (e) => {
+                    if (tx === null) return;
+                    const d = e.changedTouches[0].clientX - tx;
+                    if (Math.abs(d) > 40) show(cur + (d < 0 ? 1 : -1));
+                    tx = null;
+                });
+                fit();
+                show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+            })();
+        </script>
+    </body>
+</html>
