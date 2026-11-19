@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#14275e" />
+        <title>Controle da apresentação — LogFarma</title>
+        <link rel="icon" href="logo.svg" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@700&display=swap"
+        />
+        <style>
+            :root {
+                --ink: #1f3f8f;
+                --ink-deep: #14275e;
+                --paper: #fbfcff;
+                --soft: #c3d0f0;
+                --ok: #1e7a46;
+                --red: #c8102e;
+            }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+            html,
+            body {
+                min-height: 100%;
+                background: var(--ink-deep);
+                color: var(--paper);
+                font:
+                    18px/1.45 "Atkinson Hyperlegible",
+                    Verdana,
+                    sans-serif;
+            }
+            body {
+                padding: max(16px, env(safe-area-inset-top)) 16px
+                    max(24px, env(safe-area-inset-bottom));
+                max-width: 560px;
+                margin: 0 auto;
+            }
+            header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+            header img {
+                width: 40px;
+                height: 40px;
+            }
+            header p {
+                font-weight: 700;
+                font-size: 20px;
+            }
+            [hidden] {
+                display: none !important;
+            }
+            label {
+                display: block;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+            input,
+            select {
+                width: 100%;
+                font: inherit;
+                font-size: 22px;
+                padding: 14px;
+                border-radius: 12px;
+                border: 3px solid var(--soft);
+                background: var(--paper);
+                color: var(--ink-deep);
+            }
+            #code {
+                font-family: "JetBrains Mono", "Courier New", monospace;
+                letter-spacing: 6px;
+                text-transform: uppercase;
+                text-align: center;
+            }
+            button {
+                font: inherit;
+                font-weight: 700;
+                border: 0;
+                border-radius: 16px;
+                cursor: pointer;
+                touch-action: manipulation;
+            }
+            button:focus-visible,
+            input:focus-visible,
+            select:focus-visible {
+                outline: 4px solid #ffd166;
+                outline-offset: 2px;
+            }
+            .primary {
+                width: 100%;
+                margin-top: 14px;
+                padding: 16px;
+                font-size: 22px;
+                background: var(--paper);
+                color: var(--ink-deep);
+            }
+            #status {
+                display: inline-block;
+                font-size: 15px;
+                padding: 4px 12px;
+                border-radius: 999px;
+                background: #ffffff1f;
+                color: var(--soft);
+                margin-bottom: 14px;
+            }
+            #status.ok {
+                background: #1e7a4633;
+                color: #b7e4c7;
+            }
+            #status.err {
+                background: #c8102e33;
+                color: #ffc9d0;
+            }
+            #pos {
+                color: var(--soft);
+                font-size: 16px;
+            }
+            h1 {
+                font-size: 28px;
+                line-height: 1.2;
+                margin: 4px 0 18px;
+            }
+            .nav {
+                display: grid;
+                grid-template-columns: 1fr 1.6fr;
+                gap: 12px;
+            }
+            .nav button {
+                padding: 26px 8px;
+                font-size: 24px;
+            }
+            #prev {
+                background: #ffffff26;
+                color: var(--paper);
+            }
+            #next {
+                background: var(--paper);
+                color: var(--ink-deep);
+            }
+            #pause {
+                width: 100%;
+                margin-top: 12px;
+                padding: 16px;
+                font-size: 19px;
+                background: transparent;
+                color: var(--paper);
+                border: 3px solid #ffffff4d;
+            }
+            .card {
+                margin-top: 20px;
+                background: var(--paper);
+                color: #172036;
+                border-radius: 16px;
+                padding: 16px 18px;
+            }
+            .card h2 {
+                font-size: 15px;
+                letter-spacing: 2px;
+                color: var(--ink);
+                margin-bottom: 6px;
+            }
+            #notes {
+                font-size: 19px;
+                line-height: 1.5;
+            }
+            #following {
+                color: var(--soft);
+                margin-top: 18px;
+                font-size: 16px;
+            }
+            .goto {
+                margin-top: 22px;
+            }
+            .goto label {
+                color: var(--soft);
+                font-size: 16px;
+            }
+            .goto select {
+                font-size: 18px;
+                padding: 12px;
+            }
+            #leave {
+                margin-top: 22px;
+                background: transparent;
+                color: var(--soft);
+                text-decoration: underline;
+                padding: 8px 0;
+            }
+            #error {
+                margin-top: 14px;
+                color: #ffc9d0;
+                font-weight: 700;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <img src="logo.svg" alt="" />
+            <p>Controle da apresentação</p>
+        </header>
+
+        <form id="join" hidden>
+            <label for="code">Código que aparece no telão</label>
+            <input
+                id="code"
+                maxlength="6"
+                autocomplete="off"
+                autocapitalize="characters"
+                inputmode="text"
+            />
+            <button class="primary" type="submit">Conectar</button>
+            <p id="error" role="alert"></p>
+        </form>
+
+        <main id="panel" hidden>
+            <p id="status" role="status">Conectando…</p>
+            <p id="pos"></p>
+            <h1 id="title">Esperando o telão…</h1>
+            <div class="nav">
+                <button id="prev" type="button" aria-label="Slide anterior">◀</button>
+                <button id="next" type="button">Próximo ▶</button>
+            </div>
+            <button id="pause" type="button">⏸ Pausar o automático</button>
+            <section class="card" aria-labelledby="notes-title">
+                <h2 id="notes-title">O QUE FALAR</h2>
+                <p id="notes">As notas do slide aparecem aqui.</p>
+            </section>
+            <p id="following"></p>
+            <div class="goto">
+                <label for="goto">Ir para o slide</label>
+                <select id="goto"></select>
+            </div>
+            <button id="leave" type="button">Trocar de telão</button>
+        </main>
+
+        <script>
+            (() => {
+                const CODE = /^[A-HJ-NP-Z2-9]{6}$/;
+                const API = location.origin + "/api/presentation-rooms";
+                const $ = (id) => document.getElementById(id);
+                let code = "";
+                let events = null;
+                let state = null;
+                const meta = {};
+
+                // Título e notas de cada slide vêm da própria apresentação.
+                const metaReady = fetch("index.html")
+                    .then((r) => r.text())
+                    .then((html) => {
+                        const doc = new DOMParser().parseFromString(html, "text/html");
+                        doc.querySelectorAll("#stage > section").forEach((s) => {
+                            const h = s.querySelector("h1, h2");
+                            if (h) h.querySelectorAll("br").forEach((br) => br.replaceWith(" "));
+                            const aside = s.querySelector("aside");
+                            meta[s.id] = {
+                                title: h ? h.textContent.replace(/\s+/g, " ").trim() : s.id,
+                                notes: aside ? aside.textContent.trim() : "",
+                            };
+                        });
+                    })
+                    .catch(() => {});
+
+                function setStatus(text, kind) {
+                    $("status").textContent = text;
+                    $("status").className = kind || "";
+                }
+
+                function render() {
+                    if (!state) return;
+                    const id = state.ids[state.index];
+                    const m = meta[id] || { title: "Slide " + (state.index + 1), notes: "" };
+                    $("pos").textContent = "Slide " + (state.index + 1) + " de " + state.total;
+                    $("title").textContent = m.title;
+                    $("notes").textContent = m.notes || "Sem notas neste slide.";
+                    const nextId = state.ids[state.index + 1];
+                    $("following").textContent = nextId
+                        ? "A seguir: " + (meta[nextId] || { title: nextId }).title
+                        : "Este é o último slide.";
+                    $("prev").disabled = state.index === 0;
+                    $("pause").textContent = state.paused
+                        ? "▶ Ligar a passagem automática"
+                        : "⏸ Pausar o automático";
+                    const select = $("goto");
+                    if (select.options.length !== state.ids.length) {
+                        select.innerHTML = "";
+                        state.ids.forEach((sid, i) => {
+                            const o = document.createElement("option");
+                            o.value = String(i);
+                            o.textContent = i + 1 + ". " + (meta[sid] || { title: sid }).title;
+                            select.appendChild(o);
+                        });
+                    }
+                    select.value = String(state.index);
+                }
+
+                async function send(action, slide) {
+                    if (navigator.vibrate) navigator.vibrate(15);
+                    try {
+                        const r = await fetch(API + "/" + code + "/commands", {
+                            method: "POST",
+                            headers: { "content-type": "application/json" },
+                            body: JSON.stringify(
+                                slide === undefined ? { action } : { action, slide },
+                            ),
+                        });
+                        if (r.status === 404) return lost();
+                        if (!r.ok) setStatus("Calma: um toque de cada vez.", "err");
+                    } catch {
+                        setStatus("Sem conexão. Tentando de novo…", "err");
+                    }
+                }
+
+                function lost() {
+                    if (events) events.close();
+                    showJoin("Não encontramos esse telão. Digite o código que aparece nele agora.");
+                }
+
+                function connect(c) {
+                    code = c;
+                    history.replaceState(null, "", "#" + code);
+                    $("join").hidden = true;
+                    $("panel").hidden = false;
+                    setStatus("Conectando…");
+                    if (events) events.close();
+                    events = new EventSource(API + "/" + code + "/events?role=remote");
+                    events.onopen = () => setStatus("Conectado ao telão · " + code, "ok");
+                    events.addEventListener("state", (e) => {
+                        state = JSON.parse(e.data);
+                        metaReady.then(render);
+                    });
+                    events.onerror = () => {
+                        if (events.readyState === EventSource.CLOSED) lost();
+                        else setStatus("Reconectando…", "err");
+                    };
+                }
+
+                function showJoin(message) {
+                    $("panel").hidden = true;
+                    $("join").hidden = false;
+                    $("error").textContent = message || "";
+                    $("code").focus();
+                }
+
+                $("join").addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const c = $("code").value.trim().toUpperCase();
+                    if (!CODE.test(c)) {
+                        $("error").textContent =
+                            "O código tem 6 letras e números, como aparece no telão.";
+                        return;
+                    }
+                    connect(c);
+                });
+                $("next").addEventListener("click", () => send("next"));
+                $("prev").addEventListener("click", () => send("prev"));
+                $("pause").addEventListener("click", () =>
+                    send(state && state.paused ? "play" : "pause"),
+                );
+                $("goto").addEventListener("change", (e) => send("goto", Number(e.target.value)));
+                $("leave").addEventListener("click", () => {
+                    if (events) events.close();
+                    history.replaceState(null, "", location.pathname);
+                    showJoin();
+                });
+
+                const fromLink = location.hash.slice(1).toUpperCase();
+                if (CODE.test(fromLink)) connect(fromLink);
+                else showJoin();
+            })();
+        </script>
+    </body>
+</html>
