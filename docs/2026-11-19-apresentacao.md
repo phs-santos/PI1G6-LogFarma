@@ -1,7 +1,7 @@
 # Apresentação do PI no próprio site
 
 - **Implementado em:** 2026-11-19
-- **Última alteração:** —
+- **Última alteração:** 2026-11-19
 - **Requisitos:** —
 
 ## Em poucas palavras
@@ -10,10 +10,12 @@ Em vez de levar a apresentação num pen drive, ela agora mora dentro do própri
 
 ## O que
 
-- Apresentação de 23 slides em `logfarma.codexolimpo.com.br/apresentacao`: a história da Dona Maria (para o público se colocar no lugar da paciente), problema, público, solução, perfis, fluxo, requisitos, prints das telas de cada perfil, arquitetura, banco de dados (mapa das 25 tabelas e as ligações de pessoas, estoque e pedido), situações do pedido, regras de negócio, segurança e LGPD, números do projeto, roteiro da demonstração e próximos passos.
+- **Versão feira (padrão), 15 slides** em `logfarma.codexolimpo.com.br/apresentacao`, para o público que passa: Dona Maria, problema (CNM 2022), para quem é, solução, o que já existe e o que fazemos a mais, perfis, fluxo, prints das telas, o final da Dona Maria, próximos passos, referências e QR code para o sistema.
+- **Versão completa, 26 slides**, em `/apresentacao/?completa`: inclui os técnicos (requisitos, arquitetura, banco de dados e ligações, situações do pedido, regras, segurança e LGPD, números do projeto e roteiro da demonstração), para perguntas da banca.
 - Uma página HTML única, sem dependências além da fonte Atkinson Hyperlegible (Google Fonts). Os slides têm 1920×1080 e se ajustam a qualquer tela.
-- Comandos: **← →**, espaço ou clique para passar; **F** para tela cheia; **N** para as notas do apresentador; no celular, deslizar. O endereço guarda o slide (`/apresentacao/#7` abre no fluxo).
-- **Modo telão:** `/apresentacao/?auto=15` passa sozinho a cada 15 s (o número é configurável) e volta ao início no fim; o cursor some. **P** pausa e retoma; as setas continuam funcionando.
+- Comandos: **← →**, espaço ou clique para passar; **F** para tela cheia; **N** para as notas do apresentador; no celular, deslizar. O endereço guarda o slide (`/apresentacao/#8` abre no fluxo).
+- **Animações:** troca suave entre slides; nos slides de história (Dona Maria e fluxo) cada parte entra no ritmo da fala, com as setas junto das caixas; o 82% conta até o valor. Quem usa “reduzir movimento” no sistema vê tudo parado.
+- **Modo telão:** `/apresentacao/?auto=15` passa sozinho a cada 15 s (o número é configurável; slides com mais texto ficam proporcionalmente mais tempo) e volta ao início no fim; o cursor some. **P** pausa e retoma; as setas continuam funcionando.
 - **Prints das telas** em `telas/` (WebP), tirados do sistema rodando localmente com os mesmos dados da apresentação (seed-presentation), sem tocar em produção.
 
 ## Por que
@@ -46,6 +48,7 @@ Edite o `index.html` direto: cada slide é um `<section>` dentro de `#stage`, e 
 
 ## Histórico de alterações
 
-| Data       | Alteração |
-| ---------- | --------- |
-| 2026-11-19 | Criação   |
+| Data       | Alteração                                                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-19 | Criação                                                                                                                                                                                                                                       |
+| 2026-11-19 | Versão feira (15 slides) e completa (`?completa`); final da Dona Maria, comparação com o que já existe, referências, QR code e animações. Dado da CNM datado (2022) e nota do Aqui Tem Remédio atualizada (1,3) conforme a validação do grupo |
