@@ -16,6 +16,7 @@ import { courierRoutes } from "./routes/courier.js";
 import { meRoutes } from "./routes/me.js";
 import { managerRoutes } from "./routes/manager.js";
 import { supplierListRoutes } from "./routes/suppliers.js";
+import { presentationRoutes } from "./routes/presentation.js";
 import { createMailer, type Mailer } from "./services/mailer.js";
 
 export interface AppDeps {
@@ -91,6 +92,7 @@ export function buildApp(deps: AppDeps) {
     app.register(meRoutes, { prefix: "/api" });
     app.register(managerRoutes, { prefix: "/api" });
     app.register(supplierListRoutes, { prefix: "/api" });
+    app.register(presentationRoutes, { prefix: "/api" });
 
     return app;
 }

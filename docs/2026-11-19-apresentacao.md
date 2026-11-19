@@ -46,9 +46,32 @@ O Vite copia `public/` para o build sem mexer, e o nginx do frontend já entrega
 
 Edite o `index.html` direto: cada slide é um `<section>` dentro de `#stage`, e as notas ficam no `<aside>` do slide. As setas dos diagramas são `<x-connector x1 y1 x2 y2>`, desenhadas como SVG pelo script no fim da página (coordenadas em px no slide de 1920×1080).
 
+## Controle pelo celular (alteração)
+
+Como um controle remoto de TV: o telão mostra um QR code no canto; quem aponta o celular passa os slides, pausa o automático e lê o roteiro (“O que falar”) do slide atual.
+
+- **Ligar:** abra o telão com `?controle` (dá para juntar: `/apresentacao/?auto=15&controle`). Aparece um cartão com QR e um código de 6 letras; quando um celular conecta, o cartão encolhe.
+- **No celular:** `/apresentacao/controle.html` (o QR já abre com o código). Botões grandes ◀ e Próximo ▶, ligar/pausar o automático, “Ir para o slide”, o slide atual, o próximo e as notas.
+- **API** (`apps/backend/src/routes/presentation.ts`, `src/services/presentation-rooms.ts`), sem login e sem banco:
+    - `POST /api/presentation-rooms` → `{ code, screenKey }` (o telão abre a sala);
+    - `GET /api/presentation-rooms/:code/events?role=screen|remote` → Server-Sent Events (`command`, `state`, `remotes`);
+    - `POST /api/presentation-rooms/:code/commands` `{ action: next|prev|goto|pause|play, slide? }`;
+    - `PUT /api/presentation-rooms/:code/state` (só o telão, com a `screenKey`) informa o slide atual.
+- **QR no navegador:** `apps/frontend/public/apresentacao/qr.js`, gerador próprio (modo byte, correção M, versões 1–10), sem biblioteca nova. Conferido lendo os QR gerados com o leitor do macOS.
+
+| Escolha                                                                            | Alternativas consideradas | Motivo                                                                                              |
+| ---------------------------------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------- |
+| Salas só em memória                                                                | Tabela no banco           | Nada a guardar; se o backend reiniciar, o telão abre outra sala sozinho e mostra o QR novo          |
+| Server-Sent Events                                                                 | WebSocket                 | Funciona com o Fastify sem plugin novo e passa pelo nginx/Caddy (cabeçalho `X-Accel-Buffering: no`) |
+| Código de 6 caracteres sem I, O, 0 e 1                                             | Número curto              | Fácil de digitar e difícil de adivinhar; só quem vê o telão controla                                |
+| Limites: 50 salas, 30 conexões por sala, 10 comandos/s, sala parada expira em 12 h | Sem limite                | Rota pública: evita abuso sem precisar de login                                                     |
+| Chave do telão para informar o estado                                              | Qualquer um informa       | Um celular não consegue fingir que é o telão                                                        |
+| Gerador de QR próprio                                                              | Biblioteca (qrcode)       | Sem dependência nova; ~250 linhas testadas                                                          |
+
 ## Histórico de alterações
 
 | Data       | Alteração                                                                                                                                                                                                                                     |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-11-19 | Criação                                                                                                                                                                                                                                       |
 | 2026-11-19 | Versão feira (15 slides) e completa (`?completa`); final da Dona Maria, comparação com o que já existe, referências, QR code e animações. Dado da CNM datado (2022) e nota do Aqui Tem Remédio atualizada (1,3) conforme a validação do grupo |
+| 2026-11-19 | Controle pelo celular: rotas `presentation-rooms` (SSE), `controle.html`, QR gerado no navegador (`qr.js`)                                                                                                                                    |

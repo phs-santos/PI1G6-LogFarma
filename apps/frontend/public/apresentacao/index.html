@@ -156,6 +156,61 @@
             body.auto #help {
                 display: none;
             }
+            /* Controle pelo celular (?controle): cartão com QR no canto do telão */
+            #remote {
+                position: fixed;
+                right: 20px;
+                bottom: 20px;
+                display: flex;
+                gap: 14px;
+                align-items: center;
+                background: #fbfcfff2;
+                color: #14275e;
+                border-radius: 16px;
+                padding: 12px 16px 12px 12px;
+                font:
+                    15px/1.35 "Atkinson Hyperlegible",
+                    Verdana,
+                    sans-serif;
+                box-shadow: 0 8px 24px #0005;
+                max-width: 330px;
+            }
+            #remote[hidden] {
+                display: none;
+            }
+            #remote .qr {
+                width: 120px;
+                height: 120px;
+                flex: none;
+            }
+            #remote .qr svg {
+                width: 100%;
+                height: 100%;
+            }
+            #remote b {
+                display: block;
+                font-size: 17px;
+            }
+            #remote .code {
+                display: block;
+                margin-top: 6px;
+                font:
+                    700 22px/1 "JetBrains Mono",
+                    "Courier New",
+                    monospace;
+                letter-spacing: 3px;
+            }
+            #remote.connected {
+                padding: 8px 14px;
+                opacity: 0.85;
+            }
+            #remote.connected .qr,
+            #remote.connected .hint {
+                display: none;
+            }
+            body.controle #help {
+                display: none;
+            }
         </style>
         <style>
             /* LogFarma — "receita": papel claro, tinta azul, tarja vermelha só para destaque. */
@@ -2444,6 +2499,8 @@
         <div id="notes"></div>
         <p id="help">← → passar · F tela cheia · N notas · P automático</p>
         <p id="auto"></p>
+        <div id="remote" hidden aria-live="polite"></div>
+        <script src="qr.js"></script>
         <script>
             (() => {
                 const stage = document.getElementById("stage");
@@ -2551,10 +2608,81 @@
                         requestAnimationFrame(tick);
                     });
                 }
+                function setPaused(paused) {
+                    if (paused && autoSec) {
+                        lastSec = autoSec;
+                        autoSec = 0;
+                    } else if (!paused && !autoSec) autoSec = lastSec;
+                    params.set("auto", String(lastSec));
+                    schedule();
+                    report();
+                }
+
+                // ---------- Controle pelo celular (?controle) ----------
+                // O telão abre uma sala na API; o celular (controle.html) manda próximo/anterior/pausa.
+                const API = location.origin + "/api/presentation-rooms";
+                const remoteCard = document.getElementById("remote");
+                let room = null;
+                function report() {
+                    if (!room) return;
+                    fetch(API + "/" + room.code + "/state", {
+                        method: "PUT",
+                        headers: { "content-type": "application/json" },
+                        body: JSON.stringify({
+                            screenKey: room.screenKey,
+                            index: cur,
+                            total: slides.length,
+                            paused: autoSec === 0,
+                            ids: slides.map((s) => s.id),
+                        }),
+                    }).catch(() => {});
+                }
+                function applyCommand(c) {
+                    if (c.action === "next") show(cur + 1);
+                    else if (c.action === "prev") show(cur - 1);
+                    else if (c.action === "goto" && typeof c.slide === "number") show(c.slide);
+                    else if (c.action === "pause") setPaused(true);
+                    else if (c.action === "play") setPaused(false);
+                }
+                async function openRoom() {
+                    room = null;
+                    try {
+                        const r = await fetch(API, { method: "POST" });
+                        if (!r.ok) throw new Error(String(r.status));
+                        room = await r.json();
+                    } catch {
+                        remoteCard.hidden = false;
+                        remoteCard.textContent =
+                            "Controle pelo celular indisponível. Tentando de novo…";
+                        setTimeout(openRoom, 10000);
+                        return;
+                    }
+                    const url = location.origin + "/apresentacao/controle.html#" + room.code;
+                    remoteCard.innerHTML =
+                        '<div class="qr">' +
+                        LogFarmaQR.svg(url) +
+                        '</div><div><b>Controle pelo celular</b><span class="hint">Aponte a câmera do celular</span><span class="code">' +
+                        room.code +
+                        "</span></div>";
+                    remoteCard.classList.remove("connected");
+                    remoteCard.hidden = false;
+                    const events = new EventSource(API + "/" + room.code + "/events?role=screen");
+                    events.addEventListener("command", (e) => applyCommand(JSON.parse(e.data)));
+                    events.addEventListener("remotes", (e) =>
+                        remoteCard.classList.toggle("connected", JSON.parse(e.data).count > 0),
+                    );
+                    events.onopen = report;
+                    // Sala sumiu (ex.: o servidor reiniciou): abre outra e mostra o QR novo.
+                    events.onerror = () => {
+                        if (events.readyState === EventSource.CLOSED) setTimeout(openRoom, 3000);
+                    };
+                }
+
                 let cur = 0;
                 function show(n) {
                     cur = Math.max(0, Math.min(slides.length - 1, n));
                     schedule();
+                    report();
                     slides.forEach((s, i) => s.classList.toggle("on", i === cur));
                     countUp(slides[cur]);
                     const aside = slides[cur].querySelector("aside");
@@ -2580,14 +2708,8 @@
                     else if (e.key === "Home") show(0);
                     else if (e.key === "End") show(slides.length - 1);
                     else if (e.key === "n" || e.key === "N") notes.classList.toggle("on");
-                    else if (e.key === "p" || e.key === "P") {
-                        if (autoSec) {
-                            lastSec = autoSec;
-                            autoSec = 0;
-                        } else autoSec = lastSec;
-                        params.set("auto", String(lastSec));
-                        schedule();
-                    } else if (e.key === "f" || e.key === "F")
+                    else if (e.key === "p" || e.key === "P") setPaused(autoSec > 0);
+                    else if (e.key === "f" || e.key === "F")
                         document.fullscreenElement
                             ? document.exitFullscreen()
                             : document.documentElement.requestFullscreen();
@@ -2595,7 +2717,7 @@
                     e.preventDefault();
                 });
                 addEventListener("click", (e) => {
-                    if (!notes.contains(e.target))
+                    if (!notes.contains(e.target) && !remoteCard.contains(e.target))
                         show(cur + (e.clientX > innerWidth / 3 ? 1 : -1));
                 });
                 let tx = null;
@@ -2610,6 +2732,10 @@
                 });
                 fit();
                 show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+                if (params.has("controle")) {
+                    document.body.classList.add("controle");
+                    openRoom();
+                }
             })();
         </script>
     </body>
