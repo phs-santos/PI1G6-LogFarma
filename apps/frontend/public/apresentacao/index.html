@@ -44,6 +44,20 @@
             }
             #stage > section.on {
                 display: flex;
+                animation: troca 450ms ease-out;
+            }
+            @keyframes troca {
+                from {
+                    opacity: 0;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation: none !important;
+                    transition: none !important;
+                }
             }
             aside,
             x-connector {
@@ -459,6 +473,54 @@
                 animation: aparece 500ms ease-out both;
                 animation-delay: calc(var(--i, 0) * 110ms);
             }
+            /* Slides que contam uma história: cada parte entra no ritmo da fala */
+            .slow .rise,
+            .slow .fade {
+                animation-duration: 700ms;
+                animation-delay: calc(var(--i, 0) * 320ms);
+            }
+
+            /* Linha do tempo (Dona Maria, final) */
+            .tl {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+            .dot {
+                position: relative;
+                width: 72px;
+                height: 72px;
+                border-radius: 50%;
+                background: #ffffff;
+                border: 6px solid var(--ok);
+                box-sizing: border-box;
+            }
+            .dot.end {
+                background: var(--ok);
+            }
+            .tlt {
+                font-size: 30px;
+                font-weight: 700;
+                line-height: 1.3;
+                text-align: center;
+                color: var(--text);
+                margin: 0;
+            }
+
+            /* Referências */
+            .ref {
+                font-size: 26px;
+                line-height: 1.45;
+                color: var(--muted);
+                margin: 0;
+                padding-left: 20px;
+                border-left: 4px solid var(--rule);
+            }
+            .ref b {
+                color: var(--ink-deep);
+            }
 
             .pg::before {
                 content: attr(data-n);
@@ -544,7 +606,7 @@
                     unidade. Orientador: Prof. Gabriel Passatuto Gallo.
                 </aside>
             </section>
-            <section id="maria">
+            <section id="maria" class="slow" data-weight="1.4">
                 <p class="eyebrow">CONHEÇA A DONA MARIA</p>
                 <h2 class="title">72 anos, pressão alta, e a losartana acabou</h2>
                 <p class="lead" style="width: 1500px">
@@ -553,24 +615,75 @@
                 </p>
                 <div class="cards c2" style="gap: 48px">
                     <div
-                        class="card rise"
+                        class="card fade"
                         style="--i: 1; border-color: #e9b9c1; background: #fdf3f4"
                     >
                         <p class="tag" style="color: var(--red)">HOJE</p>
-                        <p class="t" style="font-size: 30px; line-height: 1.5; color: var(--text)">
-                            1. Pega ônibus até a UBS Centro<br />2. No balcão: “a losartana está em
-                            falta”<br />3. Não sabe onde tem, volta para casa<br />4. Fica dias sem
-                            tomar o remédio
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 2"
+                        >
+                            1. Pega ônibus até a UBS Centro
+                        </p>
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 3"
+                        >
+                            2. No balcão: “a losartana está em falta”
+                        </p>
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 4"
+                        >
+                            3. Não sabe onde tem, volta para casa
+                        </p>
+                        <p
+                            class="t fade"
+                            style="
+                                font-size: 30px;
+                                line-height: 1.5;
+                                color: var(--red);
+                                font-weight: 700;
+                                --i: 5;
+                            "
+                        >
+                            4. Fica dias sem tomar o remédio
                         </p>
                     </div>
                     <div
-                        class="card rise"
-                        style="--i: 2; border-color: #9fd1b3; background: var(--ok-soft)"
+                        class="card fade"
+                        style="--i: 7; border-color: #9fd1b3; background: var(--ok-soft)"
                     >
                         <p class="tag" style="color: var(--ok)">COM O LOGFARMA</p>
-                        <p class="t" style="font-size: 30px; line-height: 1.5; color: var(--text)">
-                            1. Procura no celular, com a filha<br />2. Vê onde tem, perto de casa<br />3.
-                            A UBS dela pede a transferência<br />4. O remédio chega em casa
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 8"
+                        >
+                            1. Procura no celular, com a filha
+                        </p>
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 9"
+                        >
+                            2. Vê onde tem, perto de casa
+                        </p>
+                        <p
+                            class="t fade"
+                            style="font-size: 30px; line-height: 1.5; color: var(--text); --i: 10"
+                        >
+                            3. A UBS dela pede a transferência
+                        </p>
+                        <p
+                            class="t fade"
+                            style="
+                                font-size: 30px;
+                                line-height: 1.5;
+                                color: var(--ok);
+                                font-weight: 700;
+                                --i: 11;
+                            "
+                        >
+                            4. O remédio chega em casa
                         </p>
                     </div>
                 </div>
@@ -583,15 +696,21 @@
                     para casa sem saber onde procurar. Com o LogFarma, ela (ou a filha, Ana Paula)
                     vê no celular onde tem, perto de casa; a UBS dela pede o remédio por
                     transferência e, como ela tem dificuldade de locomoção, ele chega em casa pelo
-                    programa municipal. Vamos ver essa mesma história funcionando ao vivo no fim. E
-                    a Dona Maria não está sozinha: próximo slide.
+                    programa municipal. E a Dona Maria não está sozinha: próximo slide.
                 </aside>
             </section>
-            <section id="problema" class="dark">
+            <section id="problema" class="dark" data-weight="1.3">
                 <p class="eyebrow">O PROBLEMA</p>
                 <div style="display: flex; gap: 96px; align-items: center; flex: 1">
                     <div style="width: 700px">
-                        <p class="big rise" style="color: var(--on-ink); --i: 1">82%</p>
+                        <p
+                            class="big rise"
+                            style="color: var(--on-ink); --i: 1"
+                            data-count="82"
+                            data-suffix="%"
+                        >
+                            82%
+                        </p>
                         <p
                             class="rise"
                             style="
@@ -602,7 +721,18 @@
                                 --i: 2;
                             "
                         >
-                            dos municípios enfrentam desabastecimento de medicamentos (CNM)
+                            dos 3.360 municípios pesquisados relataram falta de medicamentos
+                        </p>
+                        <p
+                            class="rise"
+                            style="
+                                font-size: 24px;
+                                color: var(--on-ink-muted);
+                                margin: 16px 0 0;
+                                --i: 2;
+                            "
+                        >
+                            Confederação Nacional de Municípios (CNM), 2022
                         </p>
                     </div>
                     <div style="flex: 1">
@@ -610,27 +740,33 @@
                             O paciente só descobre que o remédio está em falta quando chega ao
                             balcão.
                         </h2>
-                        <p class="lead rise" style="margin: 0; --i: 4">
-                            Sem saber onde tem, ele volta para casa sem o remédio, e muitas vezes
-                            interrompe o tratamento.
+                        <p class="lead rise" style="margin: 0 0 24px; --i: 4">
+                            Faltam mais antibióticos, remédios de pressão e de diabetes. Quase
+                            metade dos gestores disse que a falta dura de 30 a 90 dias.
+                        </p>
+                        <p class="lead rise" style="margin: 0; --i: 5; color: var(--on-ink)">
+                            Sem saber onde tem, muita gente interrompe o tratamento.
                         </p>
                     </div>
                 </div>
                 <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
                 <p class="pg"></p>
                 <aside>
-                    Dado da Confederação Nacional de Municípios: 82% dos municípios relatam
-                    desabastecimento. O ponto central é a informação: hoje o paciente só sabe que
-                    não tem quando já está no balcão. Para quem tem pouca mobilidade, essa viagem
-                    perdida pode significar ficar sem o remédio.
+                    Levantamento da Confederação Nacional de Municípios, de 2022, com 3.360 cidades
+                    (60% do país): 82% relataram falta de medicamentos. Os mais afetados:
+                    antibióticos (82,6%), anti-hipertensivos (42,2%), sistema nervoso (39,9%) e
+                    diabetes (35,6%). Quase metade dos gestores disse que a falta dura de 30 a 90
+                    dias. A falta é desigual entre unidades: muitas vezes uma UBS não tem e a outra,
+                    no mesmo município, tem. É aí que localizar e remanejar resolvem.
                 </aside>
             </section>
             <section id="publico">
                 <p class="eyebrow">PARA QUEM</p>
                 <h2 class="title">Pensado para quem tem mais dificuldade</h2>
-                <p class="lead" style="width: 1500px">
-                    Pessoas idosas, de baixa renda ou com pouca mobilidade. A referência negativa
-                    foi o app AquiTemRemédio, nota 1,4 nas lojas.
+                <p class="lead" style="width: 1560px">
+                    Pessoas idosas, de baixa renda ou com pouca mobilidade. O que não fazer
+                    aprendemos com o app Aqui Tem Remédio: nota 1,3 de 5 na App Store e sem
+                    atualização desde 2022.
                 </p>
                 <div class="cards c3">
                     <div class="card rise" style="--i: 1">
@@ -658,10 +794,12 @@
                 <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
                 <p class="pg"></p>
                 <aside>
-                    O público orientou as decisões de interface. Escolhemos a fonte Atkinson
-                    Hyperlegible, do Braille Institute, feita para leitura com baixa visão. O visual
-                    imita uma receita: papel claro e tinta azul. O AquiTemRemédio foi nossa
-                    referência do que não fazer.
+                    O público orientou as decisões de interface. A fonte Atkinson Hyperlegible foi
+                    criada pelo Braille Institute para leitura com baixa visão. O visual imita uma
+                    receita: papel claro e tinta azul. O Aqui Tem Remédio, da Prefeitura de São
+                    Paulo, tem nota 1,3 de 5 (238 avaliações), não é atualizado desde novembro de
+                    2022 e os usuários relatam travamentos: a ideia já foi aceita pelo poder
+                    público, o que faltou foi execução.
                 </aside>
             </section>
             <section id="solucao" class="alt">
@@ -705,6 +843,57 @@
                     (UBS e farmácia municipal) mais a farmácia estadual de especializados. O
                     Farmácia Popular aparece só para consulta. Deixar claro o que está fora do
                     escopo: não somos um Consulta Remédios.
+                </aside>
+            </section>
+            <section id="diferencial" class="alt" data-weight="1.4">
+                <p class="eyebrow">O QUE JÁ EXISTE</p>
+                <h2 class="title">Mostrar onde tem é o começo; nós vamos até o fim</h2>
+                <table class="tb fade" style="margin-top: 24px; font-size: 30px">
+                    <tr>
+                        <th style="width: 34%">O que o paciente precisa</th>
+                        <th style="width: 22%">Aqui Tem Remédio<br />(SP, 2015)</th>
+                        <th style="width: 22%">Remédio na Hora<br />(SP, 2026)</th>
+                        <th style="width: 22%">LogFarma</th>
+                    </tr>
+                    <tr>
+                        <td>Saber onde tem o remédio</td>
+                        <td>Sim, mas abandonado desde 2022</td>
+                        <td>Sim</td>
+                        <td><b>Sim</b></td>
+                    </tr>
+                    <tr>
+                        <td>Pedir para outra unidade mandar</td>
+                        <td>Não</td>
+                        <td>Não</td>
+                        <td><b>Sim, transferência</b></td>
+                    </tr>
+                    <tr>
+                        <td>Receber em casa</td>
+                        <td>Não</td>
+                        <td>Não</td>
+                        <td><b>Sim, entrega</b></td>
+                    </tr>
+                    <tr>
+                        <td>Fila com prioridade e aviso quando chegar</td>
+                        <td>Não</td>
+                        <td>Não</td>
+                        <td><b>Sim, lista de espera</b></td>
+                    </tr>
+                </table>
+                <p class="cap fade" style="margin-top: 40px; font-size: 26px; --i: 3">
+                    Os dois são da Prefeitura de São Paulo e atendem só a capital. O LogFarma foi
+                    pensado para qualquer município.
+                </p>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Pergunta comum: “isso já não existe?”. Existe em parte. O Aqui Tem Remédio
+                    (Prefeitura de SP) busca estoque por endereço, mas está abandonado desde 2022 e
+                    tem nota 1,3. O Remédio na Hora, lançado em junho de 2026 no app e-saúdeSP,
+                    mostra a farmácia mais próxima com o item em estoque, só em São Paulo. Nenhum
+                    dos dois resolve o caso de quem não encontrou ou não consegue ir: transferência
+                    entre unidades, entrega em casa e lista de espera com prioridade e aviso. Esse é
+                    o nosso diferencial.
                 </aside>
             </section>
             <section id="atores">
@@ -754,7 +943,7 @@
                     remédio controlado; isso fica com o farmacêutico.
                 </aside>
             </section>
-            <section id="fluxo" class="alt">
+            <section id="fluxo" class="alt slow" data-weight="1.8">
                 <p class="eyebrow">FLUXO PRINCIPAL</p>
                 <h2 class="title">Do “não tem” até o remédio na mão</h2>
                 <div
@@ -771,29 +960,58 @@
                 </div>
                 <div
                     class="box step fade"
-                    style="left: 820px; top: 330px; width: 280px; height: 140px; --i: 2"
+                    style="left: 820px; top: 330px; width: 280px; height: 140px; --i: 3"
                 >
                     <p class="bt">3. Tem na rede?</p>
                 </div>
                 <div
                     class="box step fade"
-                    style="left: 1166px; top: 330px; width: 280px; height: 140px; --i: 3"
+                    style="left: 1166px; top: 330px; width: 280px; height: 140px; --i: 5"
                 >
                     <p class="bt">4. Pede ao fornecedor</p>
                 </div>
                 <div
                     class="box step fade"
-                    style="left: 1512px; top: 330px; width: 280px; height: 140px; --i: 4"
+                    style="left: 1512px; top: 330px; width: 280px; height: 140px; --i: 7"
                 >
                     <p class="bt">5. Remédio chegou</p>
                 </div>
-                <x-connector x1="408" y1="400" x2="474" y2="400" head="end"></x-connector>
-                <x-connector x1="754" y1="400" x2="820" y2="400" head="end"></x-connector>
-                <x-connector x1="1100" y1="400" x2="1166" y2="400" head="end"></x-connector>
-                <x-connector x1="1446" y1="400" x2="1512" y2="400" head="end"></x-connector>
-                <p class="lbl" style="left: 744px; top: 300px; width: 86px">não</p>
-                <p class="lbl" style="left: 1090px; top: 300px; width: 86px">não</p>
                 <x-connector
+                    data-i="1"
+                    x1="408"
+                    y1="400"
+                    x2="474"
+                    y2="400"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="3"
+                    x1="754"
+                    y1="400"
+                    x2="820"
+                    y2="400"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="5"
+                    x1="1100"
+                    y1="400"
+                    x2="1166"
+                    y2="400"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="7"
+                    x1="1446"
+                    y1="400"
+                    x2="1512"
+                    y2="400"
+                    head="end"
+                ></x-connector>
+                <p class="lbl fade" style="left: 744px; top: 300px; width: 86px; --i: 3">não</p>
+                <p class="lbl fade" style="left: 1090px; top: 300px; width: 86px; --i: 5">não</p>
+                <x-connector
+                    data-i="9"
                     x1="268"
                     y1="470"
                     x2="268"
@@ -801,10 +1019,38 @@
                     head="end"
                     style="border-style: dashed"
                 ></x-connector>
-                <x-connector x1="614" y1="470" x2="614" y2="600" head="end"></x-connector>
-                <x-connector x1="960" y1="470" x2="960" y2="600" head="end"></x-connector>
-                <x-connector x1="1306" y1="470" x2="1306" y2="600" head="end"></x-connector>
-                <x-connector x1="1652" y1="470" x2="1652" y2="600" head="end"></x-connector>
+                <x-connector
+                    data-i="2"
+                    x1="614"
+                    y1="470"
+                    x2="614"
+                    y2="600"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="4"
+                    x1="960"
+                    y1="470"
+                    x2="960"
+                    y2="600"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="6"
+                    x1="1306"
+                    y1="470"
+                    x2="1306"
+                    y2="600"
+                    head="end"
+                ></x-connector>
+                <x-connector
+                    data-i="8"
+                    x1="1652"
+                    y1="470"
+                    x2="1652"
+                    y2="600"
+                    head="end"
+                ></x-connector>
                 <div
                     class="box out dash fade"
                     style="
@@ -813,7 +1059,7 @@
                         width: 280px;
                         height: 200px;
                         justify-content: flex-start;
-                        --i: 5;
+                        --i: 9;
                     "
                 >
                     <p class="bt"><b>Em paralelo:</b> abaixo do mínimo, a unidade repõe sozinha</p>
@@ -826,7 +1072,7 @@
                         width: 280px;
                         height: 200px;
                         justify-content: flex-start;
-                        --i: 6;
+                        --i: 2;
                     "
                 >
                     <p class="bt"><b>Sim:</b> separa e entrega no balcão</p>
@@ -839,7 +1085,7 @@
                         width: 280px;
                         height: 200px;
                         justify-content: flex-start;
-                        --i: 7;
+                        --i: 4;
                     "
                 >
                     <p class="bt"><b>Sim:</b> rota até a mais próxima ou transferência</p>
@@ -852,7 +1098,7 @@
                         width: 280px;
                         height: 200px;
                         justify-content: flex-start;
-                        --i: 8;
+                        --i: 6;
                     "
                 >
                     <p class="bt">
@@ -867,7 +1113,7 @@
                         width: 280px;
                         height: 200px;
                         justify-content: flex-start;
-                        --i: 9;
+                        --i: 8;
                     "
                 >
                     <p class="bt"><b>Pode ir:</b> retira. <b>Não pode:</b> entrega em casa</p>
@@ -875,16 +1121,17 @@
                 <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
                 <p class="pg"></p>
                 <aside>
-                    Este é o fluxo do documento do PI. Se a unidade do paciente tem, dispensa no
-                    balcão. Se não tem, o sistema procura na rede; ao mesmo tempo, se o estoque caiu
-                    abaixo do mínimo, dispara a reposição sem travar o atendimento. Se outra unidade
-                    tem, mostramos a mais próxima com rota, ou pedimos transferência. Se ninguém
+                    Este é o fluxo do documento do PI, e ele se monta na ordem em que se explica. Se
+                    a unidade do paciente tem, dispensa no balcão. Se não tem, o sistema procura na
+                    rede: mostramos a mais próxima com rota, ou pedimos transferência. Se ninguém
                     tem, vai um pedido de compra ao fornecedor: com prazo, o paciente é avisado; sem
                     prazo, entra na lista de espera com prioridade para crônicos, oncológicos e
-                    doenças raras. Quando o remédio chega, ele retira ou recebe em casa.
+                    doenças raras. Quando o remédio chega, ele retira ou recebe em casa. Em
+                    paralelo, se o estoque caiu abaixo do mínimo, a reposição é disparada sem travar
+                    o atendimento.
                 </aside>
             </section>
-            <section id="requisitos">
+            <section data-full id="requisitos">
                 <p class="eyebrow">REQUISITOS</p>
                 <h2 class="title">Os oito requisitos funcionais estão no sistema</h2>
                 <table class="tb fade" style="margin-top: 16px; font-size: 26px">
@@ -1065,7 +1312,7 @@
                     para aceitar.
                 </aside>
             </section>
-            <section id="arquitetura">
+            <section data-full id="arquitetura">
                 <p class="eyebrow">ARQUITETURA</p>
                 <h2 class="title">Um repositório, três pacotes e um banco</h2>
                 <div
@@ -1242,7 +1489,7 @@
                     banco.
                 </aside>
             </section>
-            <section id="banco-mapa" class="alt">
+            <section data-full id="banco-mapa" class="alt">
                 <p class="eyebrow">BANCO DE DADOS</p>
                 <h2 class="title">25 tabelas em cinco grupos</h2>
                 <p class="lead">
@@ -1322,7 +1569,7 @@
                     histórico da própria paciente, que só ela vê e pode apagar.
                 </aside>
             </section>
-            <section id="banco-pessoas">
+            <section data-full id="banco-pessoas">
                 <p class="eyebrow">BANCO · PESSOAS</p>
                 <h2 class="title">Um login, um perfil</h2>
                 <div
@@ -1412,7 +1659,7 @@
                     responsável (caregiver) é quem pode retirar o remédio no lugar do paciente.
                 </aside>
             </section>
-            <section id="banco-estoque" class="alt">
+            <section data-full id="banco-estoque" class="alt">
                 <p class="eyebrow">BANCO · ESTOQUE</p>
                 <h2 class="title">Estoque por lote, com cada movimento registrado</h2>
                 <p class="lead">
@@ -1545,7 +1792,7 @@
                     lotes nas 18 unidades.
                 </aside>
             </section>
-            <section id="banco-pedido">
+            <section data-full id="banco-pedido">
                 <p class="eyebrow">BANCO · ATENDIMENTO</p>
                 <h2 class="title">O pedido do paciente é o centro de tudo</h2>
                 <div
@@ -1647,7 +1894,7 @@
                     gera um aviso em notifications.
                 </aside>
             </section>
-            <section id="status" class="alt">
+            <section data-full id="status" class="alt">
                 <p class="eyebrow">SITUAÇÕES DO PEDIDO</p>
                 <h2 class="title">O pedido só anda pelos caminhos permitidos</h2>
                 <div
@@ -1731,7 +1978,7 @@
                     vezes.
                 </aside>
             </section>
-            <section id="regras">
+            <section data-full id="regras">
                 <p class="eyebrow">REGRAS DE NEGÓCIO</p>
                 <h2 class="title">Regras que o servidor garante</h2>
                 <div class="cards c3" style="margin-top: 24px">
@@ -1787,7 +2034,7 @@
                     controlados a Portaria 344/1998.
                 </aside>
             </section>
-            <section id="seguranca" class="alt">
+            <section data-full id="seguranca" class="alt">
                 <p class="eyebrow">SEGURANÇA E LGPD · RNF03</p>
                 <h2 class="title">Quem protege os dados é o login</h2>
                 <div class="cards c3" style="margin-top: 24px">
@@ -1842,18 +2089,18 @@
                     403 a sites não liberados.
                 </aside>
             </section>
-            <section id="qualidade">
+            <section data-full id="qualidade">
                 <p class="eyebrow">QUALIDADE</p>
                 <h2 class="title">Números do projeto</h2>
                 <div class="cards c4" style="margin-top: 40px">
                     <div class="card rise" style="--i: 1">
-                        <p class="num">323</p>
+                        <p class="num" data-count="323">323</p>
                         <p class="t">
                             testes automáticos (144 da API, com banco real, e 179 das telas)
                         </p>
                     </div>
                     <div class="card rise" style="--i: 2">
-                        <p class="num">296</p>
+                        <p class="num" data-count="296">296</p>
                         <p class="t">medicamentos da RENAME no catálogo</p>
                     </div>
                     <div class="card rise" style="--i: 3">
@@ -1880,7 +2127,7 @@
                     de estoque e 2.450 lotes.
                 </aside>
             </section>
-            <section id="demo" class="alt">
+            <section data-full id="demo" class="alt">
                 <p class="eyebrow">DEMONSTRAÇÃO AO VIVO · LOGFARMA.CODEXOLIMPO.COM.BR</p>
                 <h2 class="title">A história da Dona Maria, em seis passos</h2>
                 <table class="tb fade" style="margin-top: 24px; font-size: 30px">
@@ -1936,6 +2183,67 @@
                     entregador2, jose e rafael.
                 </aside>
             </section>
+            <section
+                id="maria-fim"
+                class="slow"
+                data-weight="1.3"
+                style="background: var(--ok-soft)"
+            >
+                <p class="eyebrow" style="color: var(--ok)">E A DONA MARIA?</p>
+                <h2 class="title" style="color: #145a33">A losartana chegou na casa dela</h2>
+                <p class="lead" style="color: #2d5a40">
+                    Sem ônibus, sem fila, sem voltar de mãos vazias.
+                </p>
+                <div
+                    style="
+                        position: relative;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                        gap: 24px;
+                        margin-top: 48px;
+                    "
+                >
+                    <div
+                        class="fade"
+                        style="
+                            position: absolute;
+                            left: 150px;
+                            top: 34px;
+                            width: 1364px;
+                            height: 6px;
+                            background: #9fd1b3;
+                            --i: 1;
+                        "
+                    ></div>
+                    <div class="tl fade" style="--i: 1">
+                        <div class="dot"></div>
+                        <p class="tlt">Procurou no celular</p>
+                    </div>
+                    <div class="tl fade" style="--i: 2">
+                        <div class="dot"></div>
+                        <p class="tlt">A UBS pediu à outra unidade</p>
+                    </div>
+                    <div class="tl fade" style="--i: 3">
+                        <div class="dot"></div>
+                        <p class="tlt">O remédio chegou na UBS</p>
+                    </div>
+                    <div class="tl fade" style="--i: 4">
+                        <div class="dot"></div>
+                        <p class="tlt">O entregador saiu</p>
+                    </div>
+                    <div class="tl fade" style="--i: 5">
+                        <div class="dot end"></div>
+                        <p class="tlt" style="color: #145a33">Entregue em casa</p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Fechar a história do começo. Cada etapa é uma tela que mostramos: a busca no
+                    celular, a transferência entre unidades, a chegada, o entregador e a entrega. A
+                    Dona Maria acompanhou tudo pelos avisos, sem precisar ligar nem sair de casa.
+                </aside>
+            </section>
             <section id="proximos">
                 <p class="eyebrow">PRÓXIMOS PASSOS</p>
                 <h2 class="title">O que vem depois do MVP</h2>
@@ -1978,56 +2286,157 @@
                     cadastro manual.
                 </aside>
             </section>
-            <section id="fim" class="dark" style="justify-content: center">
-                <img
-                    class="fade"
-                    src="logo.svg"
-                    alt="Símbolo do LogFarma"
-                    style="width: 140px; height: 140px; object-fit: contain; margin: 0 0 48px"
-                />
-                <h2
-                    class="rise"
+            <section id="referencias" class="alt" data-weight="1.2">
+                <p class="eyebrow">REFERÊNCIAS</p>
+                <h2 class="title">De onde vêm os dados e as regras</h2>
+                <div
                     style="
-                        font-size: 112px;
-                        font-weight: 700;
-                        line-height: 1.05;
-                        margin: 0 0 32px;
-                        color: var(--on-ink);
-                        --i: 1;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 24px 64px;
+                        margin-top: 16px;
                     "
                 >
-                    Obrigado!
-                </h2>
-                <p
+                    <div class="fade" style="--i: 1">
+                        <p class="ref">
+                            <b>CNM, 2022.</b> Desabastecimento de remédios afeta mais de 3,3 mil
+                            municípios. Confederação Nacional de Municípios.
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 2">
+                        <p class="ref">
+                            <b>Ministério da Saúde.</b> RENAME: Relação Nacional de Medicamentos
+                            Essenciais.
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 3">
+                        <p class="ref">
+                            <b>Brasil. Lei 13.709/2018.</b> Lei Geral de Proteção de Dados Pessoais
+                            (LGPD).
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 4">
+                        <p class="ref">
+                            <b>Brasil. Lei 10.741/2003.</b> Estatuto da Pessoa Idosa (prioridade por
+                            idade).
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 5">
+                        <p class="ref"><b>Anvisa. RDC 471/2021.</b> Receita de antimicrobianos.</p>
+                    </div>
+                    <div class="fade" style="--i: 6">
+                        <p class="ref">
+                            <b>Ministério da Saúde. Portaria 344/1998.</b> Medicamentos de controle
+                            especial.
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 7">
+                        <p class="ref">
+                            <b>Ministério da Saúde.</b> Programa Farmácia Popular do Brasil e
+                            BNAFAR.
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 8">
+                        <p class="ref">
+                            <b>Prefeitura de São Paulo.</b> Aqui Tem Remédio (App Store) e Remédio
+                            na Hora (e-saúdeSP).
+                        </p>
+                    </div>
+                    <div class="fade" style="--i: 9">
+                        <p class="ref"><b>Braille Institute.</b> Fonte Atkinson Hyperlegible.</p>
+                    </div>
+                </div>
+                <p class="foot">LogFarma · PI Fatec Taquaritinga 2026</p>
+                <p class="pg"></p>
+                <aside>
+                    Os links completos estão no documento de validação da ideia do grupo. O dado da
+                    CNM é de 2022; a nota do Aqui Tem Remédio foi conferida em outubro de 2026.
+                </aside>
+            </section>
+            <section
+                id="fim"
+                class="dark"
+                data-weight="1.6"
+                style="flex-direction: row; align-items: center; gap: 120px"
+            >
+                <div style="flex: 1">
+                    <img
+                        class="fade"
+                        src="logo.svg"
+                        alt="Símbolo do LogFarma"
+                        style="width: 120px; height: 120px; object-fit: contain; margin: 0 0 40px"
+                    />
+                    <h2
+                        class="rise"
+                        style="
+                            font-size: 112px;
+                            font-weight: 700;
+                            line-height: 1.05;
+                            margin: 0 0 24px;
+                            color: var(--on-ink);
+                            --i: 1;
+                        "
+                    >
+                        Obrigado!
+                    </h2>
+                    <p
+                        class="rise"
+                        style="
+                            font-size: 40px;
+                            line-height: 1.35;
+                            color: var(--on-ink-muted);
+                            margin: 0 0 56px;
+                            --i: 2;
+                        "
+                    >
+                        Aponte a câmera e conheça o LogFarma.
+                    </p>
+                    <p
+                        class="rise"
+                        style="
+                            font-size: 26px;
+                            line-height: 1.5;
+                            color: var(--on-ink-muted);
+                            margin: 0;
+                            width: 1000px;
+                            --i: 3;
+                        "
+                    >
+                        Arthur Vinicius Ferreira · Bruno Henrique Jacinto · Lorena Duarte Malaguti ·
+                        Paulo Henrique de Souza Santos<br />Orientador: Prof. Gabriel Passatuto
+                        Gallo · Fatec Taquaritinga · 2026
+                    </p>
+                </div>
+                <div
                     class="rise"
                     style="
-                        font-size: 40px;
-                        line-height: 1.35;
-                        color: var(--on-ink-muted);
-                        margin: 0 0 64px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 20px;
                         --i: 2;
                     "
                 >
-                    Perguntas?
-                </p>
-                <p
-                    class="rise"
-                    style="
-                        font-size: 26px;
-                        line-height: 1.5;
-                        color: var(--on-ink-muted);
-                        margin: 0;
-                        width: 1500px;
-                        --i: 3;
-                    "
-                >
-                    Arthur Vinicius Ferreira · Bruno Henrique Jacinto · Lorena Duarte Malaguti ·
-                    Paulo Henrique de Souza Santos<br />Orientador: Prof. Gabriel Passatuto Gallo ·
-                    Fatec Taquaritinga · 2026
-                </p>
+                    <img
+                        src="telas/qr-site.svg"
+                        alt="QR code para logfarma.codexolimpo.com.br"
+                        style="
+                            width: 440px;
+                            height: 440px;
+                            border-radius: 24px;
+                            background: #fbfcff;
+                            padding: 20px;
+                            box-sizing: border-box;
+                        "
+                    />
+                    <p style="font-size: 28px; font-weight: 700; color: var(--on-ink); margin: 0">
+                        logfarma.codexolimpo.com.br
+                    </p>
+                </div>
                 <aside>
-                    Agradecer ao professor orientador e abrir para perguntas. Se perguntarem sobre
-                    segurança do domínio, voltar ao slide de Segurança e LGPD.
+                    Agradecer e convidar a pessoa a apontar a câmera do celular para o QR code: ele
+                    abre o sistema. Se perguntarem algo técnico, a versão completa da apresentação
+                    está em /apresentacao/?completa.
                 </aside>
             </section>
         </div>
@@ -2038,6 +2447,10 @@
         <script>
             (() => {
                 const stage = document.getElementById("stage");
+                if (!new URLSearchParams(location.search).has("completa"))
+                    stage
+                        .querySelectorAll(":scope > section[data-full]")
+                        .forEach((s) => s.remove());
                 const slides = [...stage.querySelectorAll(":scope > section")];
                 const NS = "http://www.w3.org/2000/svg";
                 // Conectores do Slides viram linhas SVG com seta.
@@ -2083,6 +2496,16 @@
                             line.setAttribute("stroke-dasharray", "10 8");
                         if (w.getAttribute("head") !== "none")
                             line.setAttribute("marker-end", "url(#m" + i + ")");
+                        // A seta entra junto com as caixas que ela liga (data-i = mesma ordem das caixas).
+                        const slow = s.classList.contains("slow");
+                        const step = slow ? 320 : 110;
+                        const order = w.hasAttribute("data-i") ? +w.getAttribute("data-i") : 3;
+                        line.style.animation =
+                            "aparece " +
+                            (slow ? 700 : 500) +
+                            "ms ease-out " +
+                            order * step +
+                            "ms both";
                         svg.appendChild(line);
                     }
                     s.insertBefore(svg, s.firstChild);
@@ -2102,17 +2525,38 @@
                         ? "▶ automático · " + autoSec + " s (P pausa)"
                         : "❚❚ pausado (P retoma)";
                     autoTag.classList.toggle("on", params.has("auto"));
+                    // Slides com mais coisa para ler (data-weight) ficam mais tempo no telão.
+                    const weight = parseFloat(slides[cur].dataset.weight || "1");
                     if (autoSec)
                         timer = setTimeout(
                             () => show(cur + 1 >= slides.length ? 0 : cur + 1),
-                            autoSec * 1000,
+                            autoSec * weight * 1000,
                         );
+                }
+                // Números que contam até o valor (o HTML já traz o valor final).
+                function countUp(slide) {
+                    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+                    slide.querySelectorAll("[data-count]").forEach((el) => {
+                        const end = +el.dataset.count,
+                            suffix = el.dataset.suffix || "";
+                        const t0 = performance.now() + 150,
+                            dur = 1400;
+                        const tick = (t) => {
+                            const k = Math.min(1, Math.max(0, (t - t0) / dur));
+                            el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))) + suffix;
+                            if (k < 1 && slide.classList.contains("on"))
+                                requestAnimationFrame(tick);
+                            else el.textContent = end + suffix;
+                        };
+                        requestAnimationFrame(tick);
+                    });
                 }
                 let cur = 0;
                 function show(n) {
                     cur = Math.max(0, Math.min(slides.length - 1, n));
                     schedule();
                     slides.forEach((s, i) => s.classList.toggle("on", i === cur));
+                    countUp(slides[cur]);
                     const aside = slides[cur].querySelector("aside");
                     notes.textContent = aside ? aside.textContent : "Sem notas neste slide.";
                     bar.style.width = ((cur + 1) / slides.length) * 100 + "%";
